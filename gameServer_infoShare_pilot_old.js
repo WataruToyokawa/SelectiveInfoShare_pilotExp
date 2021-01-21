@@ -15,6 +15,7 @@
 //    * node_modules: express, socket.io, fast-csv, php-express
 //    * mongoDB and mongoose
 // =================================================================== 
+// 'use strict';
 
 // Loading modules
 const csv = require("fast-csv")
@@ -155,10 +156,10 @@ roomStatus[firstRoomName] = {
     doneId: createArray(horizon, 0),
     doneNo: createArray(horizon),
     socialFreq: createArray(horizon, numOptions),
-    socialInfo:createArray(horizon, maxGroupSize),
+    socialInfo: createArray(horizon, maxGroupSize),
     publicInfo: createArray(horizon, maxGroupSize),
     share_or_not: createArray(horizon, maxGroupSize),
-    choiceOrder:createArray(horizon, maxGroupSize),
+    choiceOrder: createArray(horizon, maxGroupSize),
     saveDataThisRound: [],
     restTime:maxWaitingTime
 };
@@ -613,7 +614,6 @@ io.on('connection', function (client) {
 				console.log(roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1]);
 				console.log(roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1]);
 				console.log(roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1]);
-				//console.log(roomStatus[client.room]);
 				// if (data.choice === 'sure') {
 				// 	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0]++;
 				// } else if (data.choice === 'risky') {
@@ -673,7 +673,7 @@ io.on('connection', function (client) {
 		if(typeof client.subjectNumber != 'undefined') {
 			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1] = data.share;
 			console.log(roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1]);
-
+			
 			// Depending on the number of subject who has already done this round,
 			// the response to the client changes 
 			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
@@ -828,7 +828,7 @@ io.on('connection', function (client) {
 // ==========================================
 // Functions
 // ==========================================
-function getRandomIntInclusive(max, min = 0) {
+function getRandomIntInclusive(max = 1, min = 0) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; //Both the maximum and minimum are inclusive 
@@ -909,7 +909,7 @@ function startSession (room) {
 }
 
 function parameterEmitting (client) {
-	io.to(client.session).emit('this_is_your_parameters', { id: client.session, room: client.room, maxChoiceStageTime: maxChoiceStageTime, maxTimeTestScene: maxTimeTestScene, exp_condition:roomStatus[client.room]['exp_condition'], riskDistributionId:roomStatus[client.room]['riskDistributionId'], isLeftRisky:roomStatus[client.room]['isLeftRisky'], subjectNumber: client.subjectNumber, indivOrGroup: roomStatus[client.room]['indivOrGroup'], numOptions: numOptions, optionOrder: roomStatus[client.room]['optionOrder'] });
+	io.to(client.session).emit('this_is_your_parameters', { id: client.session, room: client.room, maxChoiceStageTime: maxChoiceStageTime, maxTimeTestScene: maxTimeTestScene, exp_condition:roomStatus[client.room]['exp_condition'], riskDistributionId:roomStatus[client.room]['riskDistributionId'], isLeftRisky:roomStatus[client.room]['isLeftRisky'], subjectNumber: client.subjectNumber, indivOrGroup: roomStatus[client.room]['indivOrGroup'], numOptions: numOptions, info_share_cost: info_share_cost, optionOrder: roomStatus[client.room]['optionOrder'] });
 	let nowEmitting = new Date(),
 	  	logdateEmitting = '['+nowEmitting.getUTCFullYear()+'/'+(nowEmitting.getUTCMonth()+1)+'/';
 	  	logdateEmitting += nowEmitting.getUTCDate()+'/'+nowEmitting.getUTCHours()+':'+nowEmitting.getUTCMinutes()+':'+nowEmitting.getUTCSeconds()+']';
