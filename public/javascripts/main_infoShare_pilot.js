@@ -25,7 +25,9 @@ const htmlServer = 'http://192.168.33.10:'; // vagrant server
 const portnumQuestionnaire = 8000;
 const exceptions = ['INHOUSETEST3', 'wataruDebug', 'wataruDebug'];
 
-let numOptions;
+let numOptions
+,	info_share_cost
+;
 
 
 // Gaussian distribution (E[risky] = 1.61)
@@ -87,6 +89,7 @@ let isEnvironmentReady = false
 ,   myChoices = []
 ,   myEarnings = []
 ,   payoff
+,	didShare
 ,	payoffTransformed
 ,   totalEarning = 0
 ,	cent_per_point = 1/100 // 1 cent per 100 points
@@ -126,6 +129,7 @@ let isEnvironmentReady = false
 ,	myPublicInfo
 ,	myLastChoice
 ,	myLastChoiceFlag
+,	share_or_not
 ;
 
 const myData = [];
@@ -1818,18 +1822,18 @@ window.onload = function() {
 
 			// YES button
 			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
-			let buttonContainer_yes = this.add.container(200, 200); //position
-			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(200, 100).setInteractive({ cursor: 'pointer' });
-			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost ' + '40' + ' points)', button_style);
+			let buttonContainer_yes = this.add.container(150, 200); //position
+			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(250, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: ' + info_share_cost + ' points)', button_style);
 			buttonText_yes.setOrigin(0.5, 0.5);
 			buttonContainer_yes.add(buttonImage_yes);
 			buttonContainer_yes.add(buttonText_yes);
 			buttonContainer_yes.visible = false;
 
 			// NO button
-			let buttonContainer_no = this.add.container(550, 200); //position
-			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(200, 100).setInteractive({ cursor: 'pointer' });
-			let buttonText_no = this.add.text(0, 0, 'NO\n(cost ' + '0' + ')', button_style);
+			let buttonContainer_no = this.add.container(600, 200); //position
+			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(250, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_no = this.add.text(0, 0, 'NO\n(No cost)', button_style);
 			buttonText_no.setOrigin(0.5, 0.5);
 			buttonContainer_no.add(buttonImage_no);
 			buttonContainer_no.add(buttonText_no);
@@ -1851,16 +1855,18 @@ window.onload = function() {
 
 		    buttonImage_yes.on('pointerdown', function (pointer) {
 		    	currentChoiceFlag = 0;
+		    	didShare = 1;
 		    	waitOthersText.setText('Please wait for others...');
-		    	socket.emit('result stage ended', {share: true});
+		    	socket.emit('result stage ended', {share: didShare});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
 		    }, this);
 
 		    buttonImage_no.on('pointerdown', function (pointer) {
 		    	currentChoiceFlag = 0;
+		    	didShare = 0;
 		    	waitOthersText.setText('Please wait for others...');
-		    	socket.emit('result stage ended', {share: false});
+		    	socket.emit('result stage ended', {share: didShare});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
 		    }, this);
@@ -1907,12 +1913,12 @@ window.onload = function() {
 
 			if (indivOrGroup == 1) {
 				setTimeout(function(){
-					waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000'});
+					waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
 					buttonContainer_yes.visible = true;
 					buttonContainer_no.visible = true;
 				}.bind(this),  1 * 1000); 
 			} else {
-				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000'});
+				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
 			}
 
 		    // setTimeout(function(){
@@ -3061,6 +3067,7 @@ window.onload = function() {
         subjectNumber = data.subjectNumber;
         isLeftRisky = data.isLeftRisky;
         numOptions = data.numOptions;
+        info_share_cost = data.info_share_cost;
         optionOrder = data.optionOrder;
         instructionText_indiv[1] = instructionText_indiv[1] + numOptions + ' slot machines.';
         instructionText_group[1] = instructionText_group[1] + numOptions + ' slot machines.';
@@ -3099,9 +3106,9 @@ window.onload = function() {
         restTime = data.restTime;
         // console.log('socket.on: "this is the remaining waiting time" : '+restTime+' msec.');
         if (isPreloadDone & !isWaitingRoomStarted) {
-        	game.scene.start('ScenePerfect'); // debug
+        	// game.scene.start('ScenePerfect'); // debug
 
-        	// game.scene.start('SceneWaitingRoom'); // main
+        	game.scene.start('SceneWaitingRoom'); // main
 
         } else {
         	//socket.emit('not ready yet');
@@ -3137,8 +3144,11 @@ window.onload = function() {
         }*/
         waitingRoomFinishedFlag = 1;
         game.scene.sleep('SceneWaitingRoom');
-        game.scene.start('SceneInstruction', data);
-        //core.replaceScene(core.instructionScene(exp_condition, indivOrGroup));
+
+        game.scene.start('ScenePerfect', data); // debug
+
+       	// game.scene.start('SceneInstruction', data);
+        
     });
 
     socket.on('you guys are individual condition', function () {
@@ -3166,6 +3176,7 @@ window.onload = function() {
         mySocialInfo = data.socialInfo[data.round-2];
         myPublicInfo = data.publicInfo[data.round-2];
         choiceOrder = data.choiceOrder[data.round-2];
+        share_or_not = data.share_or_not[data.round-2];
         if (indivOrGroup == 1) {
         	for (let i = 1; i < numOptions+1; i++) {
         		mySocialInfoList['option'+i] = data.socialFreq[data.round-1][optionOrder[i-1] - 1];
@@ -3180,24 +3191,10 @@ window.onload = function() {
         	}
         }
 
-        // console.log('proceed to the next round with myLastChoiceFlag ==' + myLastChoiceFlag);
-        // console.log(mySocialInfoList);
-
-        // if (indivOrGroup == 1) {
-        // 	mySocialInfoList['sure'] = data.socialFreq[data.round-1][surePosition];
-        // 	mySocialInfoList['risky'] = data.socialFreq[data.round-1][riskyPosition];
-        // } else if (myLastChoice == 'sure') {
-        // 	mySocialInfoList['sure'] = 1;
-        // 	mySocialInfoList['risky'] = 0;
-        // } else if (myLastChoice == 'risky') {
-        // 	mySocialInfoList['sure'] = 0;
-        // 	mySocialInfoList['risky'] = 1;
-        // } else {
-        // 	mySocialInfoList['sure'] = null;
-        // 	mySocialInfoList['risky'] = null;
-        // }
+        
         currentTrial++;
-        totalEarning += payoff;
+        totalEarning += payoff - (info_share_cost * didShare);
+
         $("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
         $("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
