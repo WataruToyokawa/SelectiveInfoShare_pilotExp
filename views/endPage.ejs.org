@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title><%= title %></title>
+    <link href="/stylesheets/import.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/stylesheets/confirmation.css" rel="stylesheet" type="text/css" media="all" />
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+    <script type="text/javascript" src="/javascripts/enchant.js"></script>
+    <!--<script type="text/javascript" src="/javascripts/assignID.js"></script>-->
+    <script type="text/javascript">
+      const amazonID = <%- JSON.stringify(amazonID) %>;
+      const bonus_for_waiting = <%- JSON.stringify(bonus_for_waiting) %>;
+      const confirmationID = <%- JSON.stringify(confirmationID) %>;
+      const totalEarning = <%- JSON.stringify(totalEarning) %>;
+
+      window.onload = function() {
+
+        let earningsDiv = document.getElementById('earnings');
+        earningsDiv.innerHTML = "<p>Base payment: $0.25 <br> Waiting Bonus: $" + Math.round(100*parseInt(bonus_for_waiting)/100)/100 + "<br> Game Reward: $" + Math.round(100*parseInt(totalEarning)/100)/100 +"</p><p>Total earnings: <span>$" + Math.round((parseInt(bonus_for_waiting)/100 + parseInt(totalEarning)/100 + 0.25)*100)/100 +"</span></p>";
+        /*let totalDiv = document.getElementById('total');
+        totalDiv.innerHTML = "<p>Total earnings: <span>$" + Math.round((parseInt(bonus_for_waiting)/100 + parseInt(totalEarning)/100 + 0.25)*100)/100 +"</span></p>";*/
+        let confirmationIDDiv = document.getElementById('confirmationID');
+        confirmationIDDiv.innerHTML = "<h1>" + confirmationID + "</h1>";
+      }
+
+    </script>
+    <script type="text/javascript">
+        // ban on back-button
+        history.pushState(null, null, null);
+
+        window.addEventListener("popstate", function() {
+            history.pushState(null, null, null);
+        });
+    </script>
+  </head>
+  <body>
+    <div id="wrap">
+  <h1>Result & Confirmation</h1>
+
+  <fieldset>
+    <legend>Your Total Earnings</legend>
+    <div id="earnings">
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Confirmation Code</legend>
+    <div id="confirmationID">
+    </div>
+  </fieldset>
+  <p class="lead">* <span>Copy and paste this confirmation code</span> into the HIT on Amazon's Mechanical Turk to receive payment. </p>
+
+  <fieldset>
+    <legend>
+      Participant Debriefing Form
+    </legend>
+    <div id="debriefing">
+      <div class="inner">
+      <h2>Nature of Project</h2>
+        <p class="lead" id='innerText'>
+          This postgraduate research project was conducted to investigate how people integrate information from both social cues and individual experiences (such as rewards drawn from the lotteries) in decision making. In particular, this experiment explores how the use of information changes in different group sizes. In other words, how do people in large groups handle the social cues compared with those in a small groups?
+        </p>
+        <p class="lead" id='innerText'>
+          We are also interested in how the behavioural dynamics at the group-level is affected by the use of social cues at the individual-level.
+        </p>
+        <p class="lead" id='innerText'>
+          Thank you for your participation!
+        </p>
+        <p class="lead" id='innerText'>
+          If you are interested in learning more about this topic, below is a list of related scientific papers you might find interesting:
+        </p>
+        <table class="reference">
+          <ul>
+            <li>
+              Toyokawa, W., Whalen, A., & Laland, K. N. (2019). Social learning strategies regulate the wisdom and madness of interactive crowds. <span>Nature Human Behaviour</span>, 3: 183–193.
+            </li>
+            <li>
+              Morgan, T. J. H., Rendell, L. E., Ehn, M., Hoppitt, W., & Laland, K. N. (2012). The evolution basis of human social learning. <span>Proc. Roy. Soc. B.</span> 279: 653-662.
+            </li>
+          </ul>
+        </table>
+      <h2>Storage of Data</h2>
+      <p class='lead' id='innerText'>
+        As outlined in the Participant Information Sheet your data will now be retained for a period of 3 years before being destroyed. Your data will remain accessible to only the researchers and supervisors. OR Your data may be used for future scholarly purposes without further contact or permission if you have given permission on the Consent Form.   If you no longer wish for your data to be used in this manner you are free to withdraw your consent by contacting any of the researchers and or Supervisor.
+      </p>
+      <h2>What should I do if I have concerns about this study?</h2>
+      <p class='lead' id='innerText'>
+        A full outline of the procedures governed by the University Teaching and Research Ethical Committee are outline on <a target='blank_' href='https://www.uni-konstanz.de/en/university/administration-and-organisation/university-bodies-and-committees/university-bodies-for-scientific-integrity/ethics-committee/'>their website</a>
+      </p>
+      <h2>Contact Details</h2>
+      <div class='researcherNames'>
+        <p>
+          <span>Researchers:</span><br>
+          Dr Wataru Toyokawa<br>(wataru.toyokawa@uni-konstanz.de)<br><br>
+          Dr Hansjörg Neth<br>(h.neth@uni-konstanz.de)<br>
+        </p>
+      </div>
+      </div>
+    </div>
+  </fieldset>
+
+</div>
+
+</body>
+</html>

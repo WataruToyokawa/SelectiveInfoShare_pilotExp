@@ -1,0 +1,107 @@
+
+> test-ex-gen-app@0.0.0 start /home/wataru/experiment/twoAB_Exp2020
+> node ./bin/www
+
+[0mGET / [36m302 [0m4.926 ms - 92[0m
+[0mGET /questionnaireForDisconnectedSubjects?amazonID=%205ec96e3609117f0a67231842&bonus_for_waiting=33.884610448393616&totalEarningInCent=0&confirmationID=ub-GVFqzEyq18tS8AAAA&exp_condition=binary&indivOrGroup=0&completed=browserHidden&latency=0 [32m200 [0m7.493 ms - 6739[0m
+[0mGET /stylesheets/questionnaire.css [32m200 [0m2.752 ms - 995[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.868 ms - -[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.425 ms - -[0m
+[0mGET /javascripts/questionnaireForm.js [32m200 [0m0.986 ms - 7496[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.439 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.521 ms - -[0m
+totalEarning = 0
+bonus_for_waiting = 0.33
+totalPayment = 1.6
+[0mPOST /endPage [32m200 [0m11.262 ms - 6389[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.567 ms - -[0m
+[0mGET /stylesheets/confirmation.css [36m304 [0m0.425 ms - -[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.494 ms - -[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.409 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.454 ms - -[0m
+[0mGET /?amazonID=INHOUSETEST2 [32m200 [0m2.887 ms - 12543[0m
+[0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [36m304 [0m0.425 ms - -[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.375 ms - -[0m
+[0mGET /javascripts/goToExp.js [36m304 [0m0.663 ms - -[0m
+[0mGET /stylesheets/confirmation.css [36m304 [0m0.708 ms - -[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.267 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.779 ms - -[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.712 ms - -[0m
+[0mGET /questionnaireForDisconnectedSubjects?amazonID=%205ec96e3609117f0a67231842&bonus_for_waiting=33.884610448393616&totalEarningInCent=0&confirmationID=ub-GVFqzEyq18tS8AAAA&exp_condition=binary&indivOrGroup=0&completed=browserHidden&latency=0 [36m304 [0m1.951 ms - -[0m
+[0mGET /stylesheets/questionnaire.css [36m304 [0m0.456 ms - -[0m
+[0mGET /stylesheets/import.css [36m304 [0m1.496 ms - -[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.482 ms - -[0m
+[0mGET /javascripts/questionnaireForm.js [36m304 [0m0.346 ms - -[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.367 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.376 ms - -[0m
+[0mGET /?amazonID=5ec96e3609117f0a67231842 [32m200 [0m1.524 ms - 12567[0m
+[0mGET /stylesheets/import.css [32m200 [0m0.744 ms - 129[0m
+[0mGET /stylesheets/confirmation.css [32m200 [0m0.563 ms - 2661[0m
+[0mGET /javascripts/goToExp.js [32m200 [0m0.472 ms - 7476[0m
+[0mGET /stylesheets/reset.css [32m200 [0m1.057 ms - 1093[0m
+[0mGET /stylesheets/style.css [32m200 [0m1.125 ms - 4060[0m
+[0mGET /javascripts/jquery.min.js [32m200 [0m0.779 ms - 86927[0m
+[0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m0.894 ms - 35046[0m
+[0mGET /assets/favicon.ico [32m200 [0m0.598 ms - 1150[0m
+questionnaire.js : 5ec96e3609117f0a6723184242193M6c3m93E-XR05vYeAAABbinary0
+[0mPOST /questionnaire [32m200 [0m2.477 ms - 6705[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.509 ms - -[0m
+[0mGET /stylesheets/questionnaire.css [32m200 [0m0.459 ms - 995[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.374 ms - -[0m
+[0mGET /javascripts/questionnaireForm.js [32m200 [0m0.454 ms - 7496[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.403 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.392 ms - -[0m
+totalEarning = 1
+bonus_for_waiting = 0.42
+totalPayment = 3.7
+[0mPOST /endPage [32m200 [0m2.684 ms - 6375[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.456 ms - -[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.305 ms - -[0m
+[0mGET /stylesheets/confirmation.css [36m304 [0m1.584 ms - -[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.427 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.353 ms - -[0m
+[0mGET /favicon.ico [33m404 [0m1.492 ms - 1074[0m
+[0mGET / [36m302 [0m0.682 ms - 46[0m
+[0mGET /?amazonID=5ebc2119e767ac034e2b1c4b&STUDY_ID=5f23e639912f871d24952cb8&SESSION_ID=5f23f9c740fa830393875d07 [32m200 [0m1.335 ms - 12567[0m
+[0mGET /stylesheets/import.css [32m200 [0m1.080 ms - 129[0m
+[0mGET /stylesheets/confirmation.css [32m200 [0m1.148 ms - 2661[0m
+[0mGET /javascripts/jquery.min.js [32m200 [0m0.542 ms - 86927[0m
+[0mGET /stylesheets/reset.css [32m200 [0m0.758 ms - 1093[0m
+[0mGET /stylesheets/style.css [32m200 [0m0.838 ms - 4060[0m
+[0mGET /javascripts/goToExp.js [32m200 [0m0.492 ms - 7476[0m
+[0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m1.674 ms - 35046[0m
+[0mGET /assets/favicon.ico [32m200 [0m0.518 ms - 1150[0m
+questionnaire.js : 5ebc2119e767ac034e2b1c4b41201KCKx3hDEGCxibRedAAACbinary0
+[0mPOST /questionnaire [32m200 [0m2.073 ms - 6705[0m
+[0mGET /stylesheets/questionnaire.css [32m200 [0m0.535 ms - 995[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.270 ms - -[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.378 ms - -[0m
+[0mGET /javascripts/questionnaireForm.js [32m200 [0m1.098 ms - 7496[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.519 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.518 ms - -[0m
+totalEarning = 2
+bonus_for_waiting = 0.41
+totalPayment = 3.7
+[0mPOST /endPage [32m200 [0m1.741 ms - 6375[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.382 ms - -[0m
+[0mGET /stylesheets/confirmation.css [36m304 [0m0.282 ms - -[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.346 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m0.288 ms - -[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.285 ms - -[0m
+[0mGET / [36m302 [0m0.510 ms - 46[0m
+[0mGET / [36m302 [0m0.558 ms - 46[0m
+[0mGET / [36m302 [0m0.405 ms - 46[0m
+Accessed by debug ID: INHOUSETEST2
+[0mGET /?amazonID=INHOUSETEST2 [32m200 [0m1.745 ms - 12498[0m
+[0mGET /stylesheets/import.css [36m304 [0m0.397 ms - -[0m
+[0mGET /stylesheets/reset.css [36m304 [0m0.627 ms - -[0m
+[0mGET /stylesheets/confirmation.css [36m304 [0m0.565 ms - -[0m
+[0mGET /javascripts/jquery.min.js [36m304 [0m0.320 ms - -[0m
+[0mGET /javascripts/goToExp.js [36m304 [0m0.613 ms - -[0m
+[0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [36m304 [0m0.582 ms - -[0m
+[0mGET /stylesheets/style.css [36m304 [0m2.331 ms - -[0m
+[0mHEAD /robots.txt [33m404 [0m1.224 ms - 1074[0m
+[0mGET http://example.com/ [36m302 [0m0.661 ms - 46[0m
+[0mGET / [36m302 [0m0.606 ms - 46[0m
+[0mGET / [36m302 [0m0.565 ms - 46[0m
+[0mHEAD /robots.txt [33m404 [0m0.994 ms - 1074[0m

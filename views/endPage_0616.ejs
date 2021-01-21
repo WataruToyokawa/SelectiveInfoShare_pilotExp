@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="x-ua-compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title><%= title %></title>
+    <link href="/stylesheets/import.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/stylesheets/confirmation.css" rel="stylesheet" type="text/css" media="all" />
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+    <!--<script type="text/javascript" src="/javascripts/enchant.js"></script>-->
+    <!--<script type="text/javascript" src="/javascripts/assignID.js"></script>-->
+    <script type="text/javascript">
+      const amazonID = <%- JSON.stringify(amazonID) %>;
+      const bonus_for_waiting = <%- JSON.stringify(bonus_for_waiting) %>;
+      const confirmationID = <%- JSON.stringify(confirmationID) %>;
+      const totalEarning = <%- JSON.stringify(totalEarning) %>;
+      const completionFee = <%- JSON.stringify(completionFee) %>;
+      const latency = <%- JSON.stringify(latency) %>;
+
+      window.onload = function() {
+
+        let earningsDiv = document.getElementById('earnings');
+        earningsDiv.innerHTML = "<p>Flat fee for completion of the task: $"+ completionFee +"<br> Waiting Bonus: $" +
+        Math.round(100*parseInt(bonus_for_waiting)/100)/100 + "<br>Bonus from the decision-making task: $" + Math.round(100*parseInt(totalEarning)/100)/100 +"</p><p>Total earnings: <span>$" + Math.round(10*(parseInt(bonus_for_waiting)/100 + parseInt(totalEarning)/100 + completionFee))/10 +"</span></p>";
+        
+        let confirmationIDDiv = document.getElementById('confirmationID');
+        confirmationIDDiv.innerHTML = "<h1>" + confirmationID + "</h1>";
+      }
+
+    </script>
+    <script type="text/javascript">
+        // ban on back-button
+        history.pushState(null, null, null);
+
+        window.addEventListener("popstate", function() {
+            history.pushState(null, null, null);
+        });
+    </script>
+  </head>
+  <body>
+    <div id="wrap">
+  <h1>Result & Confirmation</h1>
+
+  <fieldset>
+    <legend>Your total earnings</legend>
+    <div id="earnings">
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>Confirmation code</legend>
+    <div id="confirmationID">
+    </div>
+  </fieldset>
+  <p class="lead">* <span>Copy and paste this confirmation code</span> into the HIT on Amazon's Mechanical Turk to receive payment. </p>
+
+  <fieldset>
+    <legend>
+      Participant Debriefing Form
+    </legend>
+    <div id="debriefing">
+      <div class="inner">
+      <h2>Nature of Project</h2>
+        <p class="lead" id='innerText'>
+          This research project is conducted to investigate how
+    people integrate information from both social cues and individual
+    experiences (such as rewards received from multiple options) in
+    decision making. In particular, this experiment examines how
+    people's exploration and exploitation behavior impact their performance. 
+    In other words, do people start exploiting from one slot
+    once they have experienced a large reward from it?
+        </p>
+        <p class="lead" id='innerText'>
+          We are also interested in how the behavioral dynamics at a
+    group-level are affected by the strategies and potential differences on the individual-level.
+        </p>
+        <p class="lead" id='innerText'>
+          Thank you for your participation!
+        </p>
+        <p class="lead" id='innerText'>
+          If you are interested in learning more about this topic,
+    below is a list of related scientific papers that you might find interesting:
+        </p>
+        <table class="reference">
+          <ul>
+            <li>
+              Toyokawa, W., Whalen, A., & Laland, K. N. (2019). Social learning strategies regulate the wisdom and madness of interactive crowds. <span>Nature Human Behaviour</span>, 3: 183–193.
+            </li>
+            <li>
+              Moussaïd, M., Brighton, H., & Gaissmaier, W. (2015). The amplification of risk in experimental diffusion chains. <span>Proceedings of the National Academy of Sciences</span>, 112(18), 5631-5636.
+            </li>
+            <li>
+              Morgan, T. J. H., Rendell, L. E., Ehn, M., Hoppitt, W., & Laland, K. N. (2012). The evolutionary basis of human social learning. <span>Proc. Roy. Soc. B.</span> 279: 653-662.
+            </li>
+          </ul>
+        </table>
+      <h2>Storage of Data</h2>
+      <p class='lead' id='innerText'>
+        As outlined in the Participant Information Sheet, your data will remain accessible only to the
+    researchers of this project. In case you no longer wish for your data to be used, you are free to withdraw your consent by contacting any of the researchers.
+      </p>
+      <h2>What should I do if I have concerns about this study?</h2>
+      <p class='lead' id='innerText'>
+        A full outline of the procedures governed by the University of
+    Konstanz's Teaching and Research Ethical Committee are outline on <a target='blank_' href='https://www.uni-konstanz.de/en/university/administration-and-organisation/university-bodies-and-committees/university-bodies-for-scientific-integrity/ethics-committee/'>this website</a>
+      </p>
+      <h2>Contact Details</h2>
+      <div class='researcherNames'>
+        <p>
+          <span>Researchers:</span><br>
+          Dr Wataru Toyokawa<br>(wataru.toyokawa@uni-konstanz.de)<br><br>
+          Professor Wolfgang Gaissmaier<br>(spdslab@gmail.com)<br>
+        </p>
+      </div>
+      </div>
+    </div>
+  </fieldset>
+
+</div>
+
+</body>
+</html>
