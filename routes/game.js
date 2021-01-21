@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const amazonIdList = [];
-const exceptions = ['INHOUSETEST3','wataru'];
+const exceptions = ['INHOUSETEST3' , 'wt' , 'hg'];
 
 /* GET home page. */
 // router.get('/', function(req, res, next) {

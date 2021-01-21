@@ -13,8 +13,8 @@ const express = require('express');
 const router = express.Router();
 const browser = require('browser-detect');
 const amazonIdList = [];
-const exceptions = ['INHOUSETEST3', 'wataru'];
-const prob_indiv = 0.1;//0.05; // One of five individuals (on average) will go directly to the individual condition
+const exceptions = ['INHOUSETEST3' , 'wt' , 'hg'];
+const prob_indiv = 0;//0.05; // One of five individuals (on average) will go directly to the individual condition
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
