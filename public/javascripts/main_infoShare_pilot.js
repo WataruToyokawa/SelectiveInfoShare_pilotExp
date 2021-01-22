@@ -269,6 +269,9 @@ window.onload = function() {
 	, emitting_time = 0
 	;
 
+	// the info sharing cost for the first trial
+	info_share_cost = rand(100, 0);
+
 	// SceneWaitingRoom0
 	class SceneWaitingRoom0 extends Phaser.Scene {
 
@@ -1893,7 +1896,13 @@ window.onload = function() {
 		    	didShare = 1;
 		    	score -= info_share_cost; // <- The cost of sharing information
 		    	waitOthersText.setText('Please wait for others...');
-		    	socket.emit('result stage ended', {share: didShare, payoff: payoff, num_choice: this.flag});
+		    	socket.emit('result stage ended'
+		    			, {share: didShare
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			, totalEarning: (totalEarning - didShare * info_share_cost)
+		    		});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
 		    }, this);
@@ -1902,7 +1911,13 @@ window.onload = function() {
 		    	currentChoiceFlag = 0;
 		    	didShare = 0;
 		    	waitOthersText.setText('Please wait for others...');
-		    	socket.emit('result stage ended', {share: didShare, payoff: payoff, num_choice: this.flag});
+		    	socket.emit('result stage ended'
+		    			, {share: didShare
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			, totalEarning: (totalEarning - didShare * info_share_cost)
+		    		});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
 		    }, this);
@@ -1961,7 +1976,13 @@ window.onload = function() {
 			    	//game.scene.start('SceneMain');
 			    	//console.log('emitting result stage ended!');
 			    	currentChoiceFlag = 0;
-			    	socket.emit('result stage ended', {share: 0, payoff: payoff, num_choice: this.flag});
+			    	socket.emit('result stage ended'
+		    			, {share: 0
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			, totalEarning: (totalEarning - 0 * info_share_cost)
+		    		});
 			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
 			}
 
@@ -2143,57 +2164,6 @@ window.onload = function() {
 
 
 	// functions
-
-	// controlling pictures and figures in the instruction page
-	/*function instructionPictures_4abFunction (indivOrGroup, instructionPosition) {
-		//console.log('indivOrGroup = ' + indivOrGroup + ' and instructionPosition = ' + instructionPosition);
-	}*/
-
-	// randomly choosing an integer between min and max 
-	function rand(max, min = 0) {
-	    return Math.floor(Math.random() * (max - min + 1) + min);
-	}
-
-    /**
-     * 正規分布乱数関数 参考:http://d.hatena.ne.jp/iroiro123/20111210/1323515616
-     * @param number m: mean μ
-     * @param number sigma: variance = σ^2
-     * @return number ランダムに生成された値
-     * Box-Muller Method
-     */
-    function BoxMuller(m, sigma) {
-        let a = 1 - Math.random();
-        let b = 1 - Math.random();
-        let c = Math.sqrt(-2 * Math.log(a));
-        if(0.5 - Math.random() > 0) {
-            return c * Math.sin(Math.PI * 2 * b) * sigma + m;
-        }else{
-            return c * Math.cos(Math.PI * 2 * b) * sigma + m;
-        }
-    };
-
-    // Sum of all elements of the array
-    function sum (arr, fn) {  
-        if (fn) {
-            return sum(arr.map(fn));
-        }
-        else {
-            return arr.reduce(function(prev, current, i, arr) {
-                    return prev+current;
-            });
-        }
-    };
-
-    function repeatelem (elem, n) {
-	    // returns an array with element elem repeated n times.
-	    let arr = [];
-
-	    for (let i = 0; i < n; i++) {
-	        arr = arr.concat(elem);
-	    };
-	    return arr;
-	};
-
 
     function showStars_4ab (num_option1, num_option2, num_option3, num_option4, socialInfoY) {
 
@@ -2390,6 +2360,9 @@ window.onload = function() {
     };
 
     function madeChoice_4ab (flag, distribution, optionOrder) {  
+    	// A new cost is set
+    	info_share_cost = rand(100, 0);
+
         let thisChoice;
         if (flag == -1) {
         	thisChoice = 0;//'miss';
@@ -2906,7 +2879,7 @@ window.onload = function() {
         subjectNumber = data.subjectNumber;
         isLeftRisky = data.isLeftRisky;
         numOptions = data.numOptions;
-        info_share_cost = data.info_share_cost;
+        // info_share_cost = data.info_share_cost;
         optionOrder = data.optionOrder;
         instructionText_indiv[1] = instructionText_indiv[1] + numOptions + ' slot machines.';
         instructionText_group[1] = instructionText_group[1] + numOptions + ' slot machines.';

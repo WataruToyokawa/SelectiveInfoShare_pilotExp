@@ -2,7 +2,8 @@ const {parentPort, workerData, isMainThread, threadId} = require('worker_threads
 
 // ==========================
 const mongoose = require('mongoose');
-const dbName = 'mongodb://127.0.0.1:27017/twoArmedTask2020';
+// const dbName = 'mongodb://127.0.0.1:27017/twoArmedTask2020';
+const dbName = 'mongodb://127.0.0.1:27017/info_share_2AB_2021';
 // defining a model
 const Behaviour = require('../models/behaviouralData');
 
@@ -59,33 +60,41 @@ for (let i = 0; i < workerData.length; i++) {
   behaviour.socialFreq_safe3 = this_workerData.socialFreq[2]; //[this_workerData.optionOrder[2] - 1];
   behaviour.socialFreq_risky = this_workerData.socialFreq[3]; //[this_workerData.optionOrder[3] - 1];
   behaviour.riskDistributionId = this_workerData.riskDistributionId;
+  // sharing stage's data
+  behaviour.num_choice = this_workerData.num_choice;
+  behaviour.didShare = this_workerData.didShare;
+  behaviour.info_share_cost = this_workerData.info_share_cost;
 
   let dummyInfo0 = new Array(this_workerData.maxGroupSize).fill(-1);
 
-  for(let j=0; j<this_workerData.maxGroupSize; j++) {
-    if (j < 10) {
-      eval('behaviour.socialInfo_0'+j+'= dummyInfo0['+j+'];');
-      eval('behaviour.publicInfo_0'+j+'= dummyInfo0['+j+'];');
-    } else {
-      eval('behaviour.socialInfo_'+j+'= dummyInfo0['+j+'];');
-      eval('behaviour.publicInfo_'+j+'= dummyInfo0['+j+'];');
-    }
-  }
-
-  if(behaviour.round>1){
-    if(typeof this_workerData.socialInfo != 'undefined') { 
-      for(let j = 0; j < this_workerData.socialInfo.length; j++) {
-        if ( j < 10) {
-          eval('behaviour.socialInfo_0'+j+'= this_workerData.socialInfo['+j+'];');
-          eval('behaviour.publicInfo_0'+j+'= this_workerData.publicInfo['+j+'];');
-        } else {
-          eval('behaviour.socialInfo_'+j+'= this_workerData.socialInfo['+j+'];');
-          eval('behaviour.publicInfo_'+j+'= this_workerData.publicInfo['+j+'];');
-        }
+  if (this_workerData.behaviouralType == 'choice') {
+    // --------- 
+    for(let j=0; j<this_workerData.maxGroupSize; j++) {
+      if (j < 10) {
+        eval('behaviour.socialInfo_0'+j+'= dummyInfo0['+j+'];');
+        eval('behaviour.publicInfo_0'+j+'= dummyInfo0['+j+'];');
+      } else {
+        eval('behaviour.socialInfo_'+j+'= dummyInfo0['+j+'];');
+        eval('behaviour.publicInfo_'+j+'= dummyInfo0['+j+'];');
       }
-    }else{
-      console.log(` - [Worker] this_workerData.socialInfo is undefined!`);
     }
+
+    if(behaviour.round>1){
+      if(typeof this_workerData.socialInfo != 'undefined') { 
+        for(let j = 0; j < this_workerData.socialInfo.length; j++) {
+          if ( j < 10) {
+            eval('behaviour.socialInfo_0'+j+'= this_workerData.socialInfo['+j+'];');
+            eval('behaviour.publicInfo_0'+j+'= this_workerData.publicInfo['+j+'];');
+          } else {
+            eval('behaviour.socialInfo_'+j+'= this_workerData.socialInfo['+j+'];');
+            eval('behaviour.publicInfo_'+j+'= this_workerData.publicInfo['+j+'];');
+          }
+        }
+      }else{
+        console.log(` - [Worker] this_workerData.socialInfo is undefined!`);
+      }
+    }
+    // --------- 
   }
 
   behaviour.save(function(err){

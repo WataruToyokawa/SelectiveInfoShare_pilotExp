@@ -49,7 +49,7 @@ const horizon = 20 // 100?
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
 
-, info_share_cost = 30
+// , info_share_cost = 30
 
 //, sigmaGlobal = 6 //0.9105
 //, sigmaIndividual = 6 //0.9105 // this gives 50% overlap between two normal distributions whose mean diff. is 1.1666..
@@ -677,11 +677,53 @@ io.on('connection', function (client) {
 	});
 
 	client.on('result stage ended', function (data) {
+
+		let now = new Date()
+        ,	logdate = '[' + now.getUTCFullYear() + '/' + (now.getUTCMonth() + 1) + '/'
+    	, doneNum
+    	, timeElapsed = now - firstTrialStartingTime
+    	;
+    	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
+    	console.log(logdate + ' - Did client ' + client.subjectNumber + ' in ' + client.room + ' share the payoff info' + data.payoff + ' at trial ' + data.thisTrial + '? -> ' + data.share + ' (0:NO / 1:YES)');
+
 		if(typeof client.subjectNumber != 'undefined') {
+
 			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1] = {share: data.share, payoff: data.payoff, position: data.num_choice};
-			// console.log('share_or_not: '+roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1]['share']);
-			// console.log('payoff: '+roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1]['payoff']);
-			// console.log('position: '+roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1]['position']);
+
+			// recording the decision-making on sharing payoff information
+			// =========  save data to mongodb
+			roomStatus[client.room]['saveDataThisRound'].push(
+				{	date: now.getUTCFullYear() + '-' + (now.getUTCMonth() + 1) +'-' + now.getUTCDate()
+				,	time: now.getUTCHours()+':'+now.getUTCMinutes()+':'+now.getUTCSeconds()
+				,	exp_condition: roomStatus[client.room]['exp_condition']
+				,	isLeftRisky: roomStatus[client.room]['isLeftRisky']
+				,	indivOrGroup: roomStatus[client.room]['indivOrGroup']
+				,	groupSize: roomStatus[client.room]['n']
+				,	room: client.room
+				,	confirmationID: client.session
+				,	subjectNumber: client.subjectNumber
+				,	amazonID: client.amazonID
+				,	round: roomStatus[client.room]['round']
+				// ,	chosenOptionFlag: data.chosenOptionFlag
+				// ,	choice: data.choice
+				// ,	payoff: data.payoff
+				,	totalEarning: data.totalEarning
+				,	behaviouralType: 'info-sharing'
+				,	timeElapsed: timeElapsed
+				,	latency: client.latency
+				,	socialFreq: roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']-1]
+				// ,	socialInfo: data.socialInfo
+				// ,	publicInfo: data.publicInfo
+				,	maxGroupSize: maxGroupSize
+				,	riskDistributionId: data.riskDistributionId
+				,	optionOrder: roomStatus[client.room]['optionOrder']
+				,	didShare: data.share
+				,	payoff: data.payoff
+				,	num_choice: data.num_choice
+				,	info_share_cost: data.info_share_cost
+				}
+			);
+			// =========  save data to mongodb
 
 			// Depending on the number of subject who has already done this round,
 			// the response to the client changes 
@@ -948,7 +990,7 @@ function parameterEmitting (client) {
 		, indivOrGroup: roomStatus[client.room]['indivOrGroup']
 		, numOptions: numOptions
 		, optionOrder: roomStatus[client.room]['optionOrder'] 
-		, info_share_cost: info_share_cost
+		// , info_share_cost: info_share_cost
 		});
 	let nowEmitting = new Date(),
 	  	logdateEmitting = '['+nowEmitting.getUTCFullYear()+'/'+(nowEmitting.getUTCMonth()+1)+'/';
