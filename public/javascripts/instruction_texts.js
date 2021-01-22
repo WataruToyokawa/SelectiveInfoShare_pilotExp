@@ -130,3 +130,5 @@ const goToQuestionnaireText =
 	, 'Waiting bonus: $'
 	, 'Flat fee for completion of the task: $'
 	];
+
+const testText = ['this is a test'];]
