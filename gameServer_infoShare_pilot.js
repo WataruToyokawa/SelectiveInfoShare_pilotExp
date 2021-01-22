@@ -682,7 +682,7 @@ io.on('connection', function (client) {
 			// console.log('share_or_not: '+roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1]['share']);
 			// console.log('payoff: '+roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1]['payoff']);
 			// console.log('position: '+roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1]['position']);
-			
+
 			// Depending on the number of subject who has already done this round,
 			// the response to the client changes 
 			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
@@ -936,7 +936,20 @@ function startSession (room) {
 }
 
 function parameterEmitting (client) {
-	io.to(client.session).emit('this_is_your_parameters', { id: client.session, room: client.room, maxChoiceStageTime: maxChoiceStageTime, maxTimeTestScene: maxTimeTestScene, exp_condition:roomStatus[client.room]['exp_condition'], riskDistributionId:roomStatus[client.room]['riskDistributionId'], isLeftRisky:roomStatus[client.room]['isLeftRisky'], subjectNumber: client.subjectNumber, indivOrGroup: roomStatus[client.room]['indivOrGroup'], numOptions: numOptions, optionOrder: roomStatus[client.room]['optionOrder'] });
+	io.to(client.session).emit('this_is_your_parameters', 
+		{ id: client.session
+		, room: client.room
+		, maxChoiceStageTime: maxChoiceStageTime
+		, maxTimeTestScene: maxTimeTestScene
+		, exp_condition:roomStatus[client.room]['exp_condition']
+		, riskDistributionId:roomStatus[client.room]['riskDistributionId']
+		, isLeftRisky:roomStatus[client.room]['isLeftRisky']
+		, subjectNumber: client.subjectNumber
+		, indivOrGroup: roomStatus[client.room]['indivOrGroup']
+		, numOptions: numOptions
+		, optionOrder: roomStatus[client.room]['optionOrder'] 
+		, info_share_cost: info_share_cost
+		});
 	let nowEmitting = new Date(),
 	  	logdateEmitting = '['+nowEmitting.getUTCFullYear()+'/'+(nowEmitting.getUTCMonth()+1)+'/';
 	  	logdateEmitting += nowEmitting.getUTCDate()+'/'+nowEmitting.getUTCHours()+':'+nowEmitting.getUTCMinutes()+':'+nowEmitting.getUTCSeconds()+']';
