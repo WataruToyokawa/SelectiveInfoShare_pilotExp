@@ -1,12 +1,20 @@
-/*===============================================================
-// Multi-argent two-armed bandit task
+// ====================================================================
+// Multi-argent two-armed bandit task with active information sharing
+// 
+// The task proceeds as follows:
+// 1. Choice phase at trial 1 with no social info 
+// 2. Reward feedback (participants can only know their own earning)
+// 3. Choice between "share (with cost)" and "non-share (without cost)"
+// 4. Choice phase at t > 1, the payoff info they chose to share is shown
+// 5. Repeat 2 to 5 until t reaches horizon
+// 
 // Author: Wataru Toyokawa
-// Collaborating with Professor Wolfgang Gaissmaier
+// Collaborating with Dr Helge Giese
 // Requirements:
 //    * Node.js
 //    * node_modules: express, socket.io, fast-csv, php-express
 //    * mongoDB and mongoose
-// ============================================================== */
+// =================================================================== 
 
 // Loading modules
 const csv = require("fast-csv")
@@ -32,13 +40,16 @@ const expFunctions = require('./models/expFunctions');
 const consoleLogInterceptor = require('./models/console-log-interceptor');
 
 // Experimental variables
-const horizon = 70 // 100?
-, sessionNo = 670 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
-, maxGroupSize = 5//8 // maximum 12
-, minGroupSize = 4//4
-, maxWaitingTime = 3*60*1000
+const horizon = 20 // 100?
+, sessionNo = 0 // 0 = debug;
+, maxGroupSize = 4//8 // maximum 12
+, minGroupSize = 2//4
+, maxWaitingTime = 5 * 1000 //3*60*1000
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
+
+, info_share_cost = 30
+
 //, sigmaGlobal = 6 //0.9105
 //, sigmaIndividual = 6 //0.9105 // this gives 50% overlap between two normal distributions whose mean diff. is 1.1666..
 , numOptions = 4 // 2 or 4
@@ -117,6 +128,7 @@ roomStatus['finishedRoom'] = {
     socialFreq: createArray(horizon, numOptions),
     socialInfo: createArray(horizon, maxGroupSize),
     publicInfo: createArray(horizon, maxGroupSize),
+    share_or_not: createArray(horizon, maxGroupSize),
     choiceOrder: createArray(horizon, maxGroupSize),
     saveDataThisRound: [],
     restTime:maxWaitingTime,
@@ -144,7 +156,8 @@ roomStatus[firstRoomName] = {
     doneNo: createArray(horizon),
     socialFreq: createArray(horizon, numOptions),
     socialInfo:createArray(horizon, maxGroupSize),
-    publicInfo:createArray(horizon, maxGroupSize),
+    publicInfo: createArray(horizon, maxGroupSize),
+    share_or_not: createArray(horizon, maxGroupSize),
     choiceOrder:createArray(horizon, maxGroupSize),
     saveDataThisRound: [],
     restTime:maxWaitingTime
@@ -231,7 +244,8 @@ io.on('connection', function (client) {
 				doneNo: createArray(horizon),
 				socialFreq: createArray(horizon, numOptions),
 				socialInfo:createArray(horizon, maxGroupSize),
-				publicInfo:createArray(horizon, maxGroupSize),
+				publicInfo: createArray(horizon, maxGroupSize),
+				share_or_not: createArray(horizon, maxGroupSize),
 				choiceOrder:createArray(horizon, maxGroupSize),
 				saveDataThisRound: [],
 				restTime:maxWaitingTime
@@ -320,7 +334,8 @@ io.on('connection', function (client) {
 				          doneNo: createArray(horizon),
 				          socialFreq: createArray(horizon, numOptions),
 				          socialInfo:createArray(horizon, maxGroupSize),
-				          publicInfo:createArray(horizon, maxGroupSize),
+				          publicInfo: createArray(horizon, maxGroupSize),
+				          share_or_not: createArray(horizon, maxGroupSize),
 				          choiceOrder:createArray(horizon, maxGroupSize),
 				          saveDataThisRound: [],
 				          restTime:maxWaitingTime
@@ -381,7 +396,8 @@ io.on('connection', function (client) {
 					doneNo: createArray(horizon),
 					socialFreq: createArray(horizon, numOptions),
 					socialInfo:createArray(horizon, maxGroupSize),
-					publicInfo:createArray(horizon, maxGroupSize),
+					publicInfo: createArray(horizon, maxGroupSize),
+					share_or_not: createArray(horizon, maxGroupSize),
 					choiceOrder:createArray(horizon, maxGroupSize),
 					saveDataThisRound: [],
 					restTime:1000
@@ -463,7 +479,8 @@ io.on('connection', function (client) {
 				doneNo: createArray(horizon),
 				socialFreq: createArray(horizon, numOptions),
 				socialInfo:createArray(horizon, maxGroupSize),
-				publicInfo:createArray(horizon, maxGroupSize),
+				publicInfo: createArray(horizon, maxGroupSize),
+				share_or_not: createArray(horizon, maxGroupSize),
 				choiceOrder:createArray(horizon, maxGroupSize),
 				saveDataThisRound: [],
 				restTime:maxWaitingTime
@@ -592,6 +609,10 @@ io.on('connection', function (client) {
 				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][3] = 0;
 				}
 				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
+				console.log(roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]);
+				console.log(roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1]);
+				console.log(roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1]);
+				console.log(roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1]);
 				//console.log(roomStatus[client.room]);
 				// if (data.choice === 'sure') {
 				// 	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0]++;
@@ -648,8 +669,11 @@ io.on('connection', function (client) {
 	  	}
 	});
 
-	client.on('result stage ended', function () {
+	client.on('result stage ended', function (data) {
 		if(typeof client.subjectNumber != 'undefined') {
+			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1] = data.share;
+			console.log(roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1]);
+
 			// Depending on the number of subject who has already done this round,
 			// the response to the client changes 
 			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
@@ -658,18 +682,24 @@ io.on('connection', function (client) {
 			}else{
 				roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] = 1;
 			}
+
+			// ========== logging ============
 			let now_endFeedback = new Date()
 	        ,	logdate_endFeedback = '[' + now_endFeedback.getUTCFullYear() + '/' + (now_endFeedback.getUTCMonth() + 1) + '/'
 	    	;
 	    	logdate_endFeedback += now_endFeedback.getUTCDate() + '/' + now_endFeedback.getUTCHours() + ':' + now_endFeedback.getUTCMinutes() + ':' + now_endFeedback.getUTCSeconds() + ']';
 	    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
 			console.log(logdate_endFeedback);
+			// ========== logging ============
+
 			if (roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] >= roomStatus[client.room]['n']) {
+				// ========== logging ============
 				let now_endResultStage = new Date()
 		        ,	logdate_endResultStage = '[' + now_endResultStage.getUTCFullYear() + '/' + (now_endResultStage.getUTCMonth() + 1) + '/'
 		    	;
 	    		logdate_endResultStage += now_endResultStage.getUTCDate() + '/' + now_endResultStage.getUTCHours() + ':' + now_endResultStage.getUTCMinutes() + ':' + now_endResultStage.getUTCSeconds() + ']';
 			  	console.log(logdate_endResultStage + ` - result stage ended at: ${client.room}`);
+			  	// ========== logging ============
 
 			  	// =========  save data to mongodb by loop
 			  	if(roomStatus[client.room]['indivOrGroup'] > -1) { //if(roomStatus[client.room]['indivOrGroup'] != 0) {

@@ -129,7 +129,9 @@ let isEnvironmentReady = false
 ,	myPublicInfo
 ,	myLastChoice
 ,	myLastChoiceFlag
-,	share_or_not
+,	share_or_not = []
+// ,	payoff_info = []
+// ,	shared_position = []
 ;
 
 const myData = [];
@@ -1598,6 +1600,8 @@ window.onload = function() {
 
 		create(){
 
+			// console.log('restarting the main scene!: mySocialInfo = '+data.socialFreq[data.round-1]);
+
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF');
 			//console.log('SceneMain started. currentTrial: ' + currentTrial);
@@ -1766,25 +1770,43 @@ window.onload = function() {
 		    		}
 		    	}
 		    }
-		    // At the first trial there is no social info visible
-		    if(currentTrial==1) {
+		    // No social info visible 
+		    // (change inside of the if() when you want to show "?? people" info)
+		    if(currentTrial > 0) { //-> if(currentTrial==1) {
 		    	for (let i = 1; i < numOptions+1; i++) {
 		    		socialFreqNumbers['option'+i].visible = false;
 		    	}
 		    }
 		    //  Stars that are evenly spaced 70 pixels apart along the x axis
 		    let numberOfPreviousChoice = [];
+		    let shared_payoff = [];
+		    let shared_option_position = [];
+		    for (let i = 0; i < maxGroupSize; i++) {
+		    	if (share_or_not[i] != null) {
+		    		if (share_or_not[i].share == 1) {
+		    			shared_payoff.push(share_or_not[i].payoff);
+		    			// shared_option_position.push( optionOrder.indexOf(optionsKeyList.indexOf(mySocialInfo[i])) ) 
+		    			shared_option_position.push(share_or_not[i].position);
+		    		}
+		    	}
+		    }
 		    for (let i = 1; i < numOptions+1; i++) {
 		    	numberOfPreviousChoice[i-1] = mySocialInfoList['option'+i]
 		    }
-		    // console.log(mySocialInfoList);
-		    // console.log('numberOfPreviousChoice = '+numberOfPreviousChoice);
-		    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], slotY_main-90);
+		    
+		    // --- Social frequency information (used in Toyokawa & Gaissmaier 2020)
+		    // Turn this on when you want to show the frequency-information
+		    // and turn off the 'publicInfo.call' in this case 
+		    // 
+		    // showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], slotY_main-90);
+		    // 
+		    // --------------------------------------------------------------------
+
+		    showPublicInfo.call(this, shared_payoff, shared_option_position, slotY_main-90);
 		    
 		}
+
 		update(){
-			//trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
-			//scoreText.setText('Total score: ' + score);
 		}
 	};
 
@@ -1823,8 +1845,8 @@ window.onload = function() {
 			// YES button
 			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
 			let buttonContainer_yes = this.add.container(150, 200); //position
-			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(250, 100).setInteractive({ cursor: 'pointer' });
-			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: ' + info_share_cost + ' points)', button_style);
+			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: -' + info_share_cost + ' points)', button_style);
 			buttonText_yes.setOrigin(0.5, 0.5);
 			buttonContainer_yes.add(buttonImage_yes);
 			buttonContainer_yes.add(buttonText_yes);
@@ -1832,7 +1854,7 @@ window.onload = function() {
 
 			// NO button
 			let buttonContainer_no = this.add.container(600, 200); //position
-			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(250, 100).setInteractive({ cursor: 'pointer' });
+			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
 			let buttonText_no = this.add.text(0, 0, 'NO\n(No cost)', button_style);
 			buttonText_no.setOrigin(0.5, 0.5);
 			buttonContainer_no.add(buttonImage_no);
@@ -1857,7 +1879,7 @@ window.onload = function() {
 		    	currentChoiceFlag = 0;
 		    	didShare = 1;
 		    	waitOthersText.setText('Please wait for others...');
-		    	socket.emit('result stage ended', {share: didShare});
+		    	socket.emit('result stage ended', {share: didShare, payoff: payoff, num_choice: this.flag});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
 		    }, this);
@@ -1866,7 +1888,7 @@ window.onload = function() {
 		    	currentChoiceFlag = 0;
 		    	didShare = 0;
 		    	waitOthersText.setText('Please wait for others...');
-		    	socket.emit('result stage ended', {share: didShare});
+		    	socket.emit('result stage ended', {share: didShare, payoff: payoff, num_choice: this.flag});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
 		    }, this);
@@ -1919,16 +1941,17 @@ window.onload = function() {
 				}.bind(this),  1 * 1000); 
 			} else {
 				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
+				setTimeout(function(){
+			    	//payoffText.destroy();
+			    	//game.scene.sleep('ScenePayoffFeedback');
+			    	//game.scene.start('SceneMain');
+			    	//console.log('emitting result stage ended!');
+			    	currentChoiceFlag = 0;
+			    	socket.emit('result stage ended', {share: 0, payoff: payoff, num_choice: this.flag});
+			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
 			}
 
-		    // setTimeout(function(){
-		    // 	//payoffText.destroy();
-		    // 	//game.scene.sleep('ScenePayoffFeedback');
-		    // 	//game.scene.start('SceneMain');
-		    // 	//console.log('emitting result stage ended!');
-		    // 	currentChoiceFlag = 0;
-		    // 	socket.emit('result stage ended');
-		    // }, feedbackTime * 1000); //2.5 * 1000 ms was the original
+		    
 		}
 		update(){}
 	};
@@ -2147,243 +2170,18 @@ window.onload = function() {
         }
     };
 
-    /*function setSlotPosition (isLeftRisky) {
-    	if (isLeftRisky) {
-    		leftSlotPositionX = 600;
-    		rightSlotPositionX = 200;
-    		missPositionX = (leftSlotPositionX+rightSlotPositionX)/2;
-    	} else {
-    		leftSlotPositionX = 200;
-    		rightSlotPositionX = 600;
-    		missPositionX = (leftSlotPositionX+rightSlotPositionX)/2;
-    	}
-    	//console.log('isLeftRisky = '+isLeftRisky+' so the rightSlotPositionX = '+rightSlotPositionX);
-    }*/
+    function repeatelem (elem, n) {
+	    // returns an array with element elem repeated n times.
+	    let arr = [];
 
-    // function showStars (num_sure, num_risky, socialInfoY, isLeftRisky) {
-    // 	////console.log('showStars was executed on' + this);
-    // 	//if (tutorialTrial != 1 | tutorialTrial != 4) {
-	   //  //if (num_sure>0) {
-    // 	let mod_num_sure = num_sure % 5;
-    // 	let quotient_num_sure = Math.floor(num_sure / 5);
-    // 	let leftSlotPositionX_new = leftSlotPositionX-15 + 10*quotient_num_sure
-    // 	let mod_num_risky = num_risky % 5;
-    // 	let quotient_num_risky = Math.floor(num_risky / 5);
-    // 	let rightSlotPositionX_new = rightSlotPositionX-15 + 10*quotient_num_risky
+	    for (let i = 0; i < n; i++) {
+	        arr = arr.concat(elem);
+	    };
+	    return arr;
+	};
 
-    // 	if (!isLeftRisky) {
-	   //  	// First, draw 5 stars
-	   //  	if (quotient_num_sure > 0) {
-	   //  		for (let q=0; q<quotient_num_sure; q++) {
-		  //   		stars_sure[q] = this.add.group({
-				//         key: 'star',
-				//         // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				//         // which is just what we need for our game:
-				//         repeat: 5-1, 
-				//         setXY: { x: leftSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				//     });
-		  //   	}
-	   //  	}
-	   //  	// Then, draw the remaining stars
-	   //  	if (mod_num_sure > 0) {
-	   //  		stars_sure[quotient_num_sure] = this.add.group({
-			 //        key: 'star',
-			 //        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			 //        // which is just what we need for our game:
-			 //        repeat: mod_num_sure-1, 
-			 //        setXY: { x: leftSlotPositionX_new - 20*quotient_num_sure, y: socialInfoY+20, stepY: 15 }
-			 //    });
-	   //  	}
-			
-	   //  	// First, draw 5 stars
-	   //  	if (quotient_num_risky > 0) {
-	   //  		for (let q=0; q<quotient_num_risky; q++) {
-		  //   		stars_risky[q] = this.add.group({
-				//         key: 'star',
-				//         // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				//         // which is just what we need for our game:
-				//         repeat: 5-1, 
-				//         setXY: { x: rightSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				//     });
-		  //   	}
-	   //  	}
-	   //  	// Then, draw the remaining stars
-	   //  	if (mod_num_risky > 0) {
-	   //  		stars_risky[quotient_num_risky] = this.add.group({
-			 //        key: 'star',
-			 //        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			 //        // which is just what we need for our game:
-			 //        repeat: mod_num_risky-1, 
-			 //        setXY: { x: rightSlotPositionX_new - 20*quotient_num_risky, y: socialInfoY+20, stepY: 15 }
-			 //    });
-	   //  	}
-	   //  } else {
-	   //  	// First, draw 5 stars
-	   //  	if (quotient_num_sure > 0) {
-	   //  		for (let q=0; q<quotient_num_sure; q++) {
-		  //   		stars_sure[q] = this.add.group({
-				//         key: 'star',
-				//         // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				//         // which is just what we need for our game:
-				//         repeat: 5-1, 
-				//         setXY: { x: rightSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				//     });
-		  //   	}
-	   //  	}
-	   //  	// Then, draw the remaining stars
-	   //  	if (mod_num_sure > 0) {
-	   //  		stars_sure[quotient_num_sure] = this.add.group({
-			 //        key: 'star',
-			 //        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			 //        // which is just what we need for our game:
-			 //        repeat: mod_num_sure-1, 
-			 //        setXY: { x: rightSlotPositionX_new - 20*quotient_num_sure, y: socialInfoY+20, stepY: 15 }
-			 //    });
-	   //  	}
-			
-	   //  	// First, draw 5 stars
-	   //  	if (quotient_num_risky > 0) {
-	   //  		for (let q=0; q<quotient_num_risky; q++) {
-		  //   		stars_risky[q] = this.add.group({
-				//         key: 'star',
-				//         // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				//         // which is just what we need for our game:
-				//         repeat: 5-1, 
-				//         setXY: { x: leftSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				//     });
-		  //   	}
-	   //  	}
-	   //  	// Then, draw the remaining stars
-	   //  	if (mod_num_risky > 0) {
-	   //  		stars_risky[quotient_num_risky] = this.add.group({
-			 //        key: 'star',
-			 //        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			 //        // which is just what we need for our game:
-			 //        repeat: mod_num_risky-1, 
-			 //        setXY: { x: leftSlotPositionX_new - 20*quotient_num_risky, y: socialInfoY+20, stepY: 15 }
-			 //    });
-	   //  	}
-	   //  }
-    // }   
-
-    function showStars_4ab_old (num_option1, num_option2, num_option3, num_option4, socialInfoY) {
-
-    	// console.log('showStars_4ab is called with num_option1 == '+num_option1);
-
-    	let mod_num_option1 = num_option1 % 5
-    	,	mod_num_option2 = num_option2 % 5
-    	,	mod_num_option3 = num_option3 % 5
-    	,	mod_num_option4 = num_option4 % 5
-    	,	quotient_num_option1 = Math.floor(num_option1 / 5)
-    	,	quotient_num_option2 = Math.floor(num_option2 / 5)
-    	,	quotient_num_option3 = Math.floor(num_option3 / 5)
-    	,	quotient_num_option4 = Math.floor(num_option4 / 5)
-    	,	option1_positionX_new = (option1_positionX + space_between_boxes*0)-15 + 10*quotient_num_option1
-    	,	option2_positionX_new = (option1_positionX + space_between_boxes*1)-15 + 10*quotient_num_option2
-    	,	option3_positionX_new = (option1_positionX + space_between_boxes*2)-15 + 10*quotient_num_option3
-    	,	option4_positionX_new = (option1_positionX + space_between_boxes*3)-15 + 10*quotient_num_option4
-    	;
-
-    	// option1
-    	// First, draw 5 stars
-    	if (quotient_num_option1 > 0) {
-    		for (let q=0; q<quotient_num_option1; q++) {
-	    		stars_option1[q] = this.add.group({
-			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			        // which is just what we need for our game:
-			        repeat: 5-1, 
-			        setXY: { x: option1_positionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-			    });
-	    	}
-    	}
-    	// Then, draw the remaining stars
-    	if (mod_num_option1 > 0) {
-    		stars_sure[quotient_num_option1] = this.add.group({
-		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-		        // which is just what we need for our game:
-		        repeat: mod_num_option1-1, 
-		        setXY: { x: option1_positionX_new - 20*quotient_num_option1, y: socialInfoY+20, stepY: 15 }
-		    });
-    	}
-
-    	// option2
-    	// First, draw 5 stars
-    	if (quotient_num_option2 > 0) {
-    		for (let q=0; q<quotient_num_option2; q++) {
-	    		stars_option2[q] = this.add.group({
-			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			        // which is just what we need for our game:
-			        repeat: 5-1, 
-			        setXY: { x: option2_positionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-			    });
-	    	}
-    	}
-    	// Then, draw the remaining stars
-    	if (mod_num_option2 > 0) {
-    		stars_sure[quotient_num_option2] = this.add.group({
-		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-		        // which is just what we need for our game:
-		        repeat: mod_num_option2-1, 
-		        setXY: { x: option2_positionX_new - 20*quotient_num_option2, y: socialInfoY+20, stepY: 15 }
-		    });
-    	}
-
-    	// option3
-    	// First, draw 5 stars
-    	if (quotient_num_option3 > 0) {
-    		for (let q=0; q<quotient_num_option3; q++) {
-	    		stars_option3[q] = this.add.group({
-			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			        // which is just what we need for our game:
-			        repeat: 5-1, 
-			        setXY: { x: option3_positionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-			    });
-	    	}
-    	}
-    	// Then, draw the remaining stars
-    	if (mod_num_option3 > 0) {
-    		stars_sure[quotient_num_option3] = this.add.group({
-		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-		        // which is just what we need for our game:
-		        repeat: mod_num_option3-1, 
-		        setXY: { x: option3_positionX_new - 20*quotient_num_option3, y: socialInfoY+20, stepY: 15 }
-		    });
-    	}
-
-    	// option4
-    	// First, draw 5 stars
-    	if (quotient_num_option4 > 0) {
-    		for (let q=0; q<quotient_num_option4; q++) {
-	    		stars_option4[q] = this.add.group({
-			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			        // which is just what we need for our game:
-			        repeat: 5-1, 
-			        setXY: { x: option4_positionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-			    });
-	    	}
-    	}
-    	// Then, draw the remaining stars
-    	if (mod_num_option4 > 0) {
-    		stars_sure[quotient_num_option4] = this.add.group({
-		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-		        // which is just what we need for our game:
-		        repeat: mod_num_option4-1, 
-		        setXY: { x: option4_positionX_new - 20*quotient_num_option4, y: socialInfoY+20, stepY: 15 }
-		    });
-    	}
-    } 
 
     function showStars_4ab (num_option1, num_option2, num_option3, num_option4, socialInfoY) {
-
-    	// console.log('showStars_4ab is called with num_option1 == '+num_option1);
 
     	let mod_num_option1 = num_option1 % 5
     	,	mod_num_option2 = num_option2 % 5
@@ -2496,6 +2294,33 @@ window.onload = function() {
     	}
     } 
 
+    function showPublicInfo (shared_payoff, shared_option_position, socialInfoY) {
+    	// console.log('shared_payoff = ' + shared_payoff);
+    	// console.log('shared_option_position = ' + shared_option_position);
+
+    	let public_info_text = []
+    	,	public_info_text_position = []
+    	,	public_info_count = repeatelem(0, numOptions)
+    	;
+
+		for (let i=0; i < numOptions; i++) {
+    		public_info_text_position[i] = (option1_positionX + space_between_boxes * i)-15;
+    	}
+
+    	for (let i=0; i < shared_payoff.length; i++) {
+    		// Adding payoff texts
+		    public_info_text[i] = this.add.text(
+		    	public_info_text_position[shared_option_position[i]-1]
+		    	, socialInfoY - 25 * public_info_count[shared_option_position[i]-1]  
+		    	, shared_payoff[i]
+		    	, { fontSize: '30px', fill: noteColor }
+		    	).setOrigin(0.5, 0.5);
+		    // Updating how many times the same X position has been counted already
+		    public_info_count[shared_option_position[i]-1]++;
+    	}
+
+    }
+
     // madeChoice
     function madeChoice (flag, distribution, isLeftRisky) {  
         let thisChoice;
@@ -2580,8 +2405,8 @@ window.onload = function() {
 			// console.log('optionOrder ==' + optionOrder + ' and flag == '+ flag);
 			// console.log('thisChoice == '+ thisChoice);
 			// console.log('randomChoiceFromFour with optionsKeyList == '+optionsKeyList[thisChoice-1]);
-			// payoff = randomChoiceFromFour(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
-			payoff = randomChoiceFromFour_decreasing(currentTrial, flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+			payoff = randomChoiceFromFour(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+			// payoff = randomChoiceFromFour_decreasing(currentTrial, flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
 		} else {
 			payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
 		}
@@ -3071,7 +2896,7 @@ window.onload = function() {
         optionOrder = data.optionOrder;
         instructionText_indiv[1] = instructionText_indiv[1] + numOptions + ' slot machines.';
         instructionText_group[1] = instructionText_group[1] + numOptions + ' slot machines.';
-        // console.log('this is your optionOrder: ' + optionOrder);
+        console.log('this is your optionOrder: ' + optionOrder);
         //setSlotPosition(data.isLeftRisky);
         if (data.numOptions == 2) {
         	settingRiskDistribution(data.riskDistributionId);
@@ -3177,10 +3002,23 @@ window.onload = function() {
         myPublicInfo = data.publicInfo[data.round-2];
         choiceOrder = data.choiceOrder[data.round-2];
         share_or_not = data.share_or_not[data.round-2];
+        // payoff_info = data.share_or_not[data.round-2]['payoff'];
+        // shared_position = data.share_or_not[data.round-2]['position'];
+        // console.log('mySocialInfo: ' + mySocialInfo);
+        // console.log('myPublicInfo: ' + myPublicInfo);
+        // console.log('choiceOrder: ' + choiceOrder);
+        // console.log('share_or_not: ' + share_or_not + ' with ' + payoff_info + ' at ' + shared_position);
+        for (let i = 0; i < maxGroupSize; i++) {
+        	if(share_or_not[i] != null) {
+        		console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
+        	}
+        }
+        // console.log('share_or_not: ' + share_or_not);
         if (indivOrGroup == 1) {
         	for (let i = 1; i < numOptions+1; i++) {
         		mySocialInfoList['option'+i] = data.socialFreq[data.round-1][optionOrder[i-1] - 1];
         	}
+        	console.log('data.socialFreq[data.round-1] = ' + data.socialFreq[data.round-1]);
         } else {
         	for (let i = 1; i < numOptions+1; i++) {
         		if (myLastChoiceFlag == i) { // myLastChoice
