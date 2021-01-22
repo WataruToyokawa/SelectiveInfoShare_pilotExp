@@ -1741,11 +1741,24 @@ window.onload = function() {
 	        }
 
 		    //  Texts
-		    trialText = this.add.text(16, trialText_Y, 'Current trial: ' + currentTrial + ' / ' + horizon, { fontSize: '30px', fill: '#000' });
-		    //scoreText = this.add.text(16, scoreText_Y, 'Total score: 0', { fontSize: '30px', fill: '#000' });
-		    scoreText = this.add.text(16, scoreText_Y, 'Total score: ' + score, { fontSize: '30px', fill: '#000' });
-		    timeText = this.add.text(16, energyBar_Y, 'Remaining time: ', { fontSize: '30px', fill: '#000' });
-		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100, `You got \n${payoff}`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5, 0.5);
+		    trialText = this.add.text(16, trialText_Y
+		    	, 'Current trial: ' + currentTrial + ' / ' + horizon
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    //scoreText = this.add.text(16, scoreText_Y, 'Total score: 0', { fontSize: '30px', fill: nomalTextColor });
+		    scoreText = this.add.text(16, scoreText_Y
+		    	, 'Total score: ' + score
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    timeText = this.add.text(16, energyBar_Y
+		    	, 'Remaining time: '
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100
+			    	, ``
+			    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
+		    if (didShare != 1) {
+			    payoffText.setText(`You earned \n${payoff}`);
+		    } else {
+		    	payoffText.setText(`You earned \n${payoff} - ${info_share_cost}`);
+		    }
 		    if(currentTrial === 1) {
 		    	payoffText.visible = false;
 		    } else {
@@ -1878,6 +1891,7 @@ window.onload = function() {
 		    buttonImage_yes.on('pointerdown', function (pointer) {
 		    	currentChoiceFlag = 0;
 		    	didShare = 1;
+		    	score -= info_share_cost; // <- The cost of sharing information
 		    	waitOthersText.setText('Please wait for others...');
 		    	socket.emit('result stage ended', {share: didShare, payoff: payoff, num_choice: this.flag});
 		    	buttonContainer_yes.visible = false;

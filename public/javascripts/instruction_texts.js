@@ -131,4 +131,4 @@ const goToQuestionnaireText =
 	, 'Flat fee for completion of the task: $'
 	];
 
-const testText = ['this is a test'];]
+const testText = ['this is a test'];
