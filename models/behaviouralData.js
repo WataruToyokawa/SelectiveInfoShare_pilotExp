@@ -20,10 +20,11 @@ const Behaviour = new Schema({
     amazonID : { type: String, require: false },
     round: { type: String, require: false },
     choice: { type: String, require: false },
+    num_choice: { type: String, require: false },
     payoff: { type: String, require: false },
+    didShare: { type: String, require: false },
+    info_share_cost: { type: String, require: false },
     totalEarning: { type: String, require: false },
-    // socialFreq_safe: { type: String, require: false },
-    // socialFreq_risky: { type: String, require: false },
     socialFreq_safe1: { type: String, require: false },
     socialFreq_safe2: { type: String, require: false },
     socialFreq_safe3: { type: String, require: false },
@@ -56,16 +57,8 @@ const Behaviour = new Schema({
     publicInfo_10: { type: String, require: false },
     publicInfo_11: { type: String, require: false }
 },
-    //{collection:"pilot_debug"}
+    {collection:"helge_pilot_debug"}
     //{collection:"pilot_experiment"}
-    {collection:"postPilot_debug"}
-    //{collection:"postPilot_debug_indiv"}
-    //{collection:"experimental_sessions"}
-    //{collection:"experimental_sessions_indiv"}
-    //{collection:"debug_collection"}
-    //{collection:"experimental_sessions_2"}
-    //{collection:"pilot_4ab"}
-    //{collection:"experiment_4ab"}
 );
 
 module.exports = mongoose.model('behaviour', Behaviour);
