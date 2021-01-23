@@ -135,6 +135,8 @@ roomStatus['finishedRoom'] = {
     choiceOrder: createArray(horizon, maxGroupSize),
     saveDataThisRound: [],
     restTime:maxWaitingTime,
+    groupTotalPayoff: [0],
+    totalPayoff_perIndiv: [0]
 };
 // The following is the first room
 // Therefore, Object.keys(roomStatus).length = 2 right now
@@ -163,7 +165,9 @@ roomStatus[firstRoomName] = {
     share_or_not: createArray(horizon, maxGroupSize),
     choiceOrder:createArray(horizon, maxGroupSize),
     saveDataThisRound: [],
-    restTime:maxWaitingTime
+    restTime:maxWaitingTime,
+    groupTotalPayoff: [0],
+    totalPayoff_perIndiv: [0]
 };
 
 /**
@@ -251,7 +255,9 @@ io.on('connection', function (client) {
 				share_or_not: createArray(horizon, maxGroupSize),
 				choiceOrder:createArray(horizon, maxGroupSize),
 				saveDataThisRound: [],
-				restTime:maxWaitingTime
+				restTime:maxWaitingTime,
+				groupTotalPayoff: [0],
+				totalPayoff_perIndiv: [0]
 			};
 			roomStatus[client.room]['n']++;
 			roomStatus[client.room]['total_n']++;
@@ -341,7 +347,9 @@ io.on('connection', function (client) {
 				          share_or_not: createArray(horizon, maxGroupSize),
 				          choiceOrder:createArray(horizon, maxGroupSize),
 				          saveDataThisRound: [],
-				          restTime:maxWaitingTime
+				          restTime:maxWaitingTime,
+				          groupTotalPayoff: [0],
+				          totalPayoff_perIndiv: [0]
 				      };
 				      // Register the client to the new room
 				      client.room = client.newRoomName;
@@ -486,7 +494,9 @@ io.on('connection', function (client) {
 				share_or_not: createArray(horizon, maxGroupSize),
 				choiceOrder:createArray(horizon, maxGroupSize),
 				saveDataThisRound: [],
-				restTime:maxWaitingTime
+				restTime:maxWaitingTime,
+				groupTotalPayoff: [0],
+				totalPayoff_perIndiv: [0]
 			};
 			// client leave the former room
 			client.leave(client.room);
@@ -604,6 +614,10 @@ io.on('connection', function (client) {
 			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.choice;
 			roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.payoff;
 			roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1][doneNum-1] = client.subjectNumber;
+
+			// summing up all the payoff earned by the members of this room
+			// roomStatus[client.room]['groupTotalPayoff'] += data.payoff;
+
 			if( roomStatus[client.room]['round'] < horizon ) {
 				if (doneNum <= 1) {
 					// summarise social information
@@ -614,11 +628,11 @@ io.on('connection', function (client) {
 				// roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
 				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.num_choice]++;
 
-				console.log('doneId '+roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]);
-				console.log('socialInfo '+roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1]);
-				console.log('publicInfo '+roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1]);
-				console.log('choiceOrder '+roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1]);
-				console.log('socialFreq '+roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']]);
+				// console.log('doneId '+roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]);
+				// console.log('socialInfo '+roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1]);
+				// console.log('publicInfo '+roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1]);
+				// console.log('choiceOrder '+roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1]);
+				// console.log('socialFreq '+roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']]);
 
 				//console.log(roomStatus[client.room]);
 				// if (data.choice === 'sure') {
@@ -684,11 +698,20 @@ io.on('connection', function (client) {
     	, timeElapsed = now - firstTrialStartingTime
     	;
     	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
-    	console.log(logdate + ' - Did client ' + client.subjectNumber + ' in ' + client.room + ' share the payoff info' + data.payoff + ' at trial ' + data.thisTrial + '? -> ' + data.share + ' (0:NO / 1:YES)');
+    	console.log(logdate + ' - Did client ' + client.subjectNumber + ' in ' + client.room + ' share the payoff info ' + data.payoff + ' at trial ' + data.thisTrial + '? -> ' + data.share + ' (0:NO / 1:YES)');
 
 		if(typeof client.subjectNumber != 'undefined') {
 
 			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1] = {share: data.share, payoff: data.payoff, position: data.num_choice};
+
+			// summing up all the payoff earned by the members of this room
+			if(typeof roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['round']-1] != 'undefined') {
+				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['round']-1] += data.totalEarning;
+			} else {
+				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['round']-1] = data.totalEarning;
+			}
+
+			console.log('groupTotalPayoff = ' + roomStatus[client.room]['groupTotalPayoff']);
 
 			// recording the decision-making on sharing payoff information
 			// =========  save data to mongodb
@@ -934,6 +957,10 @@ function rand(max, min = 0) {
 }
 
 function proceedRound (room) {
+
+	roomStatus[room]['totalPayoff_perIndiv'][roomStatus[room]['round']-1] = 
+		Math.round( roomStatus[room]['groupTotalPayoff'][roomStatus[room]['round']-1] / roomStatus[room]['n'] );
+
 	roomStatus[room]['round']++;
 	if(roomStatus[room]['round'] <= horizon) {
 		io.to(room).emit('Proceed to next round', roomStatus[room]);

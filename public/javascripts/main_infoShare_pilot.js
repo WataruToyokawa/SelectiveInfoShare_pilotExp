@@ -26,7 +26,8 @@ const portnumQuestionnaire = 8000;
 const exceptions = ['INHOUSETEST3', 'wataruDebug', 'wataruDebug'];
 
 let numOptions
-,	info_share_cost
+,	info_share_cost = 0
+,	info_share_cost_total = 0
 ;
 
 
@@ -238,6 +239,10 @@ window.onload = function() {
 	, platforms
 	, cursors
 	, score = 0
+
+	, groupTotalScore = 0
+	, totalPayoff_perIndiv = 0
+
 	, gameOver = false
 	, choiceFlag
 	, waitingBox
@@ -249,10 +254,15 @@ window.onload = function() {
 	, countdownText
 	, bonusText
 	, restTime
+
 	, trialText
 	, scoreText
 	, timeText
 	, payoffText
+	, groupTotalScoreText
+	, costPaidText
+	, costPaidText_2
+
 	, waitOthersText
 	, objects_feedbackStage
 	, feedbackTextPosition
@@ -1613,10 +1623,18 @@ window.onload = function() {
 		    let options = {};
 		    let isChoiceMade = false;
 		    let slotY_main = 400;
+
 		    let trialText_Y = 16
-		    ,	scoreText_Y = 66
-		    ,	energyBar_Y = 116
+		    ,	groupTotalScoreText_Y = 16 + 50 * 1
+		    ,	costPaidText_Y = 16 + 50 * 2
+		    ,	scoreText_Y = 16 + 50 * 3
+		    ,	energyBar_Y = 16 + 50 * 4
 		    ;
+
+		    // let trialText_Y = 16
+		    // ,	scoreText_Y = 66
+		    // ,	energyBar_Y = 116
+		    // ;
 
 			// Creating options
 		    for (let i=1; i<numOptions+1; i++) {
@@ -1743,13 +1761,25 @@ window.onload = function() {
 			    }, this);
 	        }
 
-		    //  Texts
+		    // ------------ Texts appear above the slots
 		    trialText = this.add.text(16, trialText_Y
 		    	, 'Current trial: ' + currentTrial + ' / ' + horizon
 		    	, { fontSize: '30px', fill: nomalTextColor });
-		    //scoreText = this.add.text(16, scoreText_Y, 'Total score: 0', { fontSize: '30px', fill: nomalTextColor });
+		    
+		    groupTotalScoreText = this.add.text(16, groupTotalScoreText_Y
+		    	, 'Team\'s total score: ' + groupTotalScore + ' (your share: ' + totalPayoff_perIndiv + ')'
+		    	, { fontSize: '30px', fill: nomalTextColor });
+
+		    costPaidText = this.add.text(16, costPaidText_Y
+		    	, 'Sharing fee you paid: '
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    costPaidText_2 = this.add.text(16 + 400, costPaidText_Y
+		    	, '-' + info_share_cost_total
+		    	, { fontSize: '30px', fill: noteColor });
+
 		    scoreText = this.add.text(16, scoreText_Y
-		    	, 'Total score: ' + score
+		    	// , 'Total score: ' + score
+		    	, 'Your net score: ' + (totalPayoff_perIndiv - info_share_cost_total)
 		    	, { fontSize: '30px', fill: nomalTextColor });
 		    timeText = this.add.text(16, energyBar_Y
 		    	, 'Remaining time: '
@@ -1757,16 +1787,22 @@ window.onload = function() {
 		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100
 			    	, ``
 			    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
-		    if (didShare != 1) {
-			    payoffText.setText(`You earned \n${payoff}`);
-		    } else {
-		    	payoffText.setText(`You earned \n${payoff} - ${info_share_cost}`);
-		    }
+
+		    payoffText.setText(`You dug out \n${payoff}`);
+		    // The following 'You earned $??' might be misleading as this is a group-optimization task
+		    // if (didShare != 1) {
+			   //  payoffText.setText(`You earned \n${payoff}`);
+		    // } else {
+		    // 	payoffText.setText(`You earned \n${payoff} - ${info_share_cost}`);
+		    // }
+		    // ==============================================================================
+
 		    if(currentTrial === 1) {
 		    	payoffText.visible = false;
 		    } else {
 		    	payoffText.visible = true;
 		    }
+		    // --------------------------------------------
 
 		    // social information
 		    let socialFreqNumbers = {};
@@ -1895,13 +1931,15 @@ window.onload = function() {
 		    	currentChoiceFlag = 0;
 		    	didShare = 1;
 		    	score -= info_share_cost; // <- The cost of sharing information
+		    	info_share_cost_total += info_share_cost;
 		    	waitOthersText.setText('Please wait for others...');
 		    	socket.emit('result stage ended'
 		    			, {share: didShare
 		    			, payoff: payoff
 		    			, num_choice: this.flag
 		    			, info_share_cost: info_share_cost
-		    			, totalEarning: (totalEarning - didShare * info_share_cost)
+		    			, totalEarning: (payoff - didShare * info_share_cost)
+		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
@@ -1916,7 +1954,8 @@ window.onload = function() {
 		    			, payoff: payoff
 		    			, num_choice: this.flag
 		    			, info_share_cost: info_share_cost
-		    			, totalEarning: (totalEarning - didShare * info_share_cost)
+		    			, totalEarning: (payoff - didShare * info_share_cost)
+		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
@@ -1981,7 +2020,8 @@ window.onload = function() {
 		    			, payoff: payoff
 		    			, num_choice: this.flag
 		    			, info_share_cost: info_share_cost
-		    			, totalEarning: (totalEarning - 0 * info_share_cost)
+		    			, totalEarning: (payoff - 0 * info_share_cost)
+		    			, thisTrial: currentTrial
 		    		});
 			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
 			}
@@ -2989,12 +3029,14 @@ window.onload = function() {
         myPublicInfo = data.publicInfo[data.round-2];
         choiceOrder = data.choiceOrder[data.round-2];
         share_or_not = data.share_or_not[data.round-2];
+        groupTotalScore = sum( data.groupTotalPayoff );
+        totalPayoff_perIndiv = sum( data.totalPayoff_perIndiv );
         // payoff_info = data.share_or_not[data.round-2]['payoff'];
         // shared_position = data.share_or_not[data.round-2]['position'];
         // console.log('mySocialInfo: ' + mySocialInfo);
         // console.log('myPublicInfo: ' + myPublicInfo);
         // console.log('choiceOrder: ' + choiceOrder);
-        // console.log('share_or_not: ' + share_or_not + ' with ' + payoff_info + ' at ' + shared_position);
+        // console.log('totalPayoff_perIndiv: ' + totalPayoff_perIndiv + ' with group total = ' + groupTotalScore);
         for (let i = 0; i < maxGroupSize; i++) {
         	if(share_or_not[i] != null) {
         		console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
