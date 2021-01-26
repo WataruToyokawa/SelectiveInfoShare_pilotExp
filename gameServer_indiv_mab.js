@@ -1,7 +1,13 @@
 /*===============================================================
 // Multi-argent two-armed bandit task
 // Author: Wataru Toyokawa
+// Date: 3 November 2020
 // Collaborating with Professor Wolfgang Gaissmaier
+//
+// Updated features from gameServer_4ab.js
+// 	  * Saving the behavioural file only when the task is completed 
+          (or when the final remaining subject left the room)
+      * It can handle either 2- or 4-armed bandit
 // Requirements:
 //    * Node.js
 //    * node_modules: express, socket.io, fast-csv, php-express
@@ -32,21 +38,24 @@ const expFunctions = require('./models/expFunctions');
 const consoleLogInterceptor = require('./models/console-log-interceptor');
 
 // Experimental variables
-const horizon = 70 // 100?
-, sessionNo = 5671 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
-, maxGroupSize = 1//7 // maximum 12
-, minGroupSize = 2//3
-, maxWaitingTime = 10*1000//3*60*1000
+const horizon = 100 // 100?
+, sessionNo = 0 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
+, maxGroupSize = 1//8 // maximum 12
+, minGroupSize = 2//4
+, maxWaitingTime = 10*1000
+, numOptions = 4 // 2 or 4
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
 //, sigmaGlobal = 6 //0.9105
 //, sigmaIndividual = 6 //0.9105 // this gives 50% overlap between two normal distributions whose mean diff. is 1.1666..
-, numOptions = 4 // 2 or 4
 , exp_condition_list = ['binary_4ab', 'gaussian']
 , prob_binary = 1.0//0.8
 , isLeftRisky_list = [true, false]
-, options = [1,2,3,4];
+, options = [];
 ;
+for (let i = 1; i <= numOptions; i++) {
+   options.push(i);
+}
 
 // date and time
 let myD = new Date()
@@ -63,7 +72,7 @@ if(myMin<10){myMin = '0'+myMin;}
 
 // experimental server
 const currentSubject = 0
-, firstRoomName = makeid(5)+'_session_'+sessionNo
+, firstRoomName = makeid(7) + '_session_' + sessionNo
 ,	roomStatus = {}
 , sessionNameSpace = {}
 , idAssignedThisSession = []
@@ -97,7 +106,7 @@ app.use((err, req, res, next) => {
 
 roomStatus['finishedRoom'] = {
     exp_condition: 'finishedRoom',
-    riskDistributionId: getRandomIntInclusive(max = 12, min = 11), // max = 2, min = 0
+    riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
     isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
     optionOrder: shuffle(options),
     indivOrGroup: -1,
@@ -125,7 +134,7 @@ roomStatus['finishedRoom'] = {
 // A new room will be open once this room becomes full
 roomStatus[firstRoomName] = {
     exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
-    riskDistributionId: getRandomIntInclusive(max = 12, min = 11), // max = 2, min = 0
+    riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
     isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
     optionOrder: shuffle(options),
     indivOrGroup: -1,
@@ -169,6 +178,9 @@ io.on('connection', function (client) {
 	// client's unique identifier 
 	client.amazonID = client.request._query.amazonID;
 	client.started = 0;
+	// while (client.started == 0) {
+	// 	io.to(client.session).emit('S_to_C_welcomeback', {sessionName: client.session, roomName: client.room});
+	// }
 	// Assigning "client.session" as an unique identifier of the participant
 	// If the client already has the sessionName, 
 	// put this client into a experimental room
@@ -209,28 +221,28 @@ io.on('connection', function (client) {
 		if(typeof roomStatus[client.room] == 'undefined'){
 			roomStatus[client.room] = {
 				exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
-			    riskDistributionId: getRandomIntInclusive(max = 12, min = 11), // max = 2, min = 0
-			    isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
-			    optionOrder: shuffle(options),
-			    indivOrGroup: -1,
-			    n: 0,
-			    membersID: [],
-			    subjectNumbers: [],
-			    disconnectedList: [],
-			    testPassed: 0,
-			    starting: 0,
-			    stage: 'resuming',
-			    maxChoiceStageTime: maxChoiceStageTime,
-			    choiceTime: [],
-			    round: 1,
-			    doneId: createArray(horizon, 0),
-			    doneNo: createArray(horizon),
-			    socialFreq: createArray(horizon, numOptions),
-			    socialInfo:createArray(horizon, maxGroupSize),
-			    publicInfo:createArray(horizon, maxGroupSize),
-			    choiceOrder:createArray(horizon, maxGroupSize),
-			    saveDataThisRound: [],
-			    restTime:maxWaitingTime
+				riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
+				isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
+				optionOrder: shuffle(options),
+				indivOrGroup: -1,
+				n: 0,
+				membersID: [],
+				subjectNumbers: [],
+				disconnectedList: [],
+				testPassed: 0,
+				starting: 0,
+				stage: 'resuming',
+				maxChoiceStageTime: maxChoiceStageTime,
+				choiceTime: [],
+				round: 1,
+				doneId: createArray(horizon, 0),
+				doneNo: createArray(horizon),
+				socialFreq: createArray(horizon, numOptions),
+				socialInfo:createArray(horizon, maxGroupSize),
+				publicInfo:createArray(horizon, maxGroupSize),
+				choiceOrder:createArray(horizon, maxGroupSize),
+				saveDataThisRound: [],
+				restTime:maxWaitingTime
 			};
 			roomStatus[client.room]['n']++;
 			roomStatus[client.room]['total_n']++;
@@ -267,7 +279,7 @@ io.on('connection', function (client) {
 	// When client's game window is ready & latency was calculated
 	client.on('core is ready', function(data) {
 		if (client.started == 0) {
-			client.started = 1;
+			client.started = 1
 			// Time stamp
 			let now_coreReady = new Date();
 		    let logtext_coreReady = '['+now_coreReady.getUTCFullYear()+'/'+(now_coreReady.getUTCMonth()+1)+'/';
@@ -293,11 +305,12 @@ io.on('connection', function (client) {
 				    } else {
 				      // else if there is no more available room left
 				      // Make a new room
-				      client.newRoomName = makeid(5)+'_session_' + (sessionNo + Object.keys(roomStatus).length - 1);
+				      // client.newRoomName = myMonth+myDate+myHour+myMin+'_session_' + (sessionNo + Object.keys(roomStatus).length - 1);
+				      client.newRoomName = makeid(7) + '_session_' + (sessionNo + Object.keys(roomStatus).length - 1);
 				      roomStatus[client.newRoomName] = 
 				      {
 				          exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
-				          riskDistributionId: getRandomIntInclusive(max = 12, min = 11), // max = 2, min = 0
+				          riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 				          isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 				          optionOrder: shuffle(options),
 				          indivOrGroup: -1,
@@ -358,7 +371,7 @@ io.on('connection', function (client) {
 				roomStatus[client.newRoomName] = 
 		      	{
 					exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
-					riskDistributionId: getRandomIntInclusive(max = 12, min = 11), // max = 2, min = 0
+					riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 					isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 					optionOrder: shuffle(options),
 					indivOrGroup: 0,
@@ -413,7 +426,7 @@ io.on('connection', function (client) {
 			}
 		}
 	});
-	
+
 	client.on('this is the previous restTime', function (data) {
 		roomStatus[client.room]['restTime'] = data.restTime;
 		if (roomStatus[client.room]['stage'] == 'resuming') {
@@ -425,6 +438,11 @@ io.on('connection', function (client) {
 		io.to(client.room).emit('this is the remaining waiting time', {restTime:roomStatus[client.room]['restTime'], max:maxWaitingTime, maxGroupSize:maxGroupSize, horizon:horizon});
 	});
 
+	// client.on('loading completed', function () {
+	// 	console.log('loading completed received');
+	// 	io.to(client.room).emit('this is the remaining waiting time', {restTime:roomStatus[client.room]['restTime'], max:maxWaitingTime, maxGroupSize:maxGroupSize, horizon:horizon});
+	// });
+
 	client.on('ok individual condition sounds good', function () {
 		// finally checking weather group is still below the maxnumber
 		if(roomStatus[client.room]['n'] < maxGroupSize) {
@@ -435,7 +453,7 @@ io.on('connection', function (client) {
 			roomStatus[myMonth+myDate+myHour+myMin+'_sessionIndiv_' + (sessionNo + Object.keys(roomStatus).length - 1)] = 
 			{
 				exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
-				riskDistributionId: getRandomIntInclusive(max = 12, min = 11), // max = 2, min = 0
+				riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 				isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 				optionOrder: shuffle(options),
 				indivOrGroup: 0,
@@ -505,7 +523,7 @@ io.on('connection', function (client) {
     	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
     	console.log(logdate + ' - Client ' + client.session + ' (subNo = ' + client.subjectNumber + ') chose ' + data.choice + ' and got ' + data.payoff + ' at trial ' + data.thisTrial + '.');
     	// update roomStatus
-    	if (typeof roomStatus[client.room] != 'undefined') {
+    	if (typeof roomStatus[client.room] != 'undefined' & typeof client.subjectNumber != 'undefined') {
 	    	roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].push(client.subjectNumber);
 			doneNum = roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].length;
 			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.choice;
@@ -514,8 +532,9 @@ io.on('connection', function (client) {
 			if( roomStatus[client.room]['round'] < horizon ) {
 				if (doneNum <= 1) {
 					// summarise social information
-				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0] = 0;
-				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][1] = 0;
+				  	for (let i = 0; i < numOptions; i++) {
+						roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][i] = 0;
+					}
 				}
 				if (data.choice === 'sure') {
 					roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0]++;
@@ -566,7 +585,8 @@ io.on('connection', function (client) {
     	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
     	console.log(logdate + ' - Client ' + client.session + ' (subNo = ' + client.subjectNumber + ') chose ' + data.choice + ' and got ' + data.payoff + ' at trial ' + data.thisTrial + '.');
     	// update roomStatus
-    	if (typeof roomStatus[client.room] != 'undefined') {
+    	// if (typeof roomStatus[client.room] != 'undefined') {
+    	if (typeof roomStatus[client.room] != 'undefined' & typeof client.subjectNumber != 'undefined') {
 	    	roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].push(client.subjectNumber);
 			doneNum = roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].length;
 			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.choice;
@@ -575,12 +595,12 @@ io.on('connection', function (client) {
 			if( roomStatus[client.room]['round'] < horizon ) {
 				if (doneNum <= 1) {
 					// summarise social information
-				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0] = 0;
-				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][1] = 0;
-				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][2] = 0;
-				  	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][3] = 0;
+					for (let i = 0; i < numOptions; i++) {
+						roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][i] = 0;
+					}
 				}
-				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
+				// roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
+				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.num_choice]++;
 				//console.log(roomStatus[client.room]);
 				// if (data.choice === 'sure') {
 				// 	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0]++;
@@ -623,57 +643,66 @@ io.on('connection', function (client) {
 		}
 	});
 
-	client.on('Data from Indiv', function (data) {
-		let now = new Date()
-        ,	logdate = '[' + now.getUTCFullYear() + '/' + (now.getUTCMonth() + 1) + '/'
-    	, doneNum
-    	, timeElapsed = now - firstTrialStartingTime
-    	;
-    	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
-    	console.log(logdate + ' - Client ' + client.session + ' (subNo = ' + client.subjectNumber + ') ended the task.');
+	// client.on('Data from Indiv', function (data) {
+	// 	let now = new Date()
+ //        ,	logdate = '[' + now.getUTCFullYear() + '/' + (now.getUTCMonth() + 1) + '/'
+ //    	, doneNum
+ //    	, timeElapsed = now - firstTrialStartingTime
+ //    	;
+ //    	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
+ //    	console.log(logdate + ' - Client ' + client.session + ' (subNo = ' + client.subjectNumber + ') ended the task.');
 
-    	for(let i=0; i<data.length; i++) {
-	  		const worker = createWorker('./worker_threads/savingBehaviouralData_indiv.js', data[i], client.session);
-	  	}
-	});
+ //    	for(let i=0; i<data.length; i++) {
+	//   		const worker = createWorker('./worker_threads/savingBehaviouralData_array_indiv.js', data[i], client.session);
+	//   	}
+	// });
 
 	client.on('result stage ended', function () {
-		// Depending on the number of subject who has already done this round,
-		// the response to the client changes 
-		// (i.e., the next round only starts after all the subject at the moment have chosen their option)
-		if(typeof roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] != 'undefined') {
-			roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]++;
-		}else{
-			roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] = 1;
-		}
-		let now_endFeedback = new Date()
-        ,	logdate_endFeedback = '[' + now_endFeedback.getUTCFullYear() + '/' + (now_endFeedback.getUTCMonth() + 1) + '/'
-    	;
-    	logdate_endFeedback += now_endFeedback.getUTCDate() + '/' + now_endFeedback.getUTCHours() + ':' + now_endFeedback.getUTCMinutes() + ':' + now_endFeedback.getUTCSeconds() + ']';
-    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
-		console.log(logdate_endFeedback);
-		if (roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] >= roomStatus[client.room]['n']) {
-			let now_endResultStage = new Date()
-	        ,	logdate_endResultStage = '[' + now_endResultStage.getUTCFullYear() + '/' + (now_endResultStage.getUTCMonth() + 1) + '/'
+		if(typeof client.subjectNumber != 'undefined') {
+			// Depending on the number of subject who has already done this round,
+			// the response to the client changes 
+			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
+			if(typeof roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] != 'undefined') {
+				roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]++;
+			}else{
+				roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] = 1;
+			}
+			let now_endFeedback = new Date()
+	        ,	logdate_endFeedback = '[' + now_endFeedback.getUTCFullYear() + '/' + (now_endFeedback.getUTCMonth() + 1) + '/'
 	    	;
-    		logdate_endResultStage += now_endResultStage.getUTCDate() + '/' + now_endResultStage.getUTCHours() + ':' + now_endResultStage.getUTCMinutes() + ':' + now_endResultStage.getUTCSeconds() + ']';
-		  	console.log(logdate_endResultStage + ` - result stage ended at: ${client.room}`);
+	    	logdate_endFeedback += now_endFeedback.getUTCDate() + '/' + now_endFeedback.getUTCHours() + ':' + now_endFeedback.getUTCMinutes() + ':' + now_endFeedback.getUTCSeconds() + ']';
+	    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
+			console.log(logdate_endFeedback);
+			if (roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] >= roomStatus[client.room]['n']) {
+				let now_endResultStage = new Date()
+		        ,	logdate_endResultStage = '[' + now_endResultStage.getUTCFullYear() + '/' + (now_endResultStage.getUTCMonth() + 1) + '/'
+		    	;
+	    		logdate_endResultStage += now_endResultStage.getUTCDate() + '/' + now_endResultStage.getUTCHours() + ':' + now_endResultStage.getUTCMinutes() + ':' + now_endResultStage.getUTCSeconds() + ']';
+			  	console.log(logdate_endResultStage + ` - result stage ended at: ${client.room}`);
 
-		  	// =========  save data to mongodb by loop
-		  	if(roomStatus[client.room]['indivOrGroup'] > -1) { //if(roomStatus[client.room]['indivOrGroup'] != 0) {
-			  	for(let i=0; i<roomStatus[client.room]['saveDataThisRound'].length; i++) {
-			  		const worker = createWorker('./worker_threads/savingBehaviouralData_indiv.js', 
-						roomStatus[client.room]['saveDataThisRound'][i], roomStatus[client.room]['membersID'][i]);
-			  	}
-			 }
-		  	// =========  save data to mongodb by loop END
-		  	// =========  save data to mongodb
-		  	/*const worker = createWorker('./worker_threads/savingBehaviouralData_indiv.org.js', 
-				roomStatus[client.room]['saveDataThisRound'], client.room);
-		  	*/
-		  	// =========  save data to mongodb END
-		  	roomStatus[client.room]['saveDataThisRound'] = [];
-		  	proceedRound(client.room);
+			  	// =========  save data to mongodb by loop
+			  	// if(typeof roomStatus[client.room]['round']!='undefined'&roomStatus[client.room]['round'] <= horizon) {
+			  	if(typeof roomStatus[client.room]['round']!='undefined'&roomStatus[client.room]['round'] == horizon) { //if(roomStatus[client.room]['indivOrGroup'] != 0) {
+			  		const worker = createWorker('./worker_threads/savingBehaviouralData_array_indiv.js', roomStatus[client.room]['saveDataThisRound']);
+			  		roomStatus[client.room]['saveDataThisRound'] = [];
+
+				  	// for(let i=0; i<roomStatus[client.room]['saveDataThisRound'].length; i++) {
+				  	// 	const worker = createWorker('./worker_threads/savingBehaviouralData_array_indiv.js', 
+							// roomStatus[client.room]['saveDataThisRound'][i], roomStatus[client.room]['membersID'][i]);
+				  	// 	// Delete all the data that has already been saved:
+				  	// 	if (i == roomStatus[client.room]['saveDataThisRound'].length - 1) { // executing after this for loop
+				  	// 		roomStatus[client.room]['saveDataThisRound'] = [];
+				  	// 	}
+				  	// }
+				}
+			  	// =========  save data to mongodb by loop END
+			  	// =========  save data to mongodb
+			  	/*const worker = createWorker('./worker_threads/savingBehaviouralData.org.js', 
+					roomStatus[client.room]['saveDataThisRound'], client.room);
+			  	*/
+			  	// =========  save data to mongodb END
+			  	proceedRound(client.room);
+			}
 		}
 	});
 
@@ -699,7 +728,7 @@ io.on('connection', function (client) {
 			if(roomStatus[thisRoomName]['indivOrGroup'] != 0) {
 				roomStatus[thisRoomName]['n']--;
 				// Note: 
-				// if this is an individual session's room, then I want 'n' to remain 1
+				// if this is the Individual condition session's room, then I want 'n' to remain 1
 				// so than no one will never enter this room again. 
 				// On the other hand, if this is a group session's room, reducing 'n' may open up 
 				// a room for a new-comer if this room is still at the first waiting screen
@@ -707,19 +736,28 @@ io.on('connection', function (client) {
 				  	console.log(`result stage ended at: ${client.room}`);
 
 				  	// =========  save data to mongodb by loop
-				  	for(let i=0; i<roomStatus[client.room]['saveDataThisRound'].length; i++) {
-				  		const worker = createWorker('./worker_threads/savingBehaviouralData_indiv.js', 
-							roomStatus[client.room]['saveDataThisRound'][i], roomStatus[client.room]['membersID'][i]);
-				  	}
+				  	const worker = createWorker('./worker_threads/savingBehaviouralData_array_indiv.js', roomStatus[client.room]['saveDataThisRound']);
+			  		roomStatus[client.room]['saveDataThisRound'] = [];
+
+				  	// for(let i=0; i<roomStatus[client.room]['saveDataThisRound'].length; i++) {
+				  	// 	const worker = createWorker('./worker_threads/savingBehaviouralData_array_indiv.js', 
+							// roomStatus[client.room]['saveDataThisRound'][i], roomStatus[client.room]['membersID'][i]);
+				  	// 	if( i == roomStatus[client.room]['saveDataThisRound'].length - 1) {
+				  	// 		roomStatus[client.room]['saveDataThisRound'] = [];
+				  	// 	}
+				  	// }
+
 				  	// =========  save data to mongodb by loop END
 				  	// =========  save data to mongodb
-				  	/*const worker = createWorker('./worker_threads/savingBehaviouralData_indiv.org.js', 
+				  	/*const worker = createWorker('./worker_threads/savingBehaviouralData.org.js', 
 						roomStatus[client.room]['saveDataThisRound'], client.room);
 				  	*/
 				  	// =========  save data to mongodb END
-				  	roomStatus[client.room]['saveDataThisRound'] = [];
 				  	proceedRound(client.room);
 				}
+			} else { // if this is the individual condition
+				const worker = createWorker('./worker_threads/savingBehaviouralData_array_indiv.js', roomStatus[client.room]['saveDataThisRound']);
+			  	roomStatus[client.room]['saveDataThisRound'] = [];
 			}
 			// ======= remove this client from the room =====
 
@@ -777,7 +815,7 @@ io.on('connection', function (client) {
 			var now744 = new Date(),
 			logdate744 = '['+now744.getUTCFullYear()+'/'+(now744.getUTCMonth()+1)+'/';
 			logdate744 += now744.getUTCDate()+'/'+now744.getUTCHours()+':'+now744.getUTCMinutes()+':'+now744.getUTCSeconds()+']';
-			console.log(logdate744+' - client disconnected: '+ client.session+'('+client.amazonID+')'+' (room N: '+roomStatus[thisRoomName]['n']+', total N: '+total_N_now+') - handshakeID:'+ client.session);
+			console.log(logdate744+' - client disconnected: '+ client.session+' ('+client.amazonID+')'+' (room N: '+roomStatus[thisRoomName]['n']+', total N: '+total_N_now+') - handshakeID:'+ client.session);
 		}
 	});
 });
@@ -792,14 +830,33 @@ function getRandomIntInclusive(max, min = 0) {
 }
 
 // shuffling function
-function shuffle (array) {
-	let array2 = array;
-	for (let i = array2.length - 1; i >= 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[array2[i], array2[j]] = [array2[j], array2[i]];
-	}
-	return array2;
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
 }
+// function shuffle (array) {
+// 	let array2 = array;
+// 	for (let i = array2.length - 1; i >= 0; i--) {
+// 		const j = Math.floor(Math.random() * (i + 1));
+// 		[array2[i], array2[j]] = [array2[j], array2[i]];
+// 	}
+// 	return array2;
+// }
+
 // const shuffle = ([...array]) => {
 //   for (let i = array.length - 1; i >= 0; i--) {
 //     const j = Math.floor(Math.random() * (i + 1));

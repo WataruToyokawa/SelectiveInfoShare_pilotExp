@@ -1,158 +1,35 @@
-/*
-
-Multi-armed bandit task 2020
+/* ====================================================================
+Multi-argent two-armed bandit task with active information sharing
 Author: Wataru Toyokawa (wataru.toyokawa@uni-konstanz.de)
-15 Jun. 2020
+21 January 2021
 
-changes made on 15 June
-1. Individual condition is now storing the data locally until the task is completed
-2. saveChoiceDataLocally() is made (needs to edit!)
+The task proceeds as follows:
+1. Choice phase at trial 1 with no social info 
+2. Reward feedback (participants can only know their own earning)
+3. Choice between "share (with cost)" and "non-share (without cost)"
+4. Choice phase at t > 1, the payoff info they chose to share is shown
+5. Repeat 2 to 5 until t reaches horizon
 
-*/
-
+Author: Wataru Toyokawa
+Collaborating with Dr Helge Giese
+Requirements:
+   * Node.js
+   * node_modules: express, socket.io, fast-csv, php-express
+   * mongoDB and mongoose
+=================================================================== */
 'use strict';
 
-//const htmlServer = 'http://192.168.33.10:'; // vagrant server
-const htmlServer = 'http://63-250-60-135.cloud-xip.io:'; //ipaddress 63.250.60.135
+const htmlServer = 'http://192.168.33.10:'; // vagrant server
+// const htmlServer = 'http://63-250-60-135.cloud-xip.io:'; //ipaddress 63.250.60.135
 //const portnum = 8080; //8181
 const portnumQuestionnaire = 8000;
-const exceptions = ['INHOUSETEST2', 'wataruDebug', 'wataruDebug'];
+const exceptions = ['INHOUSETEST3', 'wataruDebug', 'wataruDebug'];
 
-//const instructionText = require('./instructionText');
-const waitingRoomText0 = 
-	[ 'Welcome!'
-	, 'The task will start automatically in a few seconds.'
-	, 'If nothing happens and you seem getting stuck in this page for more than 15 seconds, please reload this page.'
-	, 'Make sure you have a stable internet connection.'
-	, ''
-	//, 'The study starts in ' + '???' + ' sec.'
-	];
-const waitingRoomText = 
-	[ 'Waiting Room'
-	, 'Please do not reload this page or open a new browser window.'
-	, 'Also please do not hide this browser window by other tab or apps.'
-	, 'If you do so, the task will be terminated automatically.'
-	, ''
-	//, 'The study starts in ' + '???' + ' sec.'
-	];
-const waitingForOthers = 
-	[ 'Wait for others'
-	, 'Please do not reload this page or open a new browser window.'
-	, 'Also please do not hide this browser window by other tab or apps.'
-	, 'If you do so, the task will be terminated automatically.'
-	, 'Your waiting bonus is ' + '???' + ' cents.'
-	];
-const instructionText_indiv = 
-	[ 'Please read the following instructions carefully. After reading the instructions, we will ask a few questions to verify your understanding of the experimental task.'
+let numOptions
+,	info_share_cost = 0
+,	info_share_cost_total = 0
+;
 
-	, '<br><br>Throughout the main task, you are to make a series of choices between 2&nbsp;slot machines.'
-
-	, '<br><br>Overall, there will be <span class="note">70&nbsp;trials</span>. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
-
-	, '<br><br>Each choice will earn you a reward. Your total payout will be based on <span class="note">the sum of all points</span> you earn over the 70&nbsp;trials.'
-
-	, '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;US cents.</span>'
-
-	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over the long run (i.e., does not vary throughout the game).'
-
-	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
-	];
-const tutorialText_indiv = 
-	[ '<br>This is the tutorial task. <br><br>Start by choosing whichever slot machine you like!'
-
-	, '<br><br>You got 30 points! Well done.'
-
-	, '<br>This is the second trial. The <span class="note">same slot machines</span> will appear again. <br><br>Please make another choice!'
-
-	, '<br><br>Hooray! You got 50 points!'
-
-	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.' 
-
-	, '<br><br>Time was up and you missed the trial! So you got nothing.'
-
-	, '<br>The tutorial is done. <br><br>Next, you will proceed to a short comprehension quiz!'
-	];
-const understandingCheckText_indiv = 
-	[ '<h3>Please answer the following questions.</h3>'
-
-	, 'How many trials will you play in total?' // 70
-
-	, 'Is it possible to choose the same option repeatedly?' //YES
-
-	, 'Does your bonus of this task increase by getting more reward points from the task?' //YES
-	];
-
-const instructionText_group = 
-	[ 'Please read the following instructions carefully. After reading the instructions, we will ask a few questions to verify your understanding of the experimental task. <br><br>After answering these questions, you may spend some more time in a waiting room until sufficient number of participants have arrived to start the task. <br><br>You will be paid <span class="note">13.2 cents per minute</span> (that is, $8 per hour) for any time spent in the waiting room. When your group is ready, the main task will start.'
-
-	, '<br><br>Throughout the main task, you are to make a series of choices between 2&nbsp;slot machines.'
-
-	, '<br><br>Overall, there will be <span class="note">70&nbsp;trials</span>. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
-
-	, '<br><br>Each choice will earn you a reward. Your total payout will be based on <span class="note">the sum of all points</span> you earn over the 70&nbsp;trials.'
-
-	, '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;US cents.</span>'
-
-	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over the long run (i.e., does not vary throughout the game).'
-
-	, '<br><br>Other people will participate in this online experiment at the same time with you.'
-
-	, '<br>You will see the <span class="note">number of people (including yourself)</span> choosing each slot. <br><br>The example below shows that 4 people chose the left and other 6 chose the right in the preceding trial.'
-
-	, '<br>Note: this <span class="note">"number of people" does not affect the amount of your reward</span>. The reward points are provided <span class="note">independently</span> from other people\'s choices.'
-
-	, '<br>Nevertheless, other people\'s choice may be worth checking because you all will be playing the same task. It may give you a hint for finding the better one between the two slots.'
-
-	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
-	];
-const tutorialText_group = 
-	[ '<br>This is the tutorial task. <br><br>Start by choosing whichever slot machine you like!'
-
-	, '<br><br>You got 30 points! Well done.'
-
-	, '<br>This is the second trial. The <span class="note">same slot machines</span> will appear again. <br><br>Please make another choice!'
-
-	, '<br><br>Hooray! You got 50 points!'
-
-	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.' 
-
-	, '<br><br>Time was up and you missed the trial! So you got nothing.'
-
-	, '<br>The tutorial is done. <br><br>Next, you will proceed to a short comprehension quiz!'
-	];
-const understandingCheckText_group = 
-	[ '<h3>Please answer the following questions.</h3>'
-
-	, 'How many trials will you and the other players play in total?' // 70
-
-	, 'Is it possible to choose the same option repeatedly?' //YES
-
-	, 'Does your bonus of this task increase by getting more reward points from the task?' //YES
-
-	, 'Do other workers play the same task as yours?' //YES
-
-	, 'Does your reward points change by how many players are choosing your option?' //NO
-	];
-
-const revisitingInstructionText = 
-	[ '<br><br><span class="note">Woops! One or more answers were incorrect.</span> Please read the instruction again!'
-
-	, '<br><br>That\'s it! Take the comprehension quiz again in the next page.'
-	]
-
-const goToQuestionnaireText = 
-	[ 'Well done!'
-	, 'Your total game reward: $'
-	, 'Waiting bonus: $'
-	, 'Flat fee for completion of the task: $'
-	];
-// experimental variables (negatively skewed)
-//["risky", "risky", "risky", "sure", "risky", "risky", "risky", "sure", "sure", "risky", "sure", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "sure", "sure", "sure", "risky", "risky", "sure", "sure", "sure", "sure", "sure", "risky", "risky", "sure", "sure", "sure", "sure", "sure", "sure", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "risky", "risky", "risky", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "risky", "risky", "risky", "risky", "risky", "risky", "risky", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure", "sure"]
-
-// randomly choosing an integer between min and max 
-function rand(max, min = 0) {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
 
 // Gaussian distribution (E[risky] = 1.61)
 /*let mean_sure = 1.5
@@ -161,7 +38,7 @@ function rand(max, min = 0) {
 ,	sd_risky = 1
 ;*/
 let mean_sure
-,	sd_sure = 0.05
+,	sd_sure = 0.1
 ,	mean_risky
 ,	sd_risky = 1
 ;
@@ -169,17 +46,25 @@ let mean_sure
 // Binary distribution (E[risky] = 1.61)
 //let riskDistributionId = rand(3, 0); // PILOT TEST
 let pRiskyRare
-	, pSure
-	, payoff_sureL
-	, payoff_sureH
-	, payoff_riskyCommon
-	, payoff_riskyRare
-	, smallNoise = sd_sure
-	, probabilityList = {}
-	, payoffList = {}
-	;
+,	pSure
+,	pPoor
+,	payoff_sureL
+,	payoff_sureH
+,	payoff_sureL1
+,	payoff_sureH1
+,	payoff_sureL2
+,	payoff_sureH2
+,	payoff_sureL3
+,	payoff_sureH3
+,	payoff_riskyCommon
+,	payoff_riskyRare
+,	smallNoise = sd_sure
+,	probabilityList = {}
+,	payoffList = {}
+,	optionsKeyList = ['sure1','sure2','sure3','risky']
+;
 
-
+const backgroundcolour_feedback = '#ffd6c9'; //#d9d9d9 = grey #ffffff = white
 
 
 
@@ -205,9 +90,11 @@ let isEnvironmentReady = false
 ,   myChoices = []
 ,   myEarnings = []
 ,   payoff
+,	didShare
 ,	payoffTransformed
 ,   totalEarning = 0
-,	cent_per_point = 1/50
+,	cent_per_point = 1/100 // 1 cent per 100 points
+,	browserHiddenPermittedTime = 10 * 1000
 ,   sessionName
 ,   roomName
 ,   subjectNumber
@@ -215,6 +102,7 @@ let isEnvironmentReady = false
 ,	exp_condition
 ,	riskDistributionId
 ,	isLeftRisky
+,	optionOrder
 ,   connectionCounter
 ,	incorrectCount = 0
 ,	maxChoiceStageTime
@@ -234,12 +122,17 @@ let isEnvironmentReady = false
 ,   pointCentConversionRate = 0
 ,   completed = 0
 ,   waitingRoomFinishedFlag = 0
-,   averageLatency = [0,0,0]
+,	understandingCheckStarted = 0
+,   averageLatency = [0,0]
 ,   submittedLatency = -1
-,	mySocialInfoList = {sure:0, risky:0}
+,	mySocialInfoList = {option1:0, option2:0, option3:0, option4:0}
 ,	mySocialInfo
 ,	myPublicInfo
 ,	myLastChoice
+,	myLastChoiceFlag
+,	share_or_not = []
+// ,	payoff_info = []
+// ,	shared_position = []
 ;
 
 const myData = [];
@@ -273,16 +166,6 @@ window.onload = function() {
     }
     //======== end: monitoring reload activity =====
 
-    //======== letting the server know latency with this client ==========
-    // after calculating the first average latency
-    // the client should be put into the individual condition
-    setTimeout(function(){
-        submittedLatency = sum(averageLatency)/averageLatency.length
-        socket.emit('core is ready', {latency: submittedLatency, maxLatencyForGroupCondition: maxLatencyForGroupCondition});
-        $("#latency").val(submittedLatency);
-    }, averageLatency.length*1000+500);
-    //======== end: letting the server know latency with this client ==========
-
     //======== monitoring Tab activity ==========
     let hiddenTimer
     ,   hidden_elapsedTime = 0
@@ -291,7 +174,7 @@ window.onload = function() {
     if(window.document.visibilityState == 'hidden'){
         hiddenTimer = setInterval(function(){
             hidden_elapsedTime += 500;
-            if (hidden_elapsedTime>1000) {
+            if (hidden_elapsedTime > browserHiddenPermittedTime) {
                 socket.io.opts.query = 'sessionName=already_finished';
                 socket.disconnect();
             }
@@ -304,14 +187,14 @@ window.onload = function() {
             hidden_elapsedTime += 1;
             hiddenTimer = setInterval(function(){
                 hidden_elapsedTime += 500;
-                if (hidden_elapsedTime>1000 & amazonID != 'INHOUSETEST') {
+                if (hidden_elapsedTime > browserHiddenPermittedTime & amazonID != 'INHOUSETEST') {
                     socket.io.opts.query = 'sessionName=already_finished';
                     socket.disconnect();
                 }
             }, 500);
         } else {
             clearTimeout(hiddenTimer);
-            if (hidden_elapsedTime>1000 & amazonID != 'INHOUSETEST') {
+            if (hidden_elapsedTime > browserHiddenPermittedTime & amazonID != 'INHOUSETEST') {
                 setTimeout(function(){
                     // Force client to move to the questionnaire
                     socket.io.opts.query = 'sessionName=already_finished';
@@ -330,9 +213,14 @@ window.onload = function() {
     , configHeight = 600
     , optionWidth = 150
     , optionHeight = 150
-    , leftSlotPositionX = 200
-    , rightSlotPositionX = 600
-    , missPositionX = (leftSlotPositionX+rightSlotPositionX)/2
+    // , leftSlotPositionX = 200
+    // , rightSlotPositionX = 600
+    , option1_positionX = 122.5 //115
+    , space_between_boxes = 185 //190 //space_between_boxes
+    // , option2_positionX = 250
+    // , option3_positionX = 450
+    // , option4_positionX = 650
+    , missPositionX = configWidth/2
     //, leftSlotPositionX
     //, rightSlotPositionX
     //, missPositionX
@@ -341,12 +229,20 @@ window.onload = function() {
     , noteColor = '#ff5a00' // red-ish
     , nomalTextColor = '#000000' // black
     , player
+    , stars_option1 = []
+    , stars_option2 = []
+    , stars_option3 = []
+    , stars_option4 = []
 	, stars_sure = []
 	, stars_risky = []
 	, bombs
 	, platforms
 	, cursors
 	, score = 0
+
+	, groupTotalScore = 0
+	, totalPayoff_perIndiv = 0
+
 	, gameOver = false
 	, choiceFlag
 	, waitingBox
@@ -358,10 +254,15 @@ window.onload = function() {
 	, countdownText
 	, bonusText
 	, restTime
+
 	, trialText
 	, scoreText
 	, timeText
 	, payoffText
+	, groupTotalScoreText
+	, costPaidText
+	, costPaidText_2
+
 	, waitOthersText
 	, objects_feedbackStage
 	, feedbackTextPosition
@@ -375,7 +276,11 @@ window.onload = function() {
 	, score_tutorial = 0
 	, choice_tutorial = 0
 	, isInstructionRevisit = false
+	, emitting_time = 0
 	;
+
+	// the info sharing cost for the first trial
+	info_share_cost = rand(100, 0);
 
 	// SceneWaitingRoom0
 	class SceneWaitingRoom0 extends Phaser.Scene {
@@ -431,17 +336,22 @@ window.onload = function() {
 			this.load.image('energybar', 'assets/energybar.png');
 			this.load.image('machine1_normal', 'assets/machine_normal_1.png');
 			this.load.image('machine2_normal', 'assets/machine_normal_2.png');
+			this.load.image('machine3_normal', 'assets/machine_normal_3.png');
+			this.load.image('machine4_normal', 'assets/machine_normal_4.png');
 			this.load.image('machine1_active', 'assets/machine_active_1.png');
 			this.load.image('machine2_active', 'assets/machine_active_2.png');
-			this.load.image('instructionPictures_1', 'assets/instructionPictures.001.png');
-			this.load.image('instructionPictures_2', 'assets/instructionPictures.002.png');
-			this.load.image('instructionPictures_3', 'assets/instructionPictures.003.png');
-			this.load.image('instructionPictures_4', 'assets/instructionPictures.004.png');
-			this.load.image('instructionPictures_5', 'assets/instructionPictures.005.png');
-			this.load.image('instructionPictures_6', 'assets/instructionPictures.006.png');
-			this.load.image('instructionPictures_7', 'assets/instructionPictures.007.png');
-			this.load.image('instructionPictures_8', 'assets/instructionPictures.008.png');
-			this.load.image('instructionPictures_9', 'assets/instructionPictures.009.png');
+			this.load.image('machine3_active', 'assets/machine_active_3.png');
+			this.load.image('machine4_active', 'assets/machine_active_4.png');
+			this.load.image('instructionPictures_4ab_1', 'assets/instructionPictures_4ab.001.png');
+			this.load.image('instructionPictures_4ab_2', 'assets/instructionPictures_4ab.002.png');
+			this.load.image('instructionPictures_4ab_3', 'assets/instructionPictures_4ab.003.png');
+			this.load.image('instructionPictures_4ab_4', 'assets/instructionPictures_4ab.004.png');
+			this.load.image('instructionPictures_4ab_5', 'assets/instructionPictures_4ab.005.png');
+			this.load.image('instructionPictures_4ab_6', 'assets/instructionPictures_4ab.006.png');
+			this.load.image('instructionPictures_4ab_7', 'assets/instructionPictures_4ab.007.png');
+			this.load.image('instructionPictures_4ab_8', 'assets/instructionPictures_4ab.008.png');
+			this.load.image('instructionPictures_4ab_9', 'assets/instructionPictures_4ab.009.png');
+			this.load.image('blackbox', 'assets/blackbox.png');
 			// progress bar functions
 			this.load.on('progress', function (value) {
 			    ////console.log(value);
@@ -454,14 +364,31 @@ window.onload = function() {
 			    //console.log(file.src);
 			});
 			this.load.on('complete', function () {
-			    ////console.log('complete');
+			    console.log('preloading is completed!: core is ready');
 			    isPreloadDone = true;
 			    progressBar.destroy();
 				progressBox.destroy();
 				loadingText.destroy();
 				percentText.destroy();
+				sending_core_is_ready(isPreloadDone)
+				// if(!isWaitingRoomStarted) {
+				// 	socket.emit('loading completed');
+				// }
 				// execute if preload completed later than on.connection('this is your parameter')
 				//if(isEnvironmentReady) game.scene.start('SceneWaitingRoom');
+				//======== letting the server know latency with this client ==========
+			    // after calculating the first average latency
+			    // the client should be put into the individual condition
+			    // sending_core_is_ready(isPreloadDone);
+			    //socket.emit('core is ready', {latency: 0, maxLatencyForGroupCondition: maxLatencyForGroupCondition});
+
+			    // setTimeout(function(){
+			    //     submittedLatency = sum(averageLatency)/averageLatency.length;
+			    //     socket.emit('core is ready', {latency: submittedLatency, maxLatencyForGroupCondition: maxLatencyForGroupCondition});
+			    //     $("#latency").val(submittedLatency);
+			    // }, averageLatency.length*1000+500);
+
+			    //======== end: letting the server know latency with this client ==========
 			});
 		}
 
@@ -485,6 +412,10 @@ window.onload = function() {
 		}
 
 		update(){
+			emitting_time += 1/(3*game.loop.actualFps) // incrementing every 3 seconds
+			if (!isWaitingRoomStarted & emitting_time % 3 == 0) {
+				sending_core_is_ready(isPreloadDone)
+			}
 		}
 	};
 
@@ -663,7 +594,7 @@ window.onload = function() {
 		    // instruction Picture
 		    let currentInstructionPicture = [];
 		    for (let i=0; i<10; i++) {
-		    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
+		    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_4ab_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
 		    	currentInstructionPicture[i].visible = false;
 		    }
 		    
@@ -779,6 +710,7 @@ window.onload = function() {
 		    } else {
 		    	tutorialText = tutorialText_group;
 		    }
+
 		    const tutorialTextStyle = 'background-color: rgba(51,51,51,0.1); width: 700px; height: 150px; font: 25px Arial; position: relative;';
 		    let instructionDiv = document.getElementById('instructionDiv');
 		    instructionDiv.style = tutorialTextStyle;
@@ -786,30 +718,30 @@ window.onload = function() {
 		    
 		    // slot machines and goToTest button
 		    let tutorialFlag = 0;
-		    let objects = {};
-		    let slotY = 430
-		    ,	socialInfoY = slotY + 100
-		    ,	payoffTextY = slotY - 80
+		    //let objects = {};
+		    let slotY = 480
+		    ,	socialInfoY = slotY - 90
+		    ,	payoffTextY = slotY + 100
 		    ,	trialText_tutorialY = 16+165
 		    ,	scoreText_tutorialY = 56+165
 		    ,	energyBar_tutorialY = 96+165
 		    ;
-		    objects.box1 = this.add.sprite(200, slotY, 'machine1_normal');
-			objects.box1_active = this.add.sprite(200, slotY, 'machine1_active');
-			objects.box2 = this.add.sprite(600, slotY, 'machine2_normal');
-			objects.box2_active = this.add.sprite(600, slotY, 'machine2_active');
-			objects.box1.setDisplaySize(optionWidth, optionHeight);
-			objects.box2.setDisplaySize(optionWidth, optionHeight);
-			objects.box1_active.setDisplaySize(optionWidth, optionHeight);
-			objects.box2_active.setDisplaySize(optionWidth, optionHeight);
-			if (tutorialTrial < 3) {
-				objects.box1.setInteractive({ cursor: 'pointer' });
-				objects.box2.setInteractive({ cursor: 'pointer' });
-				objects.box1_active.setInteractive({ cursor: 'pointer' });
-				objects.box2_active.setInteractive({ cursor: 'pointer' });
-			}
-			objects.box1_active.visible = false;
-			objects.box2_active.visible = false;
+
+
+
+		    this.options = {}
+		    for (let i=1; i<numOptions+1; i++) {
+		    	this.options['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY, 'machine'+i+'_normal');
+		    	this.options['box_active'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY, 'machine'+i+'_active');
+		    	this.options['box'+i].setDisplaySize(optionWidth, optionHeight);
+		    	this.options['box_active'+i].setDisplaySize(optionWidth, optionHeight);
+		    	this.options['box_active'+i].visible = false;
+		    	if (tutorialTrial < 3) {
+					this.options['box'+i].setInteractive({ cursor: 'pointer' });
+					this.options['box_active'+i].setInteractive({ cursor: 'pointer' });
+				}
+		    }
+		 	
 
 			// text
 			trialText_tutorial = this.add.text(16, trialText_tutorialY, 'Tutorial trial: ' + tutorialTrial + ' / 4', { fontSize: '25px', fill: '#000' });
@@ -819,13 +751,17 @@ window.onload = function() {
 		    if (tutorialTrial == 1) {
 		    	payoffText.visible = false;
 		    } else if (tutorialTrial == 2) {
-		    	if (choice_tutorial == 1) payoffText.x = leftSlotPositionX;
-		    	if (choice_tutorial == 2) payoffText.x = rightSlotPositionX;
-		    	payoffText.setText('You got \n30 points')
+		    	if (choice_tutorial == 1) payoffText.x = option1_positionX;
+		    	if (choice_tutorial == 2) payoffText.x = option1_positionX + space_between_boxes * 1;
+		    	if (choice_tutorial == 3) payoffText.x = option1_positionX + space_between_boxes * 2;
+		    	if (choice_tutorial == 4) payoffText.x = option1_positionX + space_between_boxes * 3;
+		    	payoffText.setText('You got 30')
 		    } else if (tutorialTrial == 3) {
-		    	if (choice_tutorial == 1) payoffText.x = leftSlotPositionX;
-		    	if (choice_tutorial == 2) payoffText.x = rightSlotPositionX;
-		    	payoffText.setText('You got \n50 points')
+		    	if (choice_tutorial == 1) payoffText.x = option1_positionX;
+		    	if (choice_tutorial == 2) payoffText.x = option1_positionX + space_between_boxes * 1;
+		    	if (choice_tutorial == 3) payoffText.x = option1_positionX + space_between_boxes * 2;
+		    	if (choice_tutorial == 4) payoffText.x = option1_positionX + space_between_boxes * 3;
+		    	payoffText.setText('You got 50')
 		    }
 
 			// confirmation text
@@ -888,87 +824,56 @@ window.onload = function() {
 		            callbackScope: this,
 		            loop: true
 		        });
-				// max time in the choice stage
-				/*setTimeout(function(){
-					tutorialPosition++;
-					instructionDiv.innerHTML = tutorialText[tutorialPosition];
-					game.scene.start('SceneTutorialFeedback', { indivOrGroup: indivOrGroup, choice: -1, tutorialPosition: tutorialPosition });
-	            }, maxChoiceStageTime);*/
 			} else if (tutorialTrial < 3) {
-				objects.box1.on('pointerdown', function (pointer) {
-					objects.box1.visible = false;
-					objects.box1_active.visible = true;
-					confirmationContainer.x = 200;
-					confirmationContainer.visible = true;
-					if(tutorialFlag == 2) {
-						objects.box2_active.visible = false;
-						objects.box2.visible = true;
-					}
-			    	tutorialFlag = 1;
-			    }, this);
-			    objects.box1_active.on('pointerdown', function (pointer) {
-					objects.box1.visible = false;
-		    		objects.box2.visible = false;
-		    		objects.box1_active.visible = false;
-		    		confirmationContainer.visible = false;
-		    		energyContainer.visible = false;
-		    		energyBar.visible = false;
-		    		energyMask.vsible = false;
-		    		if (tutorialPosition == 0) {
-		    			score_tutorial += 30
-		    		} else {
-		    			score_tutorial += 50
-		    		}
-		    		tutorialPosition++;
-			    	instructionDiv.innerHTML = tutorialText[tutorialPosition];
-			    	tutorialFlag = 0;
-			    	if (tutorialPosition < tutorialText.length) {
-			    		choice_tutorial = 1;
-			    		//game.scene.sleep('SceneTutorial');
-			    		game.scene.start('SceneTutorialFeedback', { indivOrGroup: indivOrGroup, choice: 1, tutorialPosition: tutorialPosition });
-			    	} else {
-			    		game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
-			    	}
-			    }, this);
+				
+				for (let i = 1; i < numOptions+1; i++) {
+					this.options['box'+i].on('pointerdown', function (pointer) {
+						confirmationContainer.x = option1_positionX + space_between_boxes*(i-1);
+						confirmationContainer.visible = true;
+						this.options['box'+i].visible = false;
+						this.options['box_active'+i].visible = true;
+				    	tutorialFlag = i;
+				    	for (let j = 1; j < numOptions+1; j++) {
+							if(tutorialFlag > 0 & tutorialFlag != j) {
+								this.options['box_active'+j].visible = false;
+								this.options['box'+j].visible = true;
+							}
+						}
+				    }, this);
+				    this.options['box_active'+i].on('pointerdown', function (pointer) {
+						this.options.box1.visible = false;
+			    		this.options.box2.visible = false;
+			    		this.options.box3.visible = false;
+			    		this.options.box4.visible = false;
+			    		this.options['box_active'+i].visible = false;
 
-			    objects.box2.on('pointerdown', function (pointer) {
-			    	objects.box2.visible = false;
-					objects.box2_active.visible = true;
-					confirmationContainer.x = 600;
-					confirmationContainer.visible = true;
-					if(tutorialFlag == 1) {
-						objects.box1_active.visible = false;
-						objects.box1.visible = true;
-					}
-			    	tutorialFlag = 2;
-			    }, this);
-			    objects.box2_active.on('pointerdown', function (pointer) {
-			    	objects.box1.visible = false;
-		    		objects.box2.visible = false;
-		    		objects.box2_active.visible = false;
-		    		confirmationContainer.visible = false;
-		    		energyContainer.visible = false;
-		    		energyBar.visible = false;
-		    		energyMask.vsible = false;
-		    		if (tutorialPosition == 0) {
-		    			score_tutorial += 30
-		    		} else {
-		    			score_tutorial += 50
-		    		}
-		    		tutorialPosition++;
-			    	instructionDiv.innerHTML = tutorialText[tutorialPosition];
-			    	tutorialFlag = 0;
-			    	if (tutorialPosition < tutorialText.length) {
-			    		choice_tutorial = 2;
-			    		//game.scene.sleep('SceneTutorial');
-			    		game.scene.start('SceneTutorialFeedback', { indivOrGroup: indivOrGroup, choice: 2, tutorialPosition: tutorialPosition });	
-			    	} else {
-			    		game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
-			    	}
-			    }, this);
+			    		confirmationContainer.visible = false;
+			    		energyContainer.visible = false;
+			    		energyBar.visible = false;
+			    		energyMask.vsible = false;
+			    		if (tutorialPosition == 0) {
+			    			score_tutorial += 30
+			    		} else {
+			    			score_tutorial += 50
+			    		}
+			    		tutorialPosition++;
+				    	instructionDiv.innerHTML = tutorialText[tutorialPosition];
+				    	tutorialFlag = 0;
+				    	if (tutorialPosition < tutorialText.length) {
+				    		choice_tutorial = i;
+				    		//game.scene.sleep('SceneTutorial');
+				    		game.scene.start('SceneTutorialFeedback', { indivOrGroup: indivOrGroup, choice: i, tutorialPosition: tutorialPosition });
+				    	} else {
+				    		game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
+				    	}
+				    }, this);
+				}
+				
 			} else { // the final trial (i.e. the transition to the understanding quiz)
-				objects.box1.visible = false;
-		    	objects.box2.visible = false;
+				this.options.box1.visible = false;
+		    	this.options.box2.visible = false;
+		    	this.options.box3.visible = false;
+		    	this.options.box4.visible = false;
 		    	trialText_tutorial.visible = false;
 		    	scoreText_tutorial.visible = false;
 		    	timeText_tutorial.visible = false;
@@ -997,88 +902,84 @@ window.onload = function() {
 			    }, this);
 			}
 
-			if (typeof objects != 'undefined') {
+			if (typeof this.options != 'undefined') {
 			    // pointer over & out effects
-				objects.box1.on('pointerover', function (pointer) {
-			    	objects.box1.setTint(0xb8860b); //B8860B ff0000
-			    }, this);
-			    objects.box2.on('pointerover', function (pointer) {
-			    	objects.box2.setTint(0x008b8b); //008B8B
-			    }, this);
-				objects.box1.on('pointerout', function (pointer) {
-			    	objects.box1.clearTint();
-			    }, this);
-			    objects.box2.on('pointerout', function (pointer) {
-			    	objects.box2.clearTint();
-			    }, this);
+			    for (let i = 1; i < numOptions+1; i++) {
+			    	this.options['box'+i].on('pointerover', function (pointer) {
+				    	this.options['box'+i].setTint(0xb8860b); //B8860B ff0000
+				    }, this);
+				    this.options['box'+i].on('pointerout', function (pointer) {
+				    	this.options['box'+i].clearTint();
+				    }, this);
+			    }
 			}
 
 			// social information
 		    let socialFreqNumbers = {}
-		    ,	numberOfPreviousChoice_sure = 0
-		    ,	numberOfPreviousChoice_risky = 0
+		    ,	numberOfPreviousChoice = [0,0,0,0]
 		    ;
 		    if (indivOrGroup == 1 & tutorialTrial == 1) {
-			    socialFreqNumbers.left = this.add.text(leftSlotPositionX, socialInfoY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.right = this.add.text(rightSlotPositionX, socialInfoY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    numberOfPreviousChoice_sure = 0;
-			    numberOfPreviousChoice_risky = 0;
-			    socialFreqNumbers.left.visible = false;
-			    socialFreqNumbers.right.visible = false;
+		    	for (let i = 1; i < numOptions+1; i++) {
+		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		    		socialFreqNumbers['option'+i].visible = false;
+		    		numberOfPreviousChoice[i-1] = 0;
+		    	}
+		    	
 			} else if (indivOrGroup == 1 & tutorialTrial == 2) {
-			    socialFreqNumbers.left = this.add.text(leftSlotPositionX, socialInfoY, `2 people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.right = this.add.text(rightSlotPositionX, socialInfoY, `3 people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    numberOfPreviousChoice_sure = 2;
-			    numberOfPreviousChoice_risky = 3;
+			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `4 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    numberOfPreviousChoice[0] = 1;
+			    numberOfPreviousChoice[1] = 4;
+			    numberOfPreviousChoice[2] = 1;
+			    numberOfPreviousChoice[3] = 2;
 			    // function.call(what_is_this, ...) method can specify what you mean by "this" in the function
-			    showStars.call(this, numberOfPreviousChoice_sure, numberOfPreviousChoice_risky, socialInfoY, false);
+			    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], socialInfoY);
 			} else if (indivOrGroup == 1 & tutorialTrial == 3) {
-			    socialFreqNumbers.left = this.add.text(leftSlotPositionX, socialInfoY, `3 people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.right = this.add.text(rightSlotPositionX, socialInfoY, `2 people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    numberOfPreviousChoice_sure = 3; // 3
-			    numberOfPreviousChoice_risky = 2; // 2
+			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `3 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    numberOfPreviousChoice[0] = 2;
+			    numberOfPreviousChoice[1] = 2;
+			    numberOfPreviousChoice[2] = 1;
+			    numberOfPreviousChoice[3] = 3;
 			    // function.call(what_is_this, ...) method can specify what you mean by "this" in the function
-			    showStars.call(this, numberOfPreviousChoice_sure, numberOfPreviousChoice_risky, socialInfoY, false);
+			    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], socialInfoY);
 			} else if (tutorialTrial != 4) {
-				socialFreqNumbers.left = this.add.text(leftSlotPositionX, socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.right = this.add.text(rightSlotPositionX, socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.left.visible = false;
-			    socialFreqNumbers.right.visible = false;
-			    if (choice_tutorial == 1) {
-			    	socialFreqNumbers.left.visible = true;
-			    	numberOfPreviousChoice_sure = 1;
-			    	socialFreqNumbers.right.visible = false;
-			    	numberOfPreviousChoice_risky = 0;
-			    	// function.call(what_is_this, ...) method can specify what you mean by "this" in the function
-			    	showStars.call(this, numberOfPreviousChoice_sure, numberOfPreviousChoice_risky, socialInfoY, false);
-			    }
-			    if (choice_tutorial == 2) {
-			    	socialFreqNumbers.left.visible = false;
-			    	numberOfPreviousChoice_sure = 0;
-			    	socialFreqNumbers.right.visible = true;
-			    	numberOfPreviousChoice_risky = 1;
-			    	// function.call(what_is_this, ...) method can specify what you mean by "this" in the function
-			    	showStars.call(this, numberOfPreviousChoice_sure, numberOfPreviousChoice_risky, socialInfoY, false);
-			    }
+				for (let i = 1; i < numOptions+1; i++) {
+		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		    		if (choice_tutorial == i) {
+		    			socialFreqNumbers['option'+i].visible = true;
+		    			numberOfPreviousChoice[i-1] = 1;
+		    		} else {
+		    			socialFreqNumbers['option'+i].visible = false;
+		    			numberOfPreviousChoice[i-1] = 0;
+		    		}
+		    	}
+				
 			} else {
-				socialFreqNumbers.left = this.add.text(leftSlotPositionX, socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.right = this.add.text(rightSlotPositionX, socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.left.visible = false;
-			    socialFreqNumbers.right.visible = false;
-		    	numberOfPreviousChoice_sure = 0;
-		    	numberOfPreviousChoice_risky = 0;
+				for (let i = 1; i < numOptions+1; i++) {
+		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		    		socialFreqNumbers['option'+i].visible = false;
+		    		numberOfPreviousChoice[i-1] = 0;
+		    	}
+				
 			}
-		    /*if (tutorialTrial==1 | tutorialTrial==4) {
-		    	socialFreqNumbers.sure.visible = false;
-		    	socialFreqNumbers.risky.visible = false;
-		    	numberOfPreviousChoice_sure = 0;
-		    	numberOfPreviousChoice_risky = 0;
-		    }*/
-		    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
 
-
+			// the shadowed boxes to hide slots 
+		    let shadow1 = this.add.image(400, slotY - 30, 'blackbox' ).setDisplaySize(780, 310)
+		    ,	shadow2 = this.add.image(400, scoreText_tutorialY - 10, 'blackbox' ).setDisplaySize(780, 90)
+		    ;
+		    if (tutorialTrial == 3) {
+		    	shadow1.visible = true;
+				shadow2.visible = true;
+			} else {
+				shadow1.visible = false;
+				shadow2.visible = false;
+			}
 		    
-
 		}
 
 		update(){}
@@ -1107,13 +1008,13 @@ window.onload = function() {
 			scoreText_tutorial.destroy();
 			timeText_tutorial.destroy();
 			// background colour
-			this.cameras.main.setBackgroundColor('#ffd6c9');// #d9d9d9 #ffffff
+			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);// #d9d9d9 #ffffff
 
 			// tutorial texts
 		    let tutorialPosition = this.tutorialPosition;
-		    let slotY = 430
-		    ,	socialInfoY = slotY + 100
-		    ,	payoffTextY = slotY - 80
+		    let slotY = 480//430
+		    //,	socialInfoY = slotY - 90
+		    ,	payoffTextY = slotY - 90
 		    //,	trialText_tutorialY = 16+165
 		    //,	scoreText_tutorialY = 65+165
 		    ;
@@ -1131,21 +1032,34 @@ window.onload = function() {
 
 			//  Texts
 			objects_feedbackStage = {};
-			objects_feedbackStage.box1 = this.add.sprite(200, slotY, 'machine1_active').setDisplaySize(optionWidth, optionHeight);
-			objects_feedbackStage.box2 = this.add.sprite(600, slotY, 'machine2_active').setDisplaySize(optionWidth, optionHeight);
-			objects_feedbackStage.box1.visible = false;
-			objects_feedbackStage.box2.visible = false;
+			for (let i = 1; i < numOptions+1; i++) {
+				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
+				objects_feedbackStage['box'+i].visible = false;
+			}
+			// objects_feedbackStage.box1 = this.add.sprite(200, slotY, 'machine1_active').setDisplaySize(optionWidth, optionHeight);
+			// objects_feedbackStage.box2 = this.add.sprite(600, slotY, 'machine2_active').setDisplaySize(optionWidth, optionHeight);
+			// objects_feedbackStage.box1.visible = false;
+			// objects_feedbackStage.box2.visible = false;
 			if (this.choice == -1) {
 				feedbackTextPosition = missPositionX;
 
 			} else if (this.choice == 1) {
 				objects_feedbackStage.box1.visible = true;
-				feedbackTextPosition = leftSlotPositionX;
+				feedbackTextPosition = option1_positionX + space_between_boxes*0;
 
-			} else {
+			} else if (this.choice == 2) {
 				objects_feedbackStage.box2.visible = true;
-				feedbackTextPosition = rightSlotPositionX;
+				feedbackTextPosition = option1_positionX + space_between_boxes*1;
+
+			} else if (this.choice == 3) {
+				objects_feedbackStage.box3.visible = true;
+				feedbackTextPosition = option1_positionX + space_between_boxes*2;
+
+			} else if (this.choice == 4) {
+				objects_feedbackStage.box4.visible = true;
+				feedbackTextPosition = option1_positionX + space_between_boxes*3;
 			}
+
 			//let tutorialPayoff;
 			switch (tutorialTrial) {
                 case 1:
@@ -1164,8 +1078,9 @@ window.onload = function() {
 
 		    setTimeout(function(){
 		    	// hiding every objects
-		    	objects_feedbackStage.box1.visible = false;
-		    	objects_feedbackStage.box2.visible = false;
+		    	for (let i =1; i<numOptions+1; i++) {
+		        	objects_feedbackStage['box'+i].visible = false;
+		        }
 		    	payoffText.visible = false;
 		    	// going back to the tutorial
 		    	let updatedTutorialPosition = tutorialPosition + 1;
@@ -1189,6 +1104,7 @@ window.onload = function() {
 			}
 
 		create(){
+			understandingCheckStarted = 1;
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
 
@@ -1240,7 +1156,7 @@ window.onload = function() {
 			;
 			for (let i=0; i<5; i++) {
 				optionButtonsA0[i] = this.add.container(80 + 60*i, 180+80*0); //position
-				optionButtonsA0Text[i] = this.add.text(0, 0, 10+20*i, { fontSize: '23px', fill: '#000' });
+				optionButtonsA0Text[i] = this.add.text(0, 0, 40+20*i, { fontSize: '23px', fill: '#000' });
 				optionButtonsA0Image[i] = this.add.sprite(0, 0, 'button').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA0Image_active[i] = this.add.sprite(0, 0, 'button_active').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA0Text[i].setOrigin(0.5, 0.5);
@@ -1541,7 +1457,7 @@ window.onload = function() {
 		    			this.scene.launch('ScenePerfect');
 		    		} else {
 		    			incorrectCount++;
-		    			console.log('incorrectCount = '+incorrectCount);
+		    			// console.log('incorrectCount = '+incorrectCount);
 		    			isInstructionRevisit = true;
 		    			instructionPosition = 0;
 		    			if (incorrectCount<4) {
@@ -1685,7 +1601,7 @@ window.onload = function() {
 		update(){}
 	};
 
-	// SceneMain
+	// SceneMain -- main scene; experimental task
 	class SceneMain extends Phaser.Scene {
 
 		constructor (){
@@ -1697,28 +1613,37 @@ window.onload = function() {
 
 		create(){
 
+			// console.log('restarting the main scene!: mySocialInfo = '+data.socialFreq[data.round-1]);
+
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF');
 			//console.log('SceneMain started. currentTrial: ' + currentTrial);
 			// options
 			// slot machines and choice button
-		    let objects = {};
+		    let options = {};
 		    let isChoiceMade = false;
-		    let slotY_main = 300;
+		    let slotY_main = 400;
+
 		    let trialText_Y = 16
-		    ,	scoreText_Y = 66
-		    ,	energyBar_Y = 116
+		    ,	groupTotalScoreText_Y = 16 + 50 * 1
+		    ,	costPaidText_Y = 16 + 50 * 2
+		    ,	scoreText_Y = 16 + 50 * 3
+		    ,	energyBar_Y = 16 + 50 * 4
 		    ;
-			objects.box1 = this.add.sprite(200, slotY_main, 'machine1_normal');
-			objects.box1_active = this.add.sprite(200, slotY_main, 'machine1_active');
-			objects.box2 = this.add.sprite(600, slotY_main, 'machine2_normal');
-			objects.box2_active = this.add.sprite(600, slotY_main, 'machine2_active');
-			objects.box1.setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
-			objects.box2.setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
-			objects.box1_active.setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
-			objects.box2_active.setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
-			objects.box1_active.visible = false;
-			objects.box2_active.visible = false;
+
+		    // let trialText_Y = 16
+		    // ,	scoreText_Y = 66
+		    // ,	energyBar_Y = 116
+		    // ;
+
+			// Creating options
+		    for (let i=1; i<numOptions+1; i++) {
+		    	options['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_normal');
+		    	options['box_active'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_active');
+		    	options['box'+i].setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
+		    	options['box_active'+i].setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
+		    	options['box_active'+i].visible = false;
+		    }
 
 			// confirmation text
 			let confirmationContainer = this.add.container(175, slotY_main+20);
@@ -1776,12 +1701,17 @@ window.onload = function() {
 	                }
 	                if(this.timeLeft < 0){
 	                    currentChoiceFlag = -1
-		                objects.box1.visible = false;
-						objects.box1_active.visible = false;
-		                objects.box2.visible = false;
-						objects.box2_active.visible = false;
-						madeChoice(currentChoiceFlag, 'miss', isLeftRisky);
-						game.scene.start('ScenePayoffFeedback', {didMiss: true});
+	                    for (let i=1; i<numOptions+1; i++) {
+	                    	options['box'+i].visible = false;
+	                    	options['box_active'+i].visible = false;
+	                    }
+		    //             options.box1.visible = false;
+						// options.box1_active.visible = false;
+		    //             options.box2.visible = false;
+						// options.box2_active.visible = false;
+						// madeChoice(currentChoiceFlag, 'miss', isLeftRisky);
+						madeChoice_4ab(currentChoiceFlag, 'miss', optionOrder);
+						game.scene.start('ScenePayoffFeedback', {didMiss: true, flag: currentChoiceFlag});
 						gameTimer.destroy();
 	                }
 	            },
@@ -1790,125 +1720,145 @@ window.onload = function() {
 	        });
 	        // =============== Count down =================================
 
-			// pointerdown
-			objects.box1.on('pointerdown', function (pointer) {
-				objects.box1.visible = false;
-				objects.box1_active.visible = true;
-				confirmationContainer.x = 200;
-				confirmationContainer.visible = true;
-				if(currentChoiceFlag == 2) {
-					objects.box2_active.visible = false;
-					objects.box2.visible = true;
-				}
-		    	currentChoiceFlag = 1;
-		    }, this);
-		    objects.box1_active.on('pointerdown', function (pointer) {
-		    	//clearTimeout(countDownChoiceStage);
-		    	if(!isChoiceMade) {
-		    		madeChoice(currentChoiceFlag, exp_condition, isLeftRisky);
-		    		gameTimer.destroy();
-		    		game.scene.start('ScenePayoffFeedback', {didMiss: false});
-		    		isChoiceMade = true;
-		    		objects.box1.visible = false;
-		    		objects.box2.visible = false;
-		    		objects.box1_active.visible = false;
-		    		confirmationContainer.visible= false;
-		    	}		
-		    }, this);
-		    objects.box2.on('pointerdown', function (pointer) {
-		    	objects.box2.visible = false;
-				objects.box2_active.visible = true;
-				confirmationContainer.x = 600;
-				confirmationContainer.visible = true;
-				if(currentChoiceFlag == 1) {
-					objects.box1_active.visible = false;
-					objects.box1.visible = true;
-				}
-		    	currentChoiceFlag = 2;
-		    }, this);
-		    objects.box2_active.on('pointerdown', function (pointer) {
-		    	//clearTimeout(countDownChoiceStage);
-				if(!isChoiceMade) {
-		    		madeChoice(currentChoiceFlag, exp_condition, isLeftRisky);
-		    		gameTimer.destroy();
-		    		game.scene.start('ScenePayoffFeedback', {didMiss: false});
-		    		isChoiceMade = true;
-		    		objects.box1.visible = false;
-		    		objects.box2.visible = false;
-		    		objects.box2_active.visible = false;
-		    		confirmationContainer.visible= false;
-		    	}
-		    }, this);
+	        for (let i=1; i<numOptions+1; i++) {
+	        	// pointerdown - normal option
+	        	options['box'+i].on('pointerdown', function (pointer) {
+					options['box'+i].visible = false;
+					options['box_active'+i].visible = true;
+					confirmationContainer.x = option1_positionX + space_between_boxes*(i-1);
+					confirmationContainer.visible = true;
+					currentChoiceFlag = i;
+					for (let j=1; j<numOptions+1; j++) {
+						if(currentChoiceFlag > 0 & currentChoiceFlag != j) {
+							options['box_active'+j].visible = false;
+							options['box'+j].visible = true;
+						}
+					}
+			    }, this);
+	        	// pointerdown - activated option
+	        	options['box_active'+i].on('pointerdown', function (pointer) {
+			    	//clearTimeout(countDownChoiceStage);
+			    	if(!isChoiceMade) {
+			    		// madeChoice(currentChoiceFlag, exp_condition, isLeftRisky);
+			    		madeChoice_4ab(currentChoiceFlag, exp_condition, optionOrder);
+			    		gameTimer.destroy();
+			    		game.scene.start('ScenePayoffFeedback', {didMiss: false, flag: currentChoiceFlag});
+			    		isChoiceMade = true;
+			    		for (let j=1; j<numOptions+1; j++) {
+			    			options['box'+j].visible = false;
+			    		}
+			    		options['box_active'+i].visible = false;
+			    		confirmationContainer.visible= false;
+			    	}		
+			    }, this);
+			    // pointerover
+				options['box'+i].on('pointerover', function (pointer) {
+			    	options['box'+i].setTint(0xb8860b); //B8860B ff0000
+			    }, this);
+			    // pointerout
+				options['box'+i].on('pointerout', function (pointer) {
+			    	options['box'+i].clearTint();
+			    }, this);
+	        }
 
-		    // pointerover
-			objects.box1.on('pointerover', function (pointer) {
-		    	objects.box1.setTint(0xb8860b); //B8860B ff0000
-		    }, this);
-		    objects.box2.on('pointerover', function (pointer) {
-		    	objects.box2.setTint(0x008b8b); //008B8B
-		    }, this);
-		    // pointerout
-			objects.box1.on('pointerout', function (pointer) {
-		    	objects.box1.clearTint();
-		    }, this);
-		    objects.box2.on('pointerout', function (pointer) {
-		    	objects.box2.clearTint();
-		    }, this);
+		    // ------------ Texts appear above the slots
+		    trialText = this.add.text(16, trialText_Y
+		    	, 'Current trial: ' + currentTrial + ' / ' + horizon
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    
+		    groupTotalScoreText = this.add.text(16, groupTotalScoreText_Y
+		    	, 'Team\'s total score: ' + groupTotalScore + ' (your share: ' + totalPayoff_perIndiv + ')'
+		    	, { fontSize: '30px', fill: nomalTextColor });
 
-		    //  Texts
-		    //trialText = this.add.text(16, trialText_Y, 'Current trial: 1 / '+horizon, { fontSize: '30px', fill: '#000' });
-		    trialText = this.add.text(16, trialText_Y, 'Current trial: ' + currentTrial + ' / ' + horizon, { fontSize: '30px', fill: '#000' });
-		    //scoreText = this.add.text(16, scoreText_Y, 'Total score: 0', { fontSize: '30px', fill: '#000' });
-		    scoreText = this.add.text(16, scoreText_Y, 'Total score: ' + score, { fontSize: '30px', fill: '#000' });
-		    timeText = this.add.text(16, energyBar_Y, 'Remaining time: ', { fontSize: '30px', fill: '#000' });
-		    payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `You got \n${payoff} points`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5, 0.5);
+		    costPaidText = this.add.text(16, costPaidText_Y
+		    	, 'Sharing fee you paid: '
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    costPaidText_2 = this.add.text(16 + 400, costPaidText_Y
+		    	, '-' + info_share_cost_total
+		    	, { fontSize: '30px', fill: noteColor });
+
+		    scoreText = this.add.text(16, scoreText_Y
+		    	// , 'Total score: ' + score
+		    	, 'Your net score: ' + (totalPayoff_perIndiv - info_share_cost_total)
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    timeText = this.add.text(16, energyBar_Y
+		    	, 'Remaining time: '
+		    	, { fontSize: '30px', fill: nomalTextColor });
+		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100
+			    	, ``
+			    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
+
+		    payoffText.setText(`You dug out \n${payoff}`);
+		    // The following 'You earned $??' might be misleading as this is a group-optimization task
+		    // if (didShare != 1) {
+			   //  payoffText.setText(`You earned \n${payoff}`);
+		    // } else {
+		    // 	payoffText.setText(`You earned \n${payoff} - ${info_share_cost}`);
+		    // }
+		    // ==============================================================================
+
 		    if(currentTrial === 1) {
 		    	payoffText.visible = false;
 		    } else {
 		    	payoffText.visible = true;
 		    }
+		    // --------------------------------------------
 
 		    // social information
 		    let socialFreqNumbers = {};
-		    if (!isLeftRisky) {
-			    if (indivOrGroup == 1) {
-				    socialFreqNumbers.sure = this.add.text(leftSlotPositionX, slotY_main+100, `${mySocialInfoList['sure']} people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.risky = this.add.text(rightSlotPositionX, slotY_main+100, `${mySocialInfoList['risky']} people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				} else {
-					socialFreqNumbers.sure = this.add.text(leftSlotPositionX, slotY_main+100, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.risky = this.add.text(rightSlotPositionX, slotY_main+100, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.sure.visible = false;
-				    socialFreqNumbers.risky.visible = false;
-				    if (mySocialInfoList['sure'] > 0) socialFreqNumbers.sure.visible = true;
-				    if (mySocialInfoList['risky'] > 0) socialFreqNumbers.risky.visible = true;
-				}
-			} else {
-				if (indivOrGroup == 1) {
-				    socialFreqNumbers.sure = this.add.text(rightSlotPositionX, slotY_main+100, `${mySocialInfoList['sure']} people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.risky = this.add.text(leftSlotPositionX, slotY_main+100, `${mySocialInfoList['risky']} people chose`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				} else {
-					socialFreqNumbers.sure = this.add.text(rightSlotPositionX, slotY_main+100, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.risky = this.add.text(leftSlotPositionX, slotY_main+100, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.sure.visible = false;
-				    socialFreqNumbers.risky.visible = false;
-				    if (mySocialInfoList['sure'] > 0) socialFreqNumbers.sure.visible = true;
-				    if (mySocialInfoList['risky'] > 0) socialFreqNumbers.risky.visible = true;
-				}
-			}
-			if(currentTrial==1) {
-		    	socialFreqNumbers.sure.visible = false;
-		    	socialFreqNumbers.risky.visible = false;
+		    if (indivOrGroup == 1) {
+		    	for (let i = 1; i < numOptions+1; i++) {
+		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), slotY_main-80, `${mySocialInfoList['option'+i]} people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		    	}
+		    } else { // individual condition
+		    	for (let i = 1; i < numOptions+1; i++) {
+		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), slotY_main-80, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		    		if (mySocialInfoList['option'+i] > 0) {
+		    			// console.log('mySocialInfoList option '+ i +' is visible');
+		    			socialFreqNumbers['option'+i].visible = true;
+		    		} else {
+		    			// console.log('mySocialInfoList option '+ i +' is NOT visible');
+		    			socialFreqNumbers['option'+i].visible = false;
+		    		}
+		    	}
 		    }
-		    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-		    let numberOfPreviousChoice_sure = mySocialInfoList['sure']
-		    ,	numberOfPreviousChoice_risky = mySocialInfoList['risky']
-		    ;
-		    showStars.call(this, numberOfPreviousChoice_sure, numberOfPreviousChoice_risky, slotY_main+110, isLeftRisky);
+		    // No social info visible 
+		    // (change inside of the if() when you want to show "?? people" info)
+		    if(currentTrial > 0) { //-> if(currentTrial==1) {
+		    	for (let i = 1; i < numOptions+1; i++) {
+		    		socialFreqNumbers['option'+i].visible = false;
+		    	}
+		    }
+		    //  Stars that are evenly spaced 70 pixels apart along the x axis
+		    let numberOfPreviousChoice = [];
+		    let shared_payoff = [];
+		    let shared_option_position = [];
+		    for (let i = 0; i < maxGroupSize; i++) {
+		    	if (share_or_not[i] != null) {
+		    		if (share_or_not[i].share == 1) {
+		    			shared_payoff.push(share_or_not[i].payoff);
+		    			// shared_option_position.push( optionOrder.indexOf(optionsKeyList.indexOf(mySocialInfo[i])) ) 
+		    			shared_option_position.push(share_or_not[i].position);
+		    		}
+		    	}
+		    }
+		    for (let i = 1; i < numOptions+1; i++) {
+		    	numberOfPreviousChoice[i-1] = mySocialInfoList['option'+i]
+		    }
+		    
+		    // --- Social frequency information (used in Toyokawa & Gaissmaier 2020)
+		    // Turn this on when you want to show the frequency-information
+		    // and turn off the 'publicInfo.call' in this case 
+		    // 
+		    // showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], slotY_main-90);
+		    // 
+		    // --------------------------------------------------------------------
+
+		    showPublicInfo.call(this, shared_payoff, shared_option_position, slotY_main-90);
 		    
 		}
+
 		update(){
-			//trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
-			//scoreText.setText('Total score: ' + score);
 		}
 	};
 
@@ -1924,62 +1874,221 @@ window.onload = function() {
 
 		init (data) {
 			this.didMiss = data.didMiss;
+			this.flag = data.flag;
 		}
 
 		create(){
 			// background colour
-			this.cameras.main.setBackgroundColor('#ffd6c9');//#d9d9d9 = grey #ffffff = white
+			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);//#d9d9d9 = grey #ffffff = white
 			//  Texts
-			let slotY_main = 300;
+			let slotY_main = 400;
 			objects_feedbackStage = {};
-			objects_feedbackStage.box1 = this.add.sprite(200, slotY_main, 'machine1_active').setDisplaySize(optionWidth, optionHeight);
-			objects_feedbackStage.box2 = this.add.sprite(600, slotY_main, 'machine2_active').setDisplaySize(optionWidth, optionHeight);
-			objects_feedbackStage.box1.visible = false;
-			objects_feedbackStage.box2.visible = false;
-
-			/*switch (currentChoiceFlag) {
-				case -1:
-					feedbackTextPosition = missPositionX;
-					currentChoiceFlag = 0;
-					break;
-
-				case 1:
-					objects_feedbackStage.box1.visible = true;
-					feedbackTextPosition = leftSlotPositionX;
-					currentChoiceFlag = 0;
-
-				case 2:
-					objects_feedbackStage.box2.visible = true;
-					feedbackTextPosition = rightSlotPositionX;
-					currentChoiceFlag = 0;
-					break;
-
-				default:
-					objects_feedbackStage.box2.visible = true;
-					feedbackTextPosition = 700;
-					currentChoiceFlag = 0;
-					//console.log('currentChoiceFlag is '+currentChoiceFlag);
-					break;
-			}*/
-
-			if(currentChoiceFlag == -1) {
-				feedbackTextPosition = missPositionX;
-				currentChoiceFlag = 0;
-			} else if(currentChoiceFlag == 1) {
-				objects_feedbackStage.box1.visible = true;
-				feedbackTextPosition = leftSlotPositionX;
-				currentChoiceFlag = 0;
-			}else{
-				objects_feedbackStage.box2.visible = true;
-				feedbackTextPosition = rightSlotPositionX;
-				currentChoiceFlag = 0;
+			for (let i=1; i<numOptions+1; i++) {
+				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
+				if (i != this.flag) {
+					objects_feedbackStage['box'+i].visible = false;
+					// console.log('option '+ i +' is invisible because thisflag = '+this.flag);
+				} else {
+					objects_feedbackStage['box'+i].visible = true;
+					// console.log('option '+ i +' is visible because thisflag = '+this.flag);
+				}
 			}
+
+			// YES button
+			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
+			let buttonContainer_yes = this.add.container(150, 200); //position
+			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: -' + info_share_cost + ' points)', button_style);
+			buttonText_yes.setOrigin(0.5, 0.5);
+			buttonContainer_yes.add(buttonImage_yes);
+			buttonContainer_yes.add(buttonText_yes);
+			buttonContainer_yes.visible = false;
+
+			// NO button
+			let buttonContainer_no = this.add.container(600, 200); //position
+			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_no = this.add.text(0, 0, 'NO\n(No cost)', button_style);
+			buttonText_no.setOrigin(0.5, 0.5);
+			buttonContainer_no.add(buttonImage_no);
+			buttonContainer_no.add(buttonText_no);
+			buttonContainer_no.visible = false;
+
+			// pointer over & out effects
+		    buttonImage_yes.on('pointerover', function (pointer) {
+		    	buttonImage_yes.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_yes.on('pointerout', function (pointer) {
+		    	buttonImage_yes.clearTint();
+		    }, this);
+		    buttonImage_no.on('pointerover', function (pointer) {
+		    	buttonImage_no.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_no.on('pointerout', function (pointer) {
+		    	buttonImage_no.clearTint();
+		    }, this);
+
+		    buttonImage_yes.on('pointerdown', function (pointer) {
+		    	currentChoiceFlag = 0;
+		    	didShare = 1;
+		    	score -= info_share_cost; // <- The cost of sharing information
+		    	info_share_cost_total += info_share_cost;
+		    	waitOthersText.setText('Please wait for others...');
+		    	socket.emit('result stage ended'
+		    			, {share: didShare
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			, totalEarning: (payoff - didShare * info_share_cost)
+		    			, thisTrial: currentTrial
+		    		});
+		    	buttonContainer_yes.visible = false;
+		    	buttonContainer_no.visible = false;
+		    }, this);
+
+		    buttonImage_no.on('pointerdown', function (pointer) {
+		    	currentChoiceFlag = 0;
+		    	didShare = 0;
+		    	waitOthersText.setText('Please wait for others...');
+		    	socket.emit('result stage ended'
+		    			, {share: didShare
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			, totalEarning: (payoff - didShare * info_share_cost)
+		    			, thisTrial: currentTrial
+		    		});
+		    	buttonContainer_yes.visible = false;
+		    	buttonContainer_no.visible = false;
+		    }, this);
+
+
+			if(this.flag == -1) {
+				feedbackTextPosition = missPositionX;
+				//this.flag = 0;
+				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
+			} else {
+				// console.log('scenefeedbackstage: this.flag == '+ this.flag);
+				// for(let i=1; i<numOptions+1; i++) {
+				// 	if(i == this.flag){
+				// 		objects_feedbackStage['box'+this.flag].visible = true;
+				// 	}else{
+				// 		objects_feedbackStage['box'+this.flag].visible = false;
+				// 	}
+				// }
+				// objects_feedbackStage['box'+this.flag].visible = true;
+				feedbackTextPosition = option1_positionX + space_between_boxes * (this.flag - 1);
+				//this.flag = 0;
+				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
+			}
+
+			// if(this.flag == -1) {
+			// 	feedbackTextPosition = missPositionX;
+			// 	this.flag = 0;
+			// } else if(this.flag == 1) {
+			// 	objects_feedbackStage.box1.visible = true;
+			// 	feedbackTextPosition = leftSlotPositionX;
+			// 	this.flag = 0;
+			// }else{
+			// 	objects_feedbackStage.box2.visible = true;
+			// 	feedbackTextPosition = rightSlotPositionX;
+			// 	this.flag = 0;
+			// }
 
 			if (this.didMiss) {
 				payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `Missed!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
 			} else {
 		    	payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `${payoff} points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
-		    	payoffText.setFontSize(10 + 2*Math.sqrt(2/3 * payoff));
+		    	payoffText.setFontSize(10 + 1.5*Math.sqrt(1/2 * payoff)); //originally: 1*Math.sqrt(2/3 * payoff)
+			}
+
+			if (indivOrGroup == 1) {
+				setTimeout(function(){
+					waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
+					buttonContainer_yes.visible = true;
+					buttonContainer_no.visible = true;
+				}.bind(this),  1 * 1000); 
+			} else {
+				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
+				setTimeout(function(){
+			    	//payoffText.destroy();
+			    	//game.scene.sleep('ScenePayoffFeedback');
+			    	//game.scene.start('SceneMain');
+			    	//console.log('emitting result stage ended!');
+			    	currentChoiceFlag = 0;
+			    	socket.emit('result stage ended'
+		    			, {share: 0
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			, totalEarning: (payoff - 0 * info_share_cost)
+		    			, thisTrial: currentTrial
+		    		});
+			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
+			}
+
+		    
+		}
+		update(){}
+	};
+
+	// SceneInfoShare
+	class SceneInfoShare extends Phaser.Scene {
+
+		constructor (){
+		    super({ key: 'SceneInfoShare', active: false });
+		}
+
+		preload(){
+			}
+
+		init (data) {
+			this.didMiss = data.didMiss;
+			this.flag = data.flag;
+		}
+
+		create(){
+			// background colour
+			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);//#d9d9d9 = grey #ffffff = white
+			//  Texts
+			let slotY_main = 400;
+			objects_feedbackStage = {};
+			for (let i=1; i<numOptions+1; i++) {
+				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
+				if (i != this.flag) {
+					objects_feedbackStage['box'+i].visible = false;
+					// console.log('option '+ i +' is invisible because thisflag = '+this.flag);
+				} else {
+					objects_feedbackStage['box'+i].visible = true;
+					// console.log('option '+ i +' is visible because thisflag = '+this.flag);
+				}
+			}
+
+
+			if(this.flag == -1) {
+				feedbackTextPosition = missPositionX;
+				//this.flag = 0;
+				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
+			} else {
+				// console.log('scenefeedbackstage: this.flag == '+ this.flag);
+				// for(let i=1; i<numOptions+1; i++) {
+				// 	if(i == this.flag){
+				// 		objects_feedbackStage['box'+this.flag].visible = true;
+				// 	}else{
+				// 		objects_feedbackStage['box'+this.flag].visible = false;
+				// 	}
+				// }
+				// objects_feedbackStage['box'+this.flag].visible = true;
+				feedbackTextPosition = option1_positionX + space_between_boxes * (this.flag - 1);
+				//this.flag = 0;
+				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
+			}
+
+
+			if (this.didMiss) {
+				payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `Missed!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
+			} else {
+		    	payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `${payoff} points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
+		    	payoffText.setFontSize(10 + 1.5*Math.sqrt(1/2 * payoff)); //originally: 1*Math.sqrt(2/3 * payoff)
 			}
 
 			if (indivOrGroup == 1) {
@@ -1993,6 +2102,7 @@ window.onload = function() {
 		    	//game.scene.sleep('ScenePayoffFeedback');
 		    	//game.scene.start('SceneMain');
 		    	//console.log('emitting result stage ended!');
+		    	currentChoiceFlag = 0;
 		    	socket.emit('result stage ended');
 		    }, feedbackTime * 1000); //2.5 * 1000 ms was the original
 		}
@@ -2041,136 +2151,6 @@ window.onload = function() {
 		update(){}
 	};
 
-    //Scene SampleGame
-	class SceneSampleGame extends Phaser.Scene {
-
-		constructor (){
-		    	super({ key: 'SceneSampleGame', active: false });
-		}
-
-		preload(){
-			this.load.image('sky', 'assets/sky.png');
-		    this.load.image('ground', 'assets/platform.png');
-		    this.load.image('star', 'assets/star.png');
-		    this.load.image('bomb', 'assets/bomb.png');
-		    this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
-		}
-
-		create(){
-			//  A simple background for our game
-		    this.add.image(400, 300, 'sky');
-		    this.add.image(400, 300, 'star');
-		    this.add.image(300, 300, 'star');
-		    /*
-		    Why 400 and 300? It's because in Phaser 3 all Game Objects are positioned based on their center by default. The background image is 800 x 600 pixels in size, so if we were to display it centered at 0 x 0 you'd only see the bottom-right corner of it. If we display it at 400 x 300 you see the whole thing.
-		    */
-
-		    //  The platforms group contains the ground and the 2 ledges we can jump on
-		    platforms = this.physics.add.staticGroup();
-
-		    //  Here we create the ground.
-		    //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
-		    platforms.create(400, 568, 'ground').setScale(2).refreshBody();
-
-		    //  Now let's create some ledges
-		    platforms.create(600, 400, 'ground');
-		    platforms.create(50, 250, 'ground');
-		    platforms.create(750, 220, 'ground');
-
-		    // The player and its settings
-		    player = this.physics.add.sprite(100, 450, 'dude');
-
-		    //  Player physics properties. Give the little guy a slight bounce.
-		    player.setBounce(0.2);
-		    player.setCollideWorldBounds(true);
-
-		    //  Our player animations, turning, walking left and walking right.
-		    this.anims.create({
-		        key: 'left',
-		        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
-		        frameRate: 10,
-		        repeat: -1
-		    });
-
-		    this.anims.create({
-		        key: 'turn',
-		        frames: [ { key: 'dude', frame: 4 } ],
-		        frameRate: 20
-		    });
-
-		    this.anims.create({
-		        key: 'right',
-		        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-		        frameRate: 10,
-		        repeat: -1
-		    });
-
-		    //  Input Events
-		    cursors = this.input.keyboard.createCursorKeys();
-
-		    //  Some stars to collect, 12 in total, evenly spaced 70 pixels apart along the x axis
-		    stars = this.physics.add.group({
-		        key: 'star',
-		        //	Because it creates 1 child automatically, repeating 11 times means we'll get 12 in total, which is just what we need for our game:
-		        repeat: 11, 
-		        setXY: { x: 12, y: 0, stepX: 70 }
-		    });
-
-		    stars.children.iterate(function (child) {
-
-		        //  Give each star a slightly different bounce
-		        child.setBounceY(Phaser.Math.FloatBetween(0.4, 0.8));
-
-		    });
-
-		    bombs = this.physics.add.group();
-
-		    //  The score
-		    scoreText = this.add.text(16, 16, 'Total score: 0', { fontSize: '32px', fill: '#000' });
-
-		    //  Collide the player and the stars with the platforms
-		    this.physics.add.collider(player, platforms);
-		    this.physics.add.collider(stars, platforms);
-		    this.physics.add.collider(bombs, platforms);
-
-		    //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
-		    this.physics.add.overlap(player, stars, collectStar, null, this);
-
-		    this.physics.add.collider(player, bombs, hitBomb, null, this);
-		}
-
-		update(){
-			if (gameOver)
-		    {
-		        return;
-		    }
-
-		    if (cursors.left.isDown)
-		    {
-		        player.setVelocityX(-160);
-
-		        player.anims.play('left', true);
-		    }
-		    else if (cursors.right.isDown)
-		    {
-		        player.setVelocityX(160);
-
-		        player.anims.play('right', true);
-		    }
-		    else
-		    {
-		        player.setVelocityX(0);
-
-		        player.anims.play('turn');
-		    }
-
-		    if (cursors.up.isDown && player.body.touching.down)
-		    {
-		        player.setVelocityY(-330);
-		    }
-		}
-	};
-
 	let config = {
 	    type: Phaser.AUTO, // Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO
 	    width: configWidth,
@@ -2196,17 +2176,16 @@ window.onload = function() {
 	    scene: 
 	    [ SceneWaitingRoom0
 	    , SceneWaitingRoom
-	    , SceneWaitingRoom2
-	    , SceneInstruction 
-    	, SceneTutorial
-    	, SceneTutorialFeedback
-    	, SceneUnderstandingTest
+	    // , SceneWaitingRoom2
+	    // , SceneInstruction 
+    	// , SceneTutorial
+    	// , SceneTutorialFeedback
+    	// , SceneUnderstandingTest
     	, ScenePerfect
     	, SceneStartCountdown
     	, SceneMain
     	, ScenePayoffFeedback
-    	, SceneGoToQuestionnaire
-    	, SceneSampleGame 
+    	, SceneGoToQuestionnaire 
     	]
 	};
 
@@ -2222,166 +2201,149 @@ window.onload = function() {
 	game.scene.add('SceneMain');
 	game.scene.add('ScenePayoffFeedback');
 	game.scene.add('SceneGoToQuestionnaire');
-	game.scene.add('SceneSampleGame');
 
 
 	// functions
 
-	// controlling pictures and figures in the instruction page
-	/*function instructionPicturesFunction (indivOrGroup, instructionPosition) {
-		//console.log('indivOrGroup = ' + indivOrGroup + ' and instructionPosition = ' + instructionPosition);
-	}*/
+    function showStars_4ab (num_option1, num_option2, num_option3, num_option4, socialInfoY) {
 
-	
+    	let mod_num_option1 = num_option1 % 5
+    	,	mod_num_option2 = num_option2 % 5
+    	,	mod_num_option3 = num_option3 % 5
+    	,	mod_num_option4 = num_option4 % 5
+    	,	quotient_num_option1 = Math.floor(num_option1 / 5)
+    	,	quotient_num_option2 = Math.floor(num_option2 / 5)
+    	,	quotient_num_option3 = Math.floor(num_option3 / 5)
+    	,	quotient_num_option4 = Math.floor(num_option4 / 5)
+    	,	option1_positionX_new = (option1_positionX + space_between_boxes*0)-15 + 10*quotient_num_option1
+    	,	option2_positionX_new = (option1_positionX + space_between_boxes*1)-15 + 10*quotient_num_option2
+    	,	option3_positionX_new = (option1_positionX + space_between_boxes*2)-15 + 10*quotient_num_option3
+    	,	option4_positionX_new = (option1_positionX + space_between_boxes*3)-15 + 10*quotient_num_option4
+    	;
 
-    /**
-     * 正規分布乱数関数 参考:http://d.hatena.ne.jp/iroiro123/20111210/1323515616
-     * @param number m: mean μ
-     * @param number sigma: variance = σ^2
-     * @return number ランダムに生成された値
-     * Box-Muller Method
-     */
-    function BoxMuller(m, sigma) {
-        let a = 1 - Math.random();
-        let b = 1 - Math.random();
-        let c = Math.sqrt(-2 * Math.log(a));
-        if(0.5 - Math.random() > 0) {
-            return c * Math.sin(Math.PI * 2 * b) * sigma + m;
-        }else{
-            return c * Math.cos(Math.PI * 2 * b) * sigma + m;
-        }
-    };
-
-    // Sum of all elements of the array
-    function sum (arr, fn) {  
-        if (fn) {
-            return sum(arr.map(fn));
-        }
-        else {
-            return arr.reduce(function(prev, current, i, arr) {
-                    return prev+current;
-            });
-        }
-    };
-
-    /*function setSlotPosition (isLeftRisky) {
-    	if (isLeftRisky) {
-    		leftSlotPositionX = 600;
-    		rightSlotPositionX = 200;
-    		missPositionX = (leftSlotPositionX+rightSlotPositionX)/2;
-    	} else {
-    		leftSlotPositionX = 200;
-    		rightSlotPositionX = 600;
-    		missPositionX = (leftSlotPositionX+rightSlotPositionX)/2;
+    	// option1
+    	// First, draw 5 stars
+    	if (quotient_num_option1 > 0) {
+    		for (let q=0; q<quotient_num_option1; q++) {
+	    		stars_option1[q] = this.add.group({
+			        key: 'star',
+			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+			        // which is just what we need for our game:
+			        repeat: 5-1, 
+			        setXY: { x: option1_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
+			    });
+	    	}
     	}
-    	//console.log('isLeftRisky = '+isLeftRisky+' so the rightSlotPositionX = '+rightSlotPositionX);
-    }*/
+    	// Then, draw the remaining stars
+    	if (mod_num_option1 > 0) {
+    		stars_sure[quotient_num_option1] = this.add.group({
+		        key: 'star',
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // which is just what we need for our game:
+		        repeat: mod_num_option1-1, 
+		        setXY: { x: option1_positionX_new - 20*quotient_num_option1, y: socialInfoY-25, stepY: -15 }
+		    });
+    	}
 
-    function showStars (num_sure, num_risky, socialInfoY, isLeftRisky) {
-    	////console.log('showStars was executed on' + this);
-    	//if (tutorialTrial != 1 | tutorialTrial != 4) {
-	    //if (num_sure>0) {
-    	let mod_num_sure = num_sure % 5;
-    	let quotient_num_sure = Math.floor(num_sure / 5);
-    	let leftSlotPositionX_new = leftSlotPositionX-15 + 10*quotient_num_sure
-    	let mod_num_risky = num_risky % 5;
-    	let quotient_num_risky = Math.floor(num_risky / 5);
-    	let rightSlotPositionX_new = rightSlotPositionX-15 + 10*quotient_num_risky
+    	// option2
+    	// First, draw 5 stars
+    	if (quotient_num_option2 > 0) {
+    		for (let q=0; q<quotient_num_option2; q++) {
+	    		stars_option2[q] = this.add.group({
+			        key: 'star',
+			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+			        // which is just what we need for our game:
+			        repeat: 5-1, 
+			        setXY: { x: option2_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
+			    });
+	    	}
+    	}
+    	// Then, draw the remaining stars
+    	if (mod_num_option2 > 0) {
+    		stars_sure[quotient_num_option2] = this.add.group({
+		        key: 'star',
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // which is just what we need for our game:
+		        repeat: mod_num_option2-1, 
+		        setXY: { x: option2_positionX_new - 20*quotient_num_option2, y: socialInfoY-25, stepY: -15 }
+		    });
+    	}
 
-    	if (!isLeftRisky) {
-	    	// First, draw 5 stars
-	    	if (quotient_num_sure > 0) {
-	    		for (let q=0; q<quotient_num_sure; q++) {
-		    		stars_sure[q] = this.add.group({
-				        key: 'star',
-				        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				        // which is just what we need for our game:
-				        repeat: 5-1, 
-				        setXY: { x: leftSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				    });
-		    	}
-	    	}
-	    	// Then, draw the remaining stars
-	    	if (mod_num_sure > 0) {
-	    		stars_sure[quotient_num_sure] = this.add.group({
+    	// option3
+    	// First, draw 5 stars
+    	if (quotient_num_option3 > 0) {
+    		for (let q=0; q<quotient_num_option3; q++) {
+	    		stars_option3[q] = this.add.group({
 			        key: 'star',
 			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
 			        // which is just what we need for our game:
-			        repeat: mod_num_sure-1, 
-			        setXY: { x: leftSlotPositionX_new - 20*quotient_num_sure, y: socialInfoY+20, stepY: 15 }
+			        repeat: 5-1, 
+			        setXY: { x: option3_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
 			    });
 	    	}
-			
-	    	// First, draw 5 stars
-	    	if (quotient_num_risky > 0) {
-	    		for (let q=0; q<quotient_num_risky; q++) {
-		    		stars_risky[q] = this.add.group({
-				        key: 'star',
-				        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				        // which is just what we need for our game:
-				        repeat: 5-1, 
-				        setXY: { x: rightSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				    });
-		    	}
-	    	}
-	    	// Then, draw the remaining stars
-	    	if (mod_num_risky > 0) {
-	    		stars_risky[quotient_num_risky] = this.add.group({
+    	}
+    	// Then, draw the remaining stars
+    	if (mod_num_option3 > 0) {
+    		stars_sure[quotient_num_option3] = this.add.group({
+		        key: 'star',
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // which is just what we need for our game:
+		        repeat: mod_num_option3-1, 
+		        setXY: { x: option3_positionX_new - 20*quotient_num_option3, y: socialInfoY-25, stepY: -15 }
+		    });
+    	}
+
+    	// option4
+    	// First, draw 5 stars
+    	if (quotient_num_option4 > 0) {
+    		for (let q=0; q<quotient_num_option4; q++) {
+	    		stars_option4[q] = this.add.group({
 			        key: 'star',
 			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
 			        // which is just what we need for our game:
-			        repeat: mod_num_risky-1, 
-			        setXY: { x: rightSlotPositionX_new - 20*quotient_num_risky, y: socialInfoY+20, stepY: 15 }
+			        repeat: 5-1, 
+			        setXY: { x: option4_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
 			    });
 	    	}
-	    } else {
-	    	// First, draw 5 stars
-	    	if (quotient_num_sure > 0) {
-	    		for (let q=0; q<quotient_num_sure; q++) {
-		    		stars_sure[q] = this.add.group({
-				        key: 'star',
-				        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				        // which is just what we need for our game:
-				        repeat: 5-1, 
-				        setXY: { x: rightSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				    });
-		    	}
-	    	}
-	    	// Then, draw the remaining stars
-	    	if (mod_num_sure > 0) {
-	    		stars_sure[quotient_num_sure] = this.add.group({
-			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			        // which is just what we need for our game:
-			        repeat: mod_num_sure-1, 
-			        setXY: { x: rightSlotPositionX_new - 20*quotient_num_sure, y: socialInfoY+20, stepY: 15 }
-			    });
-	    	}
-			
-	    	// First, draw 5 stars
-	    	if (quotient_num_risky > 0) {
-	    		for (let q=0; q<quotient_num_risky; q++) {
-		    		stars_risky[q] = this.add.group({
-				        key: 'star',
-				        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-				        // which is just what we need for our game:
-				        repeat: 5-1, 
-				        setXY: { x: leftSlotPositionX_new - 20*q, y: socialInfoY+20, stepY: 15 }
-				    });
-		    	}
-	    	}
-	    	// Then, draw the remaining stars
-	    	if (mod_num_risky > 0) {
-	    		stars_risky[quotient_num_risky] = this.add.group({
-			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
-			        // which is just what we need for our game:
-			        repeat: mod_num_risky-1, 
-			        setXY: { x: leftSlotPositionX_new - 20*quotient_num_risky, y: socialInfoY+20, stepY: 15 }
-			    });
-	    	}
-	    }
-    }   
+    	}
+    	// Then, draw the remaining stars
+    	if (mod_num_option4 > 0) {
+    		stars_sure[quotient_num_option4] = this.add.group({
+		        key: 'star',
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // which is just what we need for our game:
+		        repeat: mod_num_option4-1, 
+		        setXY: { x: option4_positionX_new - 20*quotient_num_option4, y: socialInfoY-25, stepY: -15 }
+		    });
+    	}
+    } 
+
+    function showPublicInfo (shared_payoff, shared_option_position, socialInfoY) {
+    	// console.log('shared_payoff = ' + shared_payoff);
+    	// console.log('shared_option_position = ' + shared_option_position);
+
+    	let public_info_text = []
+    	,	public_info_text_position = []
+    	,	public_info_count = repeatelem(0, numOptions)
+    	;
+
+		for (let i=0; i < numOptions; i++) {
+    		public_info_text_position[i] = (option1_positionX + space_between_boxes * i)-15;
+    	}
+
+    	for (let i=0; i < shared_payoff.length; i++) {
+    		// Adding payoff texts
+		    public_info_text[i] = this.add.text(
+		    	public_info_text_position[shared_option_position[i]-1]
+		    	, socialInfoY - 25 * public_info_count[shared_option_position[i]-1]  
+		    	, shared_payoff[i]
+		    	, { fontSize: '30px', fill: noteColor }
+		    	).setOrigin(0.5, 0.5);
+		    // Updating how many times the same X position has been counted already
+		    public_info_count[shared_option_position[i]-1]++;
+    	}
+
+    }
 
     // madeChoice
     function madeChoice (flag, distribution, isLeftRisky) {  
@@ -2437,6 +2399,51 @@ window.onload = function() {
 		trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
     };
 
+    function madeChoice_4ab (flag, distribution, optionOrder) {  
+    	// A new cost is set
+    	info_share_cost = rand(100, 0);
+
+        let thisChoice;
+        if (flag == -1) {
+        	thisChoice = 0;//'miss';
+			payoffText.x = 400;
+        } else {
+        	// flag is just a position of the chosen option,
+        	// e.g., flag == 1 when she chose option1.
+        	// Therefore, I need to translate this position into the actual option
+        	// thisChoice is an indicator of the actual option chosen
+        	thisChoice = optionOrder[flag -1];
+			payoffText.x = option1_positionX + space_between_boxes*(flag-1);
+        }
+		// calculating the payoff from this choice
+		if (distribution == 'miss') {
+			payoff = 0;
+			myLastChoiceFlag = flag;
+			if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
+				// socket.emit('choice made 4ab', {                     choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+				socket.emit('choice made 4ab', {chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+			} else {
+				saveChoiceDataLocally({chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+			}
+        	//console.log('choice was made: choice = ' + thisChoice + ' and payoff = ' + 0 + '.');
+		} else if (distribution == 'binary') {
+			payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
+		} else if (distribution == 'binary_4ab') {
+			// console.log('optionOrder ==' + optionOrder + ' and flag == '+ flag);
+			// console.log('thisChoice == '+ thisChoice);
+			// console.log('randomChoiceFromFour with optionsKeyList == '+optionsKeyList[thisChoice-1]);
+			payoff = randomChoiceFromFour(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+			// payoff = randomChoiceFromFour_decreasing(currentTrial, flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+		} else {
+			payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
+		}
+		score += payoff;
+		scoreText.setText('Total score: ' + score);
+		payoffText.setText(payoff);
+		payoffText.visible = true;
+		trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
+    };
+
     // random choice with probability -- binary distribution
     function randomChoiceFromTwo(choice, payoffList, p_rare, socialInfo, publicInfo) {
     	let roulette = Math.random()
@@ -2455,6 +2462,65 @@ window.onload = function() {
 			socket.emit('choice made', {choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
     	} else {
     		saveChoiceDataLocally({choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+    	}
+        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
+    	return thisPayoff;
+	}
+
+	function randomChoiceFromFour_decreasing(this_trial, chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
+		let roulette = Math.random()
+    	let noise = BoxMuller(0, smallNoise)
+    	let thisPayoff
+    	let thisPayoff_base
+    	// == this block manages the decrease of the mean payoff of the sure options
+    	if (choice == 'sure1') {
+    		thisPayoff_base = payoffList[0] - (1/60) * (this_trial - 10);
+    		if (thisPayoff_base > 2) {thisPayoff_base = 2};
+    		// console.log('sure 1: ' + thisPayoff_base);
+    	} else if (choice == 'sure2' | choice == 'sure3') {
+    		thisPayoff_base = payoffList[0] - (1/60) * this_trial;
+    		if (thisPayoff_base < 0.25) {thisPayoff_base = 0.25};
+    	} else {
+    		thisPayoff_base = payoffList[1]
+    	}
+    	// == end of the decreasing payoff
+    	if (p_rare < roulette) { // common event
+    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
+    		myEarnings.push(thisPayoff);
+            myChoices.push(choice);   		
+    	} else { // rare event
+    		thisPayoff = Math.floor((thisPayoff_base + noise)*100);
+    		myEarnings.push(thisPayoff);
+            myChoices.push(choice);
+    	}
+    	myLastChoiceFlag = chosenOptionFlag;
+    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
+			socket.emit('choice made 4ab', {chosenOptionFlag:chosenOptionFlag, num_choice: num_choice, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+    	} else {
+    		saveChoiceDataLocally({chosenOptionFlag:chosenOptionFlag, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+    	}
+        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
+    	return thisPayoff;
+	}
+
+	function randomChoiceFromFour(chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
+		let roulette = Math.random()
+    	let noise = BoxMuller(0, smallNoise)
+    	let thisPayoff
+    	if (p_rare < roulette) { // common event
+    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
+    		myEarnings.push(thisPayoff);
+            myChoices.push(choice);   		
+    	} else { // rare event
+    		thisPayoff = Math.floor((payoffList[1] + noise)*100);
+    		myEarnings.push(thisPayoff);
+            myChoices.push(choice);
+    	}
+    	myLastChoiceFlag = chosenOptionFlag;
+    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
+			socket.emit('choice made 4ab', {chosenOptionFlag:chosenOptionFlag, num_choice: num_choice, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+    	} else {
+    		saveChoiceDataLocally({chosenOptionFlag:chosenOptionFlag, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
     	}
         //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
     	return thisPayoff;
@@ -2487,6 +2553,7 @@ window.onload = function() {
     	//,	timeElapsed = now - data.firstTrialStartingTime
     	;
     	myLastChoice = data.choice;
+    	//myLastChoiceFlag = data.chosenOptionFlag;
 		myData.push(
 			{	date: now.getUTCFullYear() + '-' + (now.getUTCMonth() + 1) +'-' + now.getUTCDate()
 			,	time: now.getUTCHours()+':'+now.getUTCMinutes()+':'+now.getUTCSeconds()
@@ -2497,6 +2564,7 @@ window.onload = function() {
 			,	confirmationID: confirmationID
 			,	amazonID: amazonID
 			,	round: currentTrial
+			,	chosenOptionFlag: data.chosenOptionFlag
 			,	choice: data.choice
 			,	payoff: data.payoff
 			,	totalEarning: data.totalEarning
@@ -2509,6 +2577,13 @@ window.onload = function() {
 
 		if (currentTrial >= horizon) {
 			socket.emit('Data from Indiv', myData);
+		}
+	}
+
+	function sending_core_is_ready (isPreloadDone) {
+		if (isPreloadDone) {
+			socket.emit('core is ready', {latency: 0, maxLatencyForGroupCondition: maxLatencyForGroupCondition});
+			console.log('emitting "core is ready" to the server');
 		}
 	}
 
@@ -2662,6 +2737,171 @@ window.onload = function() {
 				risky:[payoff_riskyCommon, payoff_riskyRare]};
 	}
 
+	function settingRiskDistribution_4ab (id) {
+		// console.log('settingRiskDistribution_4ab');
+		switch (id) {
+			// === experiment on 07 November 2020 ===
+			case 13: // (riskPrem=20/15; p=0.4; minPayoff = 50)
+				pRiskyRare = 0.3;
+		        pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 2;
+				payoff_sureH1 = 2;
+				payoff_sureL2 = 1.5;
+				payoff_sureH2 = 1.5;
+				payoff_sureL3 = 1.25;
+				payoff_sureH3 = 1.25;
+				
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 5.5; 
+				break;
+			// === experiment on 22 October 2020 ===
+			case 11: // (riskPrem=20/15; p=0.4; minPayoff = 50)
+				pRiskyRare = 0.4;
+				pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 1.5;
+				payoff_sureH1 = 1.5;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+				payoff_sureL3 = 1.00;
+				payoff_sureH3 = 1.00;
+
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 4.25; 
+				break;
+			case 12: // (riskPrem=20/15; p=0.4)
+				pRiskyRare = 0.4;
+				pPoor = 0.4;
+				pSure = 1;
+				payoff_sureL1 = 1.50;
+				payoff_sureH1 = 1.50;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+
+				payoff_sureL3 = 0.50;
+				payoff_sureH3 = 2.375;
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 4.25; 
+				break;
+			// ==== 3-safe 1-risky bandit ====
+			case 0: // (riskPrem=20/15; p=0.4; minPayoff = 50)
+				pRiskyRare = 0.4;
+				pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 1.5;
+				payoff_sureH1 = 1.5;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+				payoff_sureL3 = 1.00;
+				payoff_sureH3 = 1.00;
+
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 4.25; 
+				break;
+			case 1: // (riskPrem=20/15; p=0.3; minPayoff = 50)
+		        pRiskyRare = 0.3;
+		        pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 1.5;
+				payoff_sureH1 = 1.5;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+				payoff_sureL3 = 1.00;
+				payoff_sureH3 = 1.00;
+				
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 5.5; 
+				break;
+			// ==== 2-safe 2-risky bandit (riskPrem=20/15; p=0.3) ====
+			case 2: // (riskPrem=20/15; p=0.4)
+				pRiskyRare = 0.4;
+				pPoor = 0.4;
+				pSure = 1;
+				payoff_sureL1 = 1.50;
+				payoff_sureH1 = 1.50;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+
+				payoff_sureL3 = 0.50;
+				payoff_sureH3 = 2.375;
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 4.25; 
+				break;
+			case 3: // (riskPrem=20/15; p=0.3)
+				pRiskyRare = 0.3;
+				pPoor = 0.3;
+				pSure = 1;
+				payoff_sureL1 = 1.50;
+				payoff_sureH1 = 1.50;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+
+				payoff_sureL3 = 0.50;
+				payoff_sureH3 = 3;
+				payoff_riskyCommon = 0.50;
+				payoff_riskyRare = 5.5; 
+				break;
+			// ==== 3-safe 1-risky bandit ====
+			case 4: // (riskPrem=20/15; p=0.4; minPayoff = 75)
+				pRiskyRare = 0.4;
+		        pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 1.5;
+				payoff_sureH1 = 1.5;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+				payoff_sureL3 = 1.00;
+				payoff_sureH3 = 1.00;
+				
+				payoff_riskyCommon = 0.75;
+				payoff_riskyRare = 3.875; 
+				break;
+			case 5: // (riskPrem=20/15; p=0.3; minPayoff = 75)
+				pRiskyRare = 0.3;
+		        pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 1.5;
+				payoff_sureH1 = 1.5;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+				payoff_sureL3 = 1.00;
+				payoff_sureH3 = 1.00;
+				
+				payoff_riskyCommon = 0.75;
+				payoff_riskyRare = 4.917; 
+				break;
+			// ==== 3-safe 1-risky bandit (riskPrem=20/15; p=0.3) ====
+		    default: // case 3
+		        pRiskyRare = 0.3;
+		        pPoor = 1;
+				pSure = 1;
+				payoff_sureL1 = 1.5;
+				payoff_sureH1 = 1.5;
+				payoff_sureL2 = 1.25;
+				payoff_sureH2 = 1.25;
+				payoff_sureL3 = 1.00;
+				payoff_sureH3 = 1.00;
+				
+				payoff_riskyCommon = 0.75;
+				payoff_riskyRare = 4.917; 
+				break;
+		}
+		// probabilityList = {sure:pSure, risky:pRiskyRare};
+		probabilityList = {
+			sure1:pSure,
+			sure2:pSure,
+			sure3:pPoor, //
+			risky:pRiskyRare
+		};
+		payoffList = {
+				sure1:[payoff_sureL1, payoff_sureH1],
+				sure2:[payoff_sureL2, payoff_sureH2],
+				sure3:[payoff_sureL3, payoff_sureH3], 
+				risky:[payoff_riskyCommon, payoff_riskyRare]};
+	}
+
+	// I think this ping-pong monitoring is out-of-date; review needed. Discarded in the future
 	socket.on('pong', function (ms) {
         ////console.log(`socket :: averageLatency :: ${averageLatency} ms`);
         averageLatency.push(ms);
@@ -2674,12 +2914,22 @@ window.onload = function() {
         myRoom = data.room;
         maxChoiceStageTime = data.maxChoiceStageTime;
         indivOrGroup = data.indivOrGroup;
-        exp_condition = data.exp_condition;
+        exp_condition = data.exp_condition; //binary_4ab
         riskDistributionId = data.riskDistributionId;
         subjectNumber = data.subjectNumber;
         isLeftRisky = data.isLeftRisky;
+        numOptions = data.numOptions;
+        // info_share_cost = data.info_share_cost;
+        optionOrder = data.optionOrder;
+        instructionText_indiv[1] = instructionText_indiv[1] + numOptions + ' slot machines.';
+        instructionText_group[1] = instructionText_group[1] + numOptions + ' slot machines.';
+        console.log('this is your optionOrder: ' + optionOrder);
         //setSlotPosition(data.isLeftRisky);
-        settingRiskDistribution(data.riskDistributionId);
+        if (data.numOptions == 2) {
+        	settingRiskDistribution(data.riskDistributionId);
+        } else {
+        	settingRiskDistribution_4ab(data.riskDistributionId);
+        }
 
         // avoiding safari's reload function
         if(!window.sessionStorage.getItem('uniqueConfirmationID')) {
@@ -2706,11 +2956,14 @@ window.onload = function() {
         maxGroupSize = data.maxGroupSize;
         horizon = data.horizon;
         restTime = data.restTime;
-        console.log('socket.on: "this is the remaining waiting time" : '+restTime+' msec.');
+        // console.log('socket.on: "this is the remaining waiting time" : '+restTime+' msec.');
         if (isPreloadDone & !isWaitingRoomStarted) {
-        	game.scene.start('SceneWaitingRoom');
+        	// game.scene.start('ScenePerfect'); // debug
+
+        	game.scene.start('SceneWaitingRoom'); // main
+
         } else {
-        	socket.emit('not ready yet');
+        	//socket.emit('not ready yet');
         }
         //SceneWaitingRoom
         //core.replaceScene(core.waitingRoomScene(data.restTime));
@@ -2743,8 +2996,11 @@ window.onload = function() {
         }*/
         waitingRoomFinishedFlag = 1;
         game.scene.sleep('SceneWaitingRoom');
-        game.scene.start('SceneInstruction', data);
-        //core.replaceScene(core.instructionScene(exp_condition, indivOrGroup));
+
+        game.scene.start('ScenePerfect', data); // debug
+
+       	// game.scene.start('SceneInstruction', data);
+        
     });
 
     socket.on('you guys are individual condition', function () {
@@ -2772,21 +3028,40 @@ window.onload = function() {
         mySocialInfo = data.socialInfo[data.round-2];
         myPublicInfo = data.publicInfo[data.round-2];
         choiceOrder = data.choiceOrder[data.round-2];
-        if (indivOrGroup == 1) {
-        	mySocialInfoList['sure'] = data.socialFreq[data.round-1][surePosition];
-        	mySocialInfoList['risky'] = data.socialFreq[data.round-1][riskyPosition];
-        } else if (myLastChoice == 'sure') {
-        	mySocialInfoList['sure'] = 1;
-        	mySocialInfoList['risky'] = 0;
-        } else if (myLastChoice == 'risky') {
-        	mySocialInfoList['sure'] = 0;
-        	mySocialInfoList['risky'] = 1;
-        } else {
-        	mySocialInfoList['sure'] = null;
-        	mySocialInfoList['risky'] = null;
+        share_or_not = data.share_or_not[data.round-2];
+        groupTotalScore = sum( data.groupTotalPayoff );
+        totalPayoff_perIndiv = sum( data.totalPayoff_perIndiv );
+        // payoff_info = data.share_or_not[data.round-2]['payoff'];
+        // shared_position = data.share_or_not[data.round-2]['position'];
+        // console.log('mySocialInfo: ' + mySocialInfo);
+        // console.log('myPublicInfo: ' + myPublicInfo);
+        // console.log('choiceOrder: ' + choiceOrder);
+        // console.log('totalPayoff_perIndiv: ' + totalPayoff_perIndiv + ' with group total = ' + groupTotalScore);
+        for (let i = 0; i < maxGroupSize; i++) {
+        	if(share_or_not[i] != null) {
+        		console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
+        	}
         }
+        // console.log('share_or_not: ' + share_or_not);
+        if (indivOrGroup == 1) {
+        	for (let i = 1; i < numOptions+1; i++) {
+        		mySocialInfoList['option'+i] = data.socialFreq[data.round-1][optionOrder[i-1] - 1];
+        	}
+        	console.log('data.socialFreq[data.round-1] = ' + data.socialFreq[data.round-1]);
+        } else {
+        	for (let i = 1; i < numOptions+1; i++) {
+        		if (myLastChoiceFlag == i) { // myLastChoice
+        			mySocialInfoList['option'+i] = 1;
+        		} else {
+        			mySocialInfoList['option'+i] = 0;
+        		}
+        	}
+        }
+
+        
         currentTrial++;
-        totalEarning += payoff;
+        totalEarning += payoff - (info_share_cost * didShare);
+
         $("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
         $("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
@@ -2795,8 +3070,9 @@ window.onload = function() {
         $("#bonus_for_waiting").val(Math.round(waitingBonus));
         payoffText.destroy();
         waitOthersText.destroy();
-        objects_feedbackStage.box1.destroy();
-        objects_feedbackStage.box2.destroy();
+        for (let i =1; i<numOptions+1; i++) {
+        	objects_feedbackStage['box'+i].destroy();
+        }
     	game.scene.sleep('ScenePayoffFeedback');
     	game.scene.start('SceneMain');
     	//console.log('restarting the main scene!: mySocialInfo = '+data.socialFreq[data.round-1]);
@@ -2818,19 +3094,30 @@ window.onload = function() {
         //$("#confirmationID").val(confirmationID);
         payoffText.destroy();
         waitOthersText.destroy();
-        objects_feedbackStage.box1.destroy();
-        objects_feedbackStage.box2.destroy();
+        for (let i =1; i<numOptions+1; i++) {
+        	objects_feedbackStage['box'+i].destroy();
+        }
     	game.scene.sleep('ScenePayoffFeedback');
     	game.scene.start('SceneGoToQuestionnaire');
     });
 
     socket.on('S_to_C_welcomeback', function(data) {
-    	// You could give a change to the shortly disconnected client to go back to the session 
-    	// However, for now I just redirect them to the questionnaire
-        socket.io.opts.query = 'sessionName=already_finished';
-        socket.disconnect();
-        window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
-        ////console.log('Received: "S_to_C_welcomeback": client = '+data.sessionName +'; room = '+data.roomName);
+    	// if (waitingRoomFinishedFlag == 1) {
+    	if (understandingCheckStarted == 1) {
+	    	// You could give a change to the shortly disconnected client to go back to the session 
+	    	// However, for now I just redirect them to the questionnaire
+	        socket.io.opts.query = 'sessionName=already_finished';
+	        socket.disconnect();
+	        window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
+	        console.log('Received: "S_to_C_welcomeback": client = '+data.sessionName +'; room = '+data.roomName);
+	    } else if (waitingRoomFinishedFlag != 1) {
+	    	console.log('Received: "S_to_C_welcomeback" but the waiting room is not finished yet: client = '+data.sessionName +'; room = '+data.roomName);
+	    	if (typeof restTime != 'undefined') {
+	    		socket.emit('this is the previous restTime', {restTime: restTime});
+	    	}
+	    } else {
+	    	console.log('Received: "S_to_C_welcomeback" but the understanding test is not started yet: client = '+data.sessionName +'; room = '+data.roomName);
+	    }
     });
 
 } // window.onload -- end
