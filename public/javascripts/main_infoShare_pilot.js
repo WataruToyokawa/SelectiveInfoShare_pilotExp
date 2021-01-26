@@ -1788,7 +1788,7 @@ window.onload = function() {
 			    	, ``
 			    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
 
-		    payoffText.setText(`You dug out \n${payoff}`);
+		    payoffText.setText(`You produced\n${payoff}`);
 		    // The following 'You earned $??' might be misleading as this is a group-optimization task
 		    // if (didShare != 1) {
 			   //  payoffText.setText(`You earned \n${payoff}`);
