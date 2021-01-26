@@ -1766,9 +1766,9 @@ window.onload = function() {
 		    	, 'Current trial: ' + currentTrial + ' / ' + horizon
 		    	, { fontSize: '30px', fill: nomalTextColor });
 		    
-		    groupTotalScoreText = this.add.text(16, groupTotalScoreText_Y
-		    	, 'Team\'s total score: ' + groupTotalScore + ' (your share: ' + totalPayoff_perIndiv + ')'
-		    	, { fontSize: '30px', fill: nomalTextColor });
+		    // groupTotalScoreText = this.add.text(16, groupTotalScoreText_Y
+		    // 	, 'Team\'s total score: ' + groupTotalScore + ' (your share: ' + totalPayoff_perIndiv + ')'
+		    // 	, { fontSize: '30px', fill: nomalTextColor });
 
 		    costPaidText = this.add.text(16, costPaidText_Y
 		    	, 'Sharing fee you paid: '
@@ -1785,8 +1785,8 @@ window.onload = function() {
 		    	, 'Remaining time: '
 		    	, { fontSize: '30px', fill: nomalTextColor });
 		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100
-			    	, ``
-			    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
+		    	, ``
+		    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
 
 		    payoffText.setText(`You produced\n${payoff}`);
 		    // The following 'You earned $??' might be misleading as this is a group-optimization task
