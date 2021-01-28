@@ -1,0 +1,8 @@
+To do:
+
+28 January 2021
+* change 4-armed -> 2-armed
+* add multiple blocks
+* add four different task scheme (i.e. optimal-risk/suboptimal-risk and negative/positive skew)
+* randomise the order of these 4 conditions between rooms
+ 
