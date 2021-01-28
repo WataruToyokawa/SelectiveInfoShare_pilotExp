@@ -4,7 +4,7 @@ Author: Wataru Toyokawa (wataru.toyokawa@uni-konstanz.de)
 21 January 2021
 
 The task proceeds as follows:
-1. Choice phase at trial 1 with no social info 
+1. Choice phase at trial 1 with no social info
 2. Reward feedback (participants can only know their own earning)
 3. Choice between "share (with cost)" and "non-share (without cost)"
 4. Choice phase at t > 1, the payoff info they chose to share is shown
@@ -74,10 +74,10 @@ let isNotNegative = function (element) {
 }
 
 /**===============================================
-For EmPra experiment, the latency check is not so important because there is no need for 
-'real time' synchronisation between clients. Therefore, latency being less than 1.5 sec 
+For EmPra experiment, the latency check is not so important because there is no need for
+'real time' synchronisation between clients. Therefore, latency being less than 1.5 sec
 would be sufficient. However, in the future experiment where participants' real-time sync
-is important, this value may need to be much smaller. 
+is important, this value may need to be much smaller.
 
 University eduroam performs about 200 ~ 250 ms latency on average.
 ==================================================*/
@@ -396,9 +396,9 @@ window.onload = function() {
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
 			// text styles
-			const textStyle = 
+			const textStyle =
 				{ fontSize: '24px', fill: nomalTextColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true } };
-			const noteStyle = 
+			const noteStyle =
 				{ fontSize: '24px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
 		    let title = this.add.text(configWidth/2, 18, waitingRoomText0[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
@@ -434,9 +434,9 @@ window.onload = function() {
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
 			// text styles
-			const textStyle = 
+			const textStyle =
 				{ fontSize: '24px', fill: nomalTextColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true } };
-			const noteStyle = 
+			const noteStyle =
 				{ fontSize: '24px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
 		    let title = this.add.text(configWidth/2, 18, waitingRoomText[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
@@ -447,7 +447,7 @@ window.onload = function() {
 		    note1.setOrigin(0.5, 0.5);
 		    note2.setOrigin(0.5, 0.5);
 		    note3.setOrigin(0.5, 0.5);
-			
+
             // waitingBonusBar
             this.restTime = restTime;
             waitingCountdown = this.time.delayedCall(restTime, waitingBarCompleted, [], this);
@@ -500,9 +500,9 @@ window.onload = function() {
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
 			// text styles
-			const textStyle = 
+			const textStyle =
 				{ fontSize: '24px', fill: nomalTextColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true } };
-			const noteStyle = 
+			const noteStyle =
 				{ fontSize: '24px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
 		    let title = this.add.text(configWidth/2, 18, waitingForOthers[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
@@ -513,7 +513,7 @@ window.onload = function() {
 		    note1.setOrigin(0.5, 0.5);
 		    note2.setOrigin(0.5, 0.5);
 		    note3.setOrigin(0.5, 0.5);
-			
+
             // waitingBonusBar
             //restTime = 10;
             waitingCountdown = this.time.delayedCall(restTime, waitingBarCompleted, [], this);
@@ -588,7 +588,7 @@ window.onload = function() {
 		    	instructionDiv.innerHTML = revisitingInstructionText[0];
 		    }
 		    instructionDiv.id = 'instructionDiv';
-		    // Add the div 
+		    // Add the div
 		    let instructionElement = this.add.dom(configWidth/2, 220, instructionDiv);
 
 		    // instruction Picture
@@ -597,7 +597,7 @@ window.onload = function() {
 		    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_4ab_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
 		    	currentInstructionPicture[i].visible = false;
 		    }
-		    
+
 		    // next button
 		    this.nextButtonContainer = this.add.container(550, 520);
 			let nextButtonImage = this.add.sprite(0, 0, 'button').setDisplaySize(200,150).setInteractive({ cursor: 'pointer' });
@@ -638,7 +638,7 @@ window.onload = function() {
 		    		}
 		    	}
 		    });
-		    // back button 
+		    // back button
 		    this.backButtonContainer = this.add.container(250, 520);
 			let backButtonImage = this.add.sprite(0, 0, 'button').setDisplaySize(200,150).setInteractive({ cursor: 'pointer' });
 			let backButtonText = this.add.text(0, 0, 'back', { fontSize: '32px', fill: '#000' });
@@ -660,7 +660,7 @@ window.onload = function() {
 						currentInstructionPicture[instructionPosition + 1].visible = false;
 		    			currentInstructionPicture[instructionPosition].visible = false;
 					}
-		    	}	
+		    	}
 		    });
 		    // pointerover
 			backButtonImage.on('pointerover', function (pointer) {
@@ -715,7 +715,7 @@ window.onload = function() {
 		    let instructionDiv = document.getElementById('instructionDiv');
 		    instructionDiv.style = tutorialTextStyle;
 		    instructionDiv.innerHTML = tutorialText[tutorialPosition];
-		    
+
 		    // slot machines and goToTest button
 		    let tutorialFlag = 0;
 		    //let objects = {};
@@ -741,7 +741,7 @@ window.onload = function() {
 					this.options['box_active'+i].setInteractive({ cursor: 'pointer' });
 				}
 		    }
-		 	
+
 
 			// text
 			trialText_tutorial = this.add.text(16, trialText_tutorialY, 'Tutorial trial: ' + tutorialTrial + ' / 4', { fontSize: '25px', fill: '#000' });
@@ -774,7 +774,7 @@ window.onload = function() {
 
 			// =============== A looking-good timer =================================
 			// the energy container. A simple sprite
-			let energyContainer = this.add.sprite(350, energyBar_tutorialY+15, 'energycontainer'); 
+			let energyContainer = this.add.sprite(350, energyBar_tutorialY+15, 'energycontainer');
 			// the energy bar. Another simple sprite
         	let energyBar = this.add.sprite(energyContainer.x + 46, energyContainer.y, 'energybar');
         	// a copy of the energy bar to be used as a mask. Another simple sprite but...
@@ -801,16 +801,16 @@ window.onload = function() {
 			// click event if tutorialTrial < 3
 			if (tutorialTrial == 3) {
 				this.timeLeft = maxChoiceStageTime / 1000;
-				// a boring timer. 
+				// a boring timer.
 		        let gameTimer = this.time.addEvent({
 		            delay: 1000,
 		            callback: function(){
 		                this.timeLeft --;
-		 
+
 		                // dividing energy bar width by the number of seconds gives us the amount
 		                // of pixels we need to move the energy bar each second
 		                let stepWidth = energyMask.displayWidth / (maxChoiceStageTime/1000);
-		 
+
 		                // moving the mask
 		                energyMask.x -= stepWidth;
 		                if(this.timeLeft < 0){
@@ -825,7 +825,7 @@ window.onload = function() {
 		            loop: true
 		        });
 			} else if (tutorialTrial < 3) {
-				
+
 				for (let i = 1; i < numOptions+1; i++) {
 					this.options['box'+i].on('pointerdown', function (pointer) {
 						confirmationContainer.x = option1_positionX + space_between_boxes*(i-1);
@@ -868,7 +868,7 @@ window.onload = function() {
 				    	}
 				    }, this);
 				}
-				
+
 			} else { // the final trial (i.e. the transition to the understanding quiz)
 				this.options.box1.visible = false;
 		    	this.options.box2.visible = false;
@@ -924,7 +924,7 @@ window.onload = function() {
 		    		socialFreqNumbers['option'+i].visible = false;
 		    		numberOfPreviousChoice[i-1] = 0;
 		    	}
-		    	
+
 			} else if (indivOrGroup == 1 & tutorialTrial == 2) {
 			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `4 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
@@ -958,17 +958,17 @@ window.onload = function() {
 		    			numberOfPreviousChoice[i-1] = 0;
 		    		}
 		    	}
-				
+
 			} else {
 				for (let i = 1; i < numOptions+1; i++) {
 		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 		    		socialFreqNumbers['option'+i].visible = false;
 		    		numberOfPreviousChoice[i-1] = 0;
 		    	}
-				
+
 			}
 
-			// the shadowed boxes to hide slots 
+			// the shadowed boxes to hide slots
 		    let shadow1 = this.add.image(400, slotY - 30, 'blackbox' ).setDisplaySize(780, 310)
 		    ,	shadow2 = this.add.image(400, scoreText_tutorialY - 10, 'blackbox' ).setDisplaySize(780, 90)
 		    ;
@@ -979,7 +979,7 @@ window.onload = function() {
 				shadow1.visible = false;
 				shadow2.visible = false;
 			}
-		    
+
 		}
 
 		update(){}
@@ -1120,7 +1120,7 @@ window.onload = function() {
 		    instructionDiv.style = understandingCheckTextStyle;
 		    instructionDiv.innerHTML = understandingCheckText[0];
 
-			// 
+			//
 			let buttonContainerTest = this.add.container(450, 560); //position
 			let buttonImageTest = this.add.sprite(0, 0, 'button').setDisplaySize(300, 50).setInteractive({ cursor: 'pointer' });
 			let buttonTextTest = this.add.text(0, 0, 'Check your answers', { fontSize: '24px', fill: '#000' });
@@ -1453,7 +1453,7 @@ window.onload = function() {
 		    		if (JSON.stringify(answers) == JSON.stringify([3,0,0,-1,-1])) {
 		    			//socket.emit('test passed');
 		    			//buttonImageTest.visible = false;
-		    			buttonImageTest.disableInteractive(); 
+		    			buttonImageTest.disableInteractive();
 		    			this.scene.launch('ScenePerfect');
 		    		} else {
 		    			incorrectCount++;
@@ -1461,7 +1461,7 @@ window.onload = function() {
 		    			isInstructionRevisit = true;
 		    			instructionPosition = 0;
 		    			if (incorrectCount<4) {
-			    			// When you want to go back to previous scene, 
+			    			// When you want to go back to previous scene,
 			    			// you have to 'sleep' scenes which are above the target scene
 			    			// Otherwise, objects defined in those above scenes would hid the target scene
 			    			game.scene.sleep('SceneUnderstandingTest');
@@ -1476,7 +1476,7 @@ window.onload = function() {
 		    	} else { // group condition
 		    		if (JSON.stringify(answers) == JSON.stringify([3,0,0,0,1])) {
 		    			//socket.emit('test passed');
-		    			buttonImageTest.disableInteractive(); 
+		    			buttonImageTest.disableInteractive();
 		    			this.scene.launch('ScenePerfect');
 		    		} else {
 		    			incorrectCount++;
@@ -1628,7 +1628,7 @@ window.onload = function() {
 		    ,	groupTotalScoreText_Y = 16 + 50 * 1
 		    ,	costPaidText_Y = 16 + 50 * 2
 		    ,	scoreText_Y = 16 + 50 * 3
-		    ,	energyBar_Y = 16 + 50 * 4
+		    ,	energyBar_Y = 16 + 50 * 2 // 16 + 50 * 4
 		    ;
 
 		    // let trialText_Y = 16
@@ -1655,7 +1655,7 @@ window.onload = function() {
 
 			// =============== A looking-good timer =================================
 			// the energy container. A simple sprite
-			let energyContainer = this.add.sprite(400, energyBar_Y+18, 'energycontainer'); 
+			let energyContainer = this.add.sprite(400, energyBar_Y+18, 'energycontainer');
 			// the energy bar. Another simple sprite
         	let energyBar = this.add.sprite(energyContainer.x + 46, energyContainer.y, 'energybar');
         	// a copy of the energy bar to be used as a mask. Another simple sprite but...
@@ -1681,21 +1681,21 @@ window.onload = function() {
 
         	// =============== Count down =================================
         	this.timeLeft = maxChoiceStageTime / 1000;
-			// a boring timer. 
+			// a boring timer.
 	        let gameTimer = this.time.addEvent({
 	            delay: 1000,
 	            callback: function(){
 	                this.timeLeft --;
-	 
+
 	                // dividing energy bar width by the number of seconds gives us the amount
 	                // of pixels we need to move the energy bar each second
 	                let stepWidth = energyMask.displayWidth / (maxChoiceStageTime/1000);
-	 
+
 	                // moving the mask
 	                energyMask.x -= stepWidth;
 	                if (this.timeLeft < 1) {
 	                	// By setting "isChoiceMade" a bit earlier than
-	                	// the time is actually up, the two conflicting inputs, 
+	                	// the time is actually up, the two conflicting inputs,
 	                	// a "miss" and an "actual choice" won't be executed at the same time
 	                	isChoiceMade = true;
 	                }
@@ -1749,7 +1749,7 @@ window.onload = function() {
 			    		}
 			    		options['box_active'+i].visible = false;
 			    		confirmationContainer.visible= false;
-			    	}		
+			    	}
 			    }, this);
 			    // pointerover
 				options['box'+i].on('pointerover', function (pointer) {
@@ -1764,38 +1764,44 @@ window.onload = function() {
 		    // ------------ Texts appear above the slots
 		    trialText = this.add.text(16, trialText_Y
 		    	, 'Current trial: ' + currentTrial + ' / ' + horizon
+		    	// , ''
 		    	, { fontSize: '30px', fill: nomalTextColor });
-		    
-		    // groupTotalScoreText = this.add.text(16, groupTotalScoreText_Y
-		    // 	, 'Team\'s total score: ' + groupTotalScore + ' (your share: ' + totalPayoff_perIndiv + ')'
-		    // 	, { fontSize: '30px', fill: nomalTextColor });
+
+		    groupTotalScoreText = this.add.text(16, groupTotalScoreText_Y
+		    	, ''
+		    	// , 'Team\'s total score: ' + groupTotalScore + ' (your share: ' + totalPayoff_perIndiv + ')'
+		    	, { fontSize: '30px', fill: nomalTextColor });
 
 		    costPaidText = this.add.text(16, costPaidText_Y
-		    	, 'Sharing fee you paid: '
+		    	, ''
+		    	// , 'Sharing fee you paid: '
 		    	, { fontSize: '30px', fill: nomalTextColor });
 		    costPaidText_2 = this.add.text(16 + 400, costPaidText_Y
-		    	, '-' + info_share_cost_total
+		    	, ''
+		    	// , '-' + info_share_cost_total
 		    	, { fontSize: '30px', fill: noteColor });
 
 		    scoreText = this.add.text(16, scoreText_Y
 		    	// , 'Total score: ' + score
-		    	, 'Your net score: ' + (totalPayoff_perIndiv - info_share_cost_total)
+		    	, ''
+		    	// , 'Your net score: ' + (totalPayoff_perIndiv - info_share_cost_total)
 		    	, { fontSize: '30px', fill: nomalTextColor });
 		    timeText = this.add.text(16, energyBar_Y
 		    	, 'Remaining time: '
 		    	, { fontSize: '30px', fill: nomalTextColor });
+
 		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100
 		    	, ``
 		    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
+		    // payoffText.setText(`You produced\n${payoff}`);
 
-		    payoffText.setText(`You produced\n${payoff}`);
-		    // The following 'You earned $??' might be misleading as this is a group-optimization task
+		    // // The following 'You earned $??' might be misleading as this is a group-optimization task
 		    // if (didShare != 1) {
 			   //  payoffText.setText(`You earned \n${payoff}`);
 		    // } else {
 		    // 	payoffText.setText(`You earned \n${payoff} - ${info_share_cost}`);
 		    // }
-		    // ==============================================================================
+		    // // ==============================================================================
 
 		    if(currentTrial === 1) {
 		    	payoffText.visible = false;
@@ -1822,7 +1828,7 @@ window.onload = function() {
 		    		}
 		    	}
 		    }
-		    // No social info visible 
+		    // No social info visible
 		    // (change inside of the if() when you want to show "?? people" info)
 		    if(currentTrial > 0) { //-> if(currentTrial==1) {
 		    	for (let i = 1; i < numOptions+1; i++) {
@@ -1834,10 +1840,10 @@ window.onload = function() {
 		    let shared_payoff = [];
 		    let shared_option_position = [];
 		    for (let i = 0; i < maxGroupSize; i++) {
-		    	if (share_or_not[i] != null) {
-		    		if (share_or_not[i].share == 1) {
+		    	if (typeof subjectNumber != 'undefined' & share_or_not[i] != null) {
+		    		if (i+1 != subjectNumber & share_or_not[i].share == 1) { // <- only info shared by others will be shown
 		    			shared_payoff.push(share_or_not[i].payoff);
-		    			// shared_option_position.push( optionOrder.indexOf(optionsKeyList.indexOf(mySocialInfo[i])) ) 
+		    			// shared_option_position.push( optionOrder.indexOf(optionsKeyList.indexOf(mySocialInfo[i])) )
 		    			shared_option_position.push(share_or_not[i].position);
 		    		}
 		    	}
@@ -1845,17 +1851,17 @@ window.onload = function() {
 		    for (let i = 1; i < numOptions+1; i++) {
 		    	numberOfPreviousChoice[i-1] = mySocialInfoList['option'+i]
 		    }
-		    
+
 		    // --- Social frequency information (used in Toyokawa & Gaissmaier 2020)
 		    // Turn this on when you want to show the frequency-information
-		    // and turn off the 'publicInfo.call' in this case 
-		    // 
+		    // and turn off the 'publicInfo.call' in this case
+		    //
 		    // showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], slotY_main-90);
-		    // 
+		    //
 		    // --------------------------------------------------------------------
 
 		    showPublicInfo.call(this, shared_payoff, shared_option_position, slotY_main-90);
-		    
+
 		}
 
 		update(){
@@ -2006,7 +2012,7 @@ window.onload = function() {
 					waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
 					buttonContainer_yes.visible = true;
 					buttonContainer_no.visible = true;
-				}.bind(this),  1 * 1000); 
+				}.bind(this),  1 * 1000);
 			} else {
 				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
 				setTimeout(function(){
@@ -2026,7 +2032,7 @@ window.onload = function() {
 			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
 			}
 
-		    
+
 		}
 		update(){}
 	};
@@ -2123,9 +2129,9 @@ window.onload = function() {
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
 			// text styles
-			const textStyle = 
+			const textStyle =
 				{ fontSize: '30px', fill: nomalTextColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true } };
-			const noteStyle = 
+			const noteStyle =
 				{ fontSize: '36px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
 			let totalEarning_USD = Math.round((totalEarning*cent_per_point))/100
@@ -2139,7 +2145,7 @@ window.onload = function() {
 		    note2.setOrigin(0.5, 0.5);
 		    //note3.setOrigin(0.5, 0.5);
 
-		    // POST 
+		    // POST
 		    let questionnaireStarts = document.getElementById('questionnaireStarts');
 
 			questionnaireStarts.innerHTML = "<div class='btn2'><div id='connectBtn'>START SHORT SURVEY</div></div>";
@@ -2173,11 +2179,11 @@ window.onload = function() {
 	    dom: {
         	createContainer: true
     	},
-	    scene: 
+	    scene:
 	    [ SceneWaitingRoom0
 	    , SceneWaitingRoom
 	    // , SceneWaitingRoom2
-	    // , SceneInstruction 
+	    // , SceneInstruction
     	// , SceneTutorial
     	// , SceneTutorialFeedback
     	// , SceneUnderstandingTest
@@ -2185,7 +2191,7 @@ window.onload = function() {
     	, SceneStartCountdown
     	, SceneMain
     	, ScenePayoffFeedback
-    	, SceneGoToQuestionnaire 
+    	, SceneGoToQuestionnaire
     	]
 	};
 
@@ -2227,9 +2233,9 @@ window.onload = function() {
     		for (let q=0; q<quotient_num_option1; q++) {
 	    		stars_option1[q] = this.add.group({
 			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 			        // which is just what we need for our game:
-			        repeat: 5-1, 
+			        repeat: 5-1,
 			        setXY: { x: option1_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
 			    });
 	    	}
@@ -2238,9 +2244,9 @@ window.onload = function() {
     	if (mod_num_option1 > 0) {
     		stars_sure[quotient_num_option1] = this.add.group({
 		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 		        // which is just what we need for our game:
-		        repeat: mod_num_option1-1, 
+		        repeat: mod_num_option1-1,
 		        setXY: { x: option1_positionX_new - 20*quotient_num_option1, y: socialInfoY-25, stepY: -15 }
 		    });
     	}
@@ -2251,9 +2257,9 @@ window.onload = function() {
     		for (let q=0; q<quotient_num_option2; q++) {
 	    		stars_option2[q] = this.add.group({
 			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 			        // which is just what we need for our game:
-			        repeat: 5-1, 
+			        repeat: 5-1,
 			        setXY: { x: option2_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
 			    });
 	    	}
@@ -2262,9 +2268,9 @@ window.onload = function() {
     	if (mod_num_option2 > 0) {
     		stars_sure[quotient_num_option2] = this.add.group({
 		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 		        // which is just what we need for our game:
-		        repeat: mod_num_option2-1, 
+		        repeat: mod_num_option2-1,
 		        setXY: { x: option2_positionX_new - 20*quotient_num_option2, y: socialInfoY-25, stepY: -15 }
 		    });
     	}
@@ -2275,9 +2281,9 @@ window.onload = function() {
     		for (let q=0; q<quotient_num_option3; q++) {
 	    		stars_option3[q] = this.add.group({
 			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 			        // which is just what we need for our game:
-			        repeat: 5-1, 
+			        repeat: 5-1,
 			        setXY: { x: option3_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
 			    });
 	    	}
@@ -2286,9 +2292,9 @@ window.onload = function() {
     	if (mod_num_option3 > 0) {
     		stars_sure[quotient_num_option3] = this.add.group({
 		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 		        // which is just what we need for our game:
-		        repeat: mod_num_option3-1, 
+		        repeat: mod_num_option3-1,
 		        setXY: { x: option3_positionX_new - 20*quotient_num_option3, y: socialInfoY-25, stepY: -15 }
 		    });
     	}
@@ -2299,9 +2305,9 @@ window.onload = function() {
     		for (let q=0; q<quotient_num_option4; q++) {
 	    		stars_option4[q] = this.add.group({
 			        key: 'star',
-			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+			        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 			        // which is just what we need for our game:
-			        repeat: 5-1, 
+			        repeat: 5-1,
 			        setXY: { x: option4_positionX_new - 20*q, y: socialInfoY-25, stepY: -15 }
 			    });
 	    	}
@@ -2310,13 +2316,13 @@ window.onload = function() {
     	if (mod_num_option4 > 0) {
     		stars_sure[quotient_num_option4] = this.add.group({
 		        key: 'star',
-		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total, 
+		        // Because it creates 1 child automatically, repeating 1 times means we'll get 2 in total,
 		        // which is just what we need for our game:
-		        repeat: mod_num_option4-1, 
+		        repeat: mod_num_option4-1,
 		        setXY: { x: option4_positionX_new - 20*quotient_num_option4, y: socialInfoY-25, stepY: -15 }
 		    });
     	}
-    } 
+    }
 
     function showPublicInfo (shared_payoff, shared_option_position, socialInfoY) {
     	// console.log('shared_payoff = ' + shared_payoff);
@@ -2335,7 +2341,7 @@ window.onload = function() {
     		// Adding payoff texts
 		    public_info_text[i] = this.add.text(
 		    	public_info_text_position[shared_option_position[i]-1]
-		    	, socialInfoY - 25 * public_info_count[shared_option_position[i]-1]  
+		    	, socialInfoY - 25 * public_info_count[shared_option_position[i]-1]
 		    	, shared_payoff[i]
 		    	, { fontSize: '30px', fill: noteColor }
 		    	).setOrigin(0.5, 0.5);
@@ -2346,7 +2352,7 @@ window.onload = function() {
     }
 
     // madeChoice
-    function madeChoice (flag, distribution, isLeftRisky) {  
+    function madeChoice (flag, distribution, isLeftRisky) {
         let thisChoice;
         switch (flag) {
         	case -1:
@@ -2399,7 +2405,7 @@ window.onload = function() {
 		trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
     };
 
-    function madeChoice_4ab (flag, distribution, optionOrder) {  
+    function madeChoice_4ab (flag, distribution, optionOrder) {
     	// A new cost is set
     	info_share_cost = rand(100, 0);
 
@@ -2452,7 +2458,7 @@ window.onload = function() {
     	if (p_rare < roulette) { // common event
     		thisPayoff = Math.floor((payoffList[0] + noise)*100);
     		myEarnings.push(thisPayoff);
-            myChoices.push(choice);   		
+            myChoices.push(choice);
     	} else { // rare event
     		thisPayoff = Math.floor((payoffList[1] + noise)*100);
     		myEarnings.push(thisPayoff);
@@ -2487,7 +2493,7 @@ window.onload = function() {
     	if (p_rare < roulette) { // common event
     		thisPayoff = Math.floor((payoffList[0] + noise)*100);
     		myEarnings.push(thisPayoff);
-            myChoices.push(choice);   		
+            myChoices.push(choice);
     	} else { // rare event
     		thisPayoff = Math.floor((thisPayoff_base + noise)*100);
     		myEarnings.push(thisPayoff);
@@ -2510,7 +2516,7 @@ window.onload = function() {
     	if (p_rare < roulette) { // common event
     		thisPayoff = Math.floor((payoffList[0] + noise)*100);
     		myEarnings.push(thisPayoff);
-            myChoices.push(choice);   		
+            myChoices.push(choice);
     	} else { // rare event
     		thisPayoff = Math.floor((payoffList[1] + noise)*100);
     		myEarnings.push(thisPayoff);
@@ -2733,7 +2739,7 @@ window.onload = function() {
 		}
 		probabilityList = {sure:pSure, risky:pRiskyRare};
 		payoffList = {
-				sure:[payoff_sureL, payoff_sureH], 
+				sure:[payoff_sureL, payoff_sureH],
 				risky:[payoff_riskyCommon, payoff_riskyRare]};
 	}
 
@@ -2751,9 +2757,9 @@ window.onload = function() {
 				payoff_sureH2 = 1.5;
 				payoff_sureL3 = 1.25;
 				payoff_sureH3 = 1.25;
-				
+
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 5.5; 
+				payoff_riskyRare = 5.5;
 				break;
 			// === experiment on 22 October 2020 ===
 			case 11: // (riskPrem=20/15; p=0.4; minPayoff = 50)
@@ -2768,7 +2774,7 @@ window.onload = function() {
 				payoff_sureH3 = 1.00;
 
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 4.25; 
+				payoff_riskyRare = 4.25;
 				break;
 			case 12: // (riskPrem=20/15; p=0.4)
 				pRiskyRare = 0.4;
@@ -2782,7 +2788,7 @@ window.onload = function() {
 				payoff_sureL3 = 0.50;
 				payoff_sureH3 = 2.375;
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 4.25; 
+				payoff_riskyRare = 4.25;
 				break;
 			// ==== 3-safe 1-risky bandit ====
 			case 0: // (riskPrem=20/15; p=0.4; minPayoff = 50)
@@ -2797,7 +2803,7 @@ window.onload = function() {
 				payoff_sureH3 = 1.00;
 
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 4.25; 
+				payoff_riskyRare = 4.25;
 				break;
 			case 1: // (riskPrem=20/15; p=0.3; minPayoff = 50)
 		        pRiskyRare = 0.3;
@@ -2809,9 +2815,9 @@ window.onload = function() {
 				payoff_sureH2 = 1.25;
 				payoff_sureL3 = 1.00;
 				payoff_sureH3 = 1.00;
-				
+
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 5.5; 
+				payoff_riskyRare = 5.5;
 				break;
 			// ==== 2-safe 2-risky bandit (riskPrem=20/15; p=0.3) ====
 			case 2: // (riskPrem=20/15; p=0.4)
@@ -2826,7 +2832,7 @@ window.onload = function() {
 				payoff_sureL3 = 0.50;
 				payoff_sureH3 = 2.375;
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 4.25; 
+				payoff_riskyRare = 4.25;
 				break;
 			case 3: // (riskPrem=20/15; p=0.3)
 				pRiskyRare = 0.3;
@@ -2840,7 +2846,7 @@ window.onload = function() {
 				payoff_sureL3 = 0.50;
 				payoff_sureH3 = 3;
 				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 5.5; 
+				payoff_riskyRare = 5.5;
 				break;
 			// ==== 3-safe 1-risky bandit ====
 			case 4: // (riskPrem=20/15; p=0.4; minPayoff = 75)
@@ -2853,9 +2859,9 @@ window.onload = function() {
 				payoff_sureH2 = 1.25;
 				payoff_sureL3 = 1.00;
 				payoff_sureH3 = 1.00;
-				
+
 				payoff_riskyCommon = 0.75;
-				payoff_riskyRare = 3.875; 
+				payoff_riskyRare = 3.875;
 				break;
 			case 5: // (riskPrem=20/15; p=0.3; minPayoff = 75)
 				pRiskyRare = 0.3;
@@ -2867,9 +2873,9 @@ window.onload = function() {
 				payoff_sureH2 = 1.25;
 				payoff_sureL3 = 1.00;
 				payoff_sureH3 = 1.00;
-				
+
 				payoff_riskyCommon = 0.75;
-				payoff_riskyRare = 4.917; 
+				payoff_riskyRare = 4.917;
 				break;
 			// ==== 3-safe 1-risky bandit (riskPrem=20/15; p=0.3) ====
 		    default: // case 3
@@ -2882,9 +2888,9 @@ window.onload = function() {
 				payoff_sureH2 = 1.25;
 				payoff_sureL3 = 1.00;
 				payoff_sureH3 = 1.00;
-				
+
 				payoff_riskyCommon = 0.75;
-				payoff_riskyRare = 4.917; 
+				payoff_riskyRare = 4.917;
 				break;
 		}
 		// probabilityList = {sure:pSure, risky:pRiskyRare};
@@ -2897,7 +2903,7 @@ window.onload = function() {
 		payoffList = {
 				sure1:[payoff_sureL1, payoff_sureH1],
 				sure2:[payoff_sureL2, payoff_sureH2],
-				sure3:[payoff_sureL3, payoff_sureH3], 
+				sure3:[payoff_sureL3, payoff_sureH3],
 				risky:[payoff_riskyCommon, payoff_riskyRare]};
 	}
 
@@ -3000,7 +3006,7 @@ window.onload = function() {
         game.scene.start('ScenePerfect', data); // debug
 
        	// game.scene.start('SceneInstruction', data);
-        
+
     });
 
     socket.on('you guys are individual condition', function () {
@@ -3058,7 +3064,7 @@ window.onload = function() {
         	}
         }
 
-        
+
         currentTrial++;
         totalEarning += payoff - (info_share_cost * didShare);
 
@@ -3104,7 +3110,7 @@ window.onload = function() {
     socket.on('S_to_C_welcomeback', function(data) {
     	// if (waitingRoomFinishedFlag == 1) {
     	if (understandingCheckStarted == 1) {
-	    	// You could give a change to the shortly disconnected client to go back to the session 
+	    	// You could give a change to the shortly disconnected client to go back to the session
 	    	// However, for now I just redirect them to the questionnaire
 	        socket.io.opts.query = 'sessionName=already_finished';
 	        socket.disconnect();

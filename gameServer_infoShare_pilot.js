@@ -1,20 +1,20 @@
 // ====================================================================
 // Multi-argent two-armed bandit task with active information sharing
-// 
+//
 // The task proceeds as follows:
-// 1. Choice phase at trial 1 with no social info 
+// 1. Choice phase at trial 1 with no social info
 // 2. Reward feedback (participants can only know their own earning)
 // 3. Choice between "share (with cost)" and "non-share (without cost)"
 // 4. Choice phase at t > 1, the payoff info they chose to share is shown
 // 5. Repeat 2 to 5 until t reaches horizon
-// 
+//
 // Author: Wataru Toyokawa
 // Collaborating with Dr Helge Giese
 // Requirements:
 //    * Node.js
 //    * node_modules: express, socket.io, fast-csv, php-express
 //    * mongoDB and mongoose
-// =================================================================== 
+// ===================================================================
 
 // Loading modules
 const csv = require("fast-csv")
@@ -136,7 +136,9 @@ roomStatus['finishedRoom'] = {
     saveDataThisRound: [],
     restTime:maxWaitingTime,
     groupTotalPayoff: [0],
-    totalPayoff_perIndiv: [0]
+    totalPayoff_perIndiv: [0],
+    groupTotalCost: [0],
+    block: 0
 };
 // The following is the first room
 // Therefore, Object.keys(roomStatus).length = 2 right now
@@ -167,7 +169,9 @@ roomStatus[firstRoomName] = {
     saveDataThisRound: [],
     restTime:maxWaitingTime,
     groupTotalPayoff: [0],
-    totalPayoff_perIndiv: [0]
+    totalPayoff_perIndiv: [0],
+    groupTotalCost: [0],
+    block: 0
 };
 
 /**
@@ -187,14 +191,14 @@ server.listen(port, function() {
  * Socket.IO Connection.
  */
 io.on('connection', function (client) {
-	// client's unique identifier 
+	// client's unique identifier
 	client.amazonID = client.request._query.amazonID;
 	client.started = 0;
 	// while (client.started == 0) {
 	// 	io.to(client.session).emit('S_to_C_welcomeback', {sessionName: client.session, roomName: client.room});
 	// }
 	// Assigning "client.session" as an unique identifier of the participant
-	// If the client already has the sessionName, 
+	// If the client already has the sessionName,
 	// put this client into a experimental room
 	if (typeof client.request._query.sessionName == 'undefined') {
 		// client.sessionName: this is an unique code for each participant
@@ -209,8 +213,8 @@ io.on('connection', function (client) {
 		console.log(logtxt);
 	} else if (client.request._query.sessionName == 'already_finished'){
 		// Some web browsers may try to reconnect with this game server when the browser
-		// is forced to disconnect. The following script will assure 
-		// that such reconnected subject will not go to a normal room, 
+		// is forced to disconnect. The following script will assure
+		// that such reconnected subject will not go to a normal room,
 		// but to the 'finishedRoom' where nothing will ever never happen.
 		client.session = client.request._query.sessionName;
 		client.room = 'finishedRoom';
@@ -257,7 +261,9 @@ io.on('connection', function (client) {
 				saveDataThisRound: [],
 				restTime:maxWaitingTime,
 				groupTotalPayoff: [0],
-				totalPayoff_perIndiv: [0]
+				totalPayoff_perIndiv: [0],
+				groupTotalCost: [0],
+				block: 0
 			};
 			roomStatus[client.room]['n']++;
 			roomStatus[client.room]['total_n']++;
@@ -300,7 +306,7 @@ io.on('connection', function (client) {
 		    let logtext_coreReady = '['+now_coreReady.getUTCFullYear()+'/'+(now_coreReady.getUTCMonth()+1)+'/';
 		    logtext_coreReady += now_coreReady.getUTCDate()+'/'+now_coreReady.getUTCHours()+':'+now_coreReady.getUTCMinutes()+':'+now_coreReady.getUTCSeconds()+']';
 		    logtext_coreReady += ' - Client: ' + client.session +'('+client.amazonID+') responds with an average latency = '+ data.latency + ' ms.';
-		    client.latency = data.latency; 
+		    client.latency = data.latency;
 		    console.log(logtext_coreReady);
 		    if(data.latency < data.maxLatencyForGroupCondition) {
 		    	// Let the client join the newest room
@@ -322,7 +328,7 @@ io.on('connection', function (client) {
 				      // Make a new room
 				      // client.newRoomName = myMonth+myDate+myHour+myMin+'_session_' + (sessionNo + Object.keys(roomStatus).length - 1);
 				      client.newRoomName = makeid(7) + '_session_' + (sessionNo + Object.keys(roomStatus).length - 1);
-				      roomStatus[client.newRoomName] = 
+				      roomStatus[client.newRoomName] =
 				      {
 				          exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
 				          riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
@@ -349,7 +355,9 @@ io.on('connection', function (client) {
 				          saveDataThisRound: [],
 				          restTime:maxWaitingTime,
 				          groupTotalPayoff: [0],
-				          totalPayoff_perIndiv: [0]
+				          totalPayoff_perIndiv: [0],
+				          groupTotalCost: [0],
+				          block: 0
 				      };
 				      // Register the client to the new room
 				      client.room = client.newRoomName;
@@ -362,7 +370,7 @@ io.on('connection', function (client) {
 				      countDownWaiting[client.room] = new Object();
 				    }
 			  	}
-			  
+
 				// Let the client join and know the registered room
 				client.join(client.room);
 				//io.to(client).emit('S_to_C_clientSessionName', {sessionName: client.session, roomName: client.room});
@@ -386,7 +394,7 @@ io.on('connection', function (client) {
 		    	// else if latency is too large
 		      	// then this subject is go to the individual condition
 		      	client.newRoomName = myMonth+myDate+myHour+myMin+'_largeLatency_' + (sessionNo + Object.keys(roomStatus).length - 1);
-				roomStatus[client.newRoomName] = 
+				roomStatus[client.newRoomName] =
 		      	{
 					exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
 					riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
@@ -469,7 +477,7 @@ io.on('connection', function (client) {
 			roomStatus[client.room]['starting'] = 1;
 			roomStatus[client.room]['n']--;
 			// create a new individual condition's room
-			roomStatus[myMonth+myDate+myHour+myMin+'_sessionIndiv_' + (sessionNo + Object.keys(roomStatus).length - 1)] = 
+			roomStatus[myMonth+myDate+myHour+myMin+'_sessionIndiv_' + (sessionNo + Object.keys(roomStatus).length - 1)] =
 			{
 				exp_condition: exp_condition_list[weightedRand2({0:prob_binary, 1:(1-prob_binary)})],
 				riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
@@ -496,7 +504,9 @@ io.on('connection', function (client) {
 				saveDataThisRound: [],
 				restTime:maxWaitingTime,
 				groupTotalPayoff: [0],
-				totalPayoff_perIndiv: [0]
+				totalPayoff_perIndiv: [0],
+				groupTotalCost: [0],
+				block: 0
 			};
 			// client leave the former room
 			client.leave(client.room);
@@ -749,7 +759,7 @@ io.on('connection', function (client) {
 			// =========  save data to mongodb
 
 			// Depending on the number of subject who has already done this round,
-			// the response to the client changes 
+			// the response to the client changes
 			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
 			if(typeof roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] != 'undefined') {
 				roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]++;
@@ -776,7 +786,7 @@ io.on('connection', function (client) {
 			  		roomStatus[client.room]['saveDataThisRound'] = [];
 
 				  	// for(let i=0; i<roomStatus[client.room]['saveDataThisRound'].length; i++) {
-				  	// 	const worker = createWorker('./worker_threads/savingBehaviouralData_array.js', 
+				  	// 	const worker = createWorker('./worker_threads/savingBehaviouralData_array.js',
 							// roomStatus[client.room]['saveDataThisRound'][i], roomStatus[client.room]['membersID'][i]);
 				  	// 	// Delete all the data that has already been saved:
 				  	// 	if (i == roomStatus[client.room]['saveDataThisRound'].length - 1) { // executing after this for loop
@@ -786,7 +796,7 @@ io.on('connection', function (client) {
 				}
 			  	// =========  save data to mongodb by loop END
 			  	// =========  save data to mongodb
-			  	/*const worker = createWorker('./worker_threads/savingBehaviouralData.org.js', 
+			  	/*const worker = createWorker('./worker_threads/savingBehaviouralData.org.js',
 					roomStatus[client.room]['saveDataThisRound'], client.room);
 			  	*/
 			  	// =========  save data to mongodb END
@@ -816,12 +826,12 @@ io.on('connection', function (client) {
 			sessionNameSpace[client.session] = 0;
 
 			let doneOrNot = -1;
-			// This doneOrNot checks whether the disconnected client has not 
+			// This doneOrNot checks whether the disconnected client has not
 			// yet made a choice in the main stage. If doneOrNot > -1, it means
 			// this client has already done the choice.
 			if(typeof roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1] != 'undefined') {
 				doneOrNot = roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1].indexOf(client.subjectNumber);
-			} 
+			}
 			if(doneOrNot > -1){
 				roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1].splice(doneOrNot, 1);
 				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1].splice(doneOrNot, 1);
@@ -837,10 +847,10 @@ io.on('connection', function (client) {
 		  		roomStatus[client.room]['saveDataThisRound'] = [];
 		  		// =========  save data to mongodb by loop END
 				roomStatus[thisRoomName]['n']--;
-				// Note: 
+				// Note:
 				// if this is the Individual condition session's room, then I want 'n' to remain 1
-				// so than no one will never enter this room again. 
-				// On the other hand, if this is a group session's room, reducing 'n' may open up 
+				// so than no one will never enter this room again.
+				// On the other hand, if this is a group session's room, reducing 'n' may open up
 				// a room for a new-comer if this room is still at the first waiting screen
 				if (roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] >= roomStatus[client.room]['n']) {
 				  	console.log(`result stage ended at: ${client.room}`);
@@ -866,11 +876,11 @@ io.on('connection', function (client) {
 				}
 			}
 
-			
+
 			io.to(thisRoomName).emit('client disconnected', {roomStatus:roomStatus[thisRoomName], disconnectedClient:client.id});
 
 
-			/* // Payoff should be calculated immediately if the disconnected client was the last one 
+			/* // Payoff should be calculated immediately if the disconnected client was the last one
 			if (roomStatus[thisRoomName]['n']>0 && typeof roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1] != 'undefined') {
 				let numChoiceDone = roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1].filter(function(value){ return value >= 0});
 				if (numChoiceDone.length >= roomStatus[thisRoomName]['n']) {
@@ -883,7 +893,7 @@ io.on('connection', function (client) {
 			}
 			*/
 
-			// When this disconnection made the groupSize == 0, 
+			// When this disconnection made the groupSize == 0,
 			// waiting room's clock should be reset.
 			// If I don't do this, the next new subject would not have time to wait other people.
 			if(roomStatus[thisRoomName]['n'] <= 0){
@@ -904,7 +914,7 @@ io.on('connection', function (client) {
 function getRandomIntInclusive(max, min = 0) {
   min = Math.ceil(min);
   max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min; //Both the maximum and minimum are inclusive 
+  return Math.floor(Math.random() * (max - min + 1)) + min; //Both the maximum and minimum are inclusive
 }
 
 // shuffling function
@@ -958,7 +968,7 @@ function rand(max, min = 0) {
 
 function proceedRound (room) {
 
-	roomStatus[room]['totalPayoff_perIndiv'][roomStatus[room]['round']-1] = 
+	roomStatus[room]['totalPayoff_perIndiv'][roomStatus[room]['round']-1] =
 		Math.round( roomStatus[room]['groupTotalPayoff'][roomStatus[room]['round']-1] / roomStatus[room]['n'] );
 
 	roomStatus[room]['round']++;
@@ -991,7 +1001,8 @@ function startSession (room) {
 	if(typeof countDownWaiting[room] != 'undefined') {
 		clearTimeout(countDownWaiting[room]);
 	}
-	roomStatus[room]['starting'] = 1;
+	roomStatus[room]['starting'] = 1; // <- if this is > 0, no participants can enter this room anymore
+	roomStatus[room]['block'] = 1; // <- the first block
 	if (roomStatus[room]['n'] < minGroupSize) {
 		roomStatus[room]['indivOrGroup'] = 0; // individual condition
 	} else {
@@ -1005,7 +1016,7 @@ function startSession (room) {
 }
 
 function parameterEmitting (client) {
-	io.to(client.session).emit('this_is_your_parameters', 
+	io.to(client.session).emit('this_is_your_parameters',
 		{ id: client.session
 		, room: client.room
 		, maxChoiceStageTime: maxChoiceStageTime
@@ -1016,7 +1027,7 @@ function parameterEmitting (client) {
 		, subjectNumber: client.subjectNumber
 		, indivOrGroup: roomStatus[client.room]['indivOrGroup']
 		, numOptions: numOptions
-		, optionOrder: roomStatus[client.room]['optionOrder'] 
+		, optionOrder: roomStatus[client.room]['optionOrder']
 		// , info_share_cost: info_share_cost
 		});
 	let nowEmitting = new Date(),
