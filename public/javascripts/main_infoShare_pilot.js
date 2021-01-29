@@ -61,7 +61,7 @@ let pRiskyRare
 ,	smallNoise = sd_sure
 ,	probabilityList = {}
 ,	payoffList = {}
-,	optionsKeyList = ['sure1','sure2','sure3','risky']
+,	optionsKeyList = []
 ;
 
 const backgroundcolour_feedback = '#ffd6c9'; //#d9d9d9 = grey #ffffff = white
@@ -213,10 +213,17 @@ window.onload = function() {
     , configHeight = 600
     , optionWidth = 150
     , optionHeight = 150
-    // , leftSlotPositionX = 200
-    // , rightSlotPositionX = 600
-    , option1_positionX = 122.5 //115
-    , space_between_boxes = 185 //190 //space_between_boxes
+    // ---- 2-armed bandit
+    , option1_positionX = 225
+    , space_between_boxes = 350 //190 //space_between_boxes
+    // ------------------
+
+    // --- 4-armed bandit
+    // , option1_positionX = 122.5
+    // , space_between_boxes = 185 //190 //space_between_boxes
+    // ------------------
+
+
     // , option2_positionX = 250
     // , option3_positionX = 450
     // , option4_positionX = 650
@@ -928,23 +935,27 @@ window.onload = function() {
 			} else if (indivOrGroup == 1 & tutorialTrial == 2) {
 			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `4 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 			    numberOfPreviousChoice[0] = 1;
 			    numberOfPreviousChoice[1] = 4;
-			    numberOfPreviousChoice[2] = 1;
-			    numberOfPreviousChoice[3] = 2;
+			    if(numOptions == 4) {
+				    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+				    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+				    numberOfPreviousChoice[2] = 1;
+				    numberOfPreviousChoice[3] = 2;
+				}
 			    // function.call(what_is_this, ...) method can specify what you mean by "this" in the function
 			    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], socialInfoY);
 			} else if (indivOrGroup == 1 & tutorialTrial == 3) {
 			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `3 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 			    numberOfPreviousChoice[0] = 2;
 			    numberOfPreviousChoice[1] = 2;
-			    numberOfPreviousChoice[2] = 1;
-			    numberOfPreviousChoice[3] = 3;
+			    if(numOptions == 4) {
+				    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+				    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `3 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+				    numberOfPreviousChoice[2] = 1;
+				    numberOfPreviousChoice[3] = 3;
+				}
 			    // function.call(what_is_this, ...) method can specify what you mean by "this" in the function
 			    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], socialInfoY);
 			} else if (tutorialTrial != 4) {
@@ -1709,8 +1720,7 @@ window.onload = function() {
 						// options.box1_active.visible = false;
 		    //             options.box2.visible = false;
 						// options.box2_active.visible = false;
-						// madeChoice(currentChoiceFlag, 'miss', isLeftRisky);
-						madeChoice_4ab(currentChoiceFlag, 'miss', optionOrder);
+						madeChoice(currentChoiceFlag, 'miss', optionOrder);
 						game.scene.start('ScenePayoffFeedback', {didMiss: true, flag: currentChoiceFlag});
 						gameTimer.destroy();
 	                }
@@ -1739,8 +1749,7 @@ window.onload = function() {
 	        	options['box_active'+i].on('pointerdown', function (pointer) {
 			    	//clearTimeout(countDownChoiceStage);
 			    	if(!isChoiceMade) {
-			    		// madeChoice(currentChoiceFlag, exp_condition, isLeftRisky);
-			    		madeChoice_4ab(currentChoiceFlag, exp_condition, optionOrder);
+			    		madeChoice(currentChoiceFlag, exp_condition, optionOrder);
 			    		gameTimer.destroy();
 			    		game.scene.start('ScenePayoffFeedback', {didMiss: false, flag: currentChoiceFlag});
 			    		isChoiceMade = true;
@@ -2352,60 +2361,7 @@ window.onload = function() {
     }
 
     // madeChoice
-    function madeChoice (flag, distribution, isLeftRisky) {
-        let thisChoice;
-        switch (flag) {
-        	case -1:
-        		// Execute if flag == -1
-        		thisChoice = 'miss';
-				payoffText.x = 400;
-				break;
-
-			case 1:
-				if (isLeftRisky) {
-					thisChoice = 'risky';
-				} else {
-					thisChoice = 'sure';
-				}
-				payoffText.x = 200;
-				break;
-
-			case 2:
-				if (isLeftRisky) {
-					thisChoice = 'sure';
-				} else {
-					thisChoice = 'risky';
-				}
-				payoffText.x = 600;
-				break;
-
-			default:
-        		thisChoice = 'miss';
-				payoffText.x = 400;
-				break;
-        }
-		// calculating the payoff from this choice
-		if (distribution == 'miss') {
-			payoff = 0;
-			if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-				socket.emit('choice made', {choice: thisChoice, payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
-			} else {
-				saveChoiceDataLocally({choice: thisChoice, payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
-			}
-        	//console.log('choice was made: choice = ' + thisChoice + ' and payoff = ' + 0 + '.');
-		} else if (distribution == 'binary') {
-			payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
-		} else {
-			payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
-		}
-		score += payoff;
-		scoreText.setText('Total score: ' + score);
-		payoffText.setText(payoff);
-		payoffText.visible = true;
-		trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
-    };
-
-    function madeChoice_4ab (flag, distribution, optionOrder) {
+    function madeChoice (flag, distribution, optionOrder) {
     	// A new cost is set
     	info_share_cost = rand(100, 0);
 
@@ -2413,33 +2369,28 @@ window.onload = function() {
         if (flag == -1) {
         	thisChoice = 0;//'miss';
 			payoffText.x = 400;
-        } else {
-        	// flag is just a position of the chosen option,
-        	// e.g., flag == 1 when she chose option1.
+		} else {
+			// "flag" just indicates a position of the chosen option in the subject's monitor,
+        	// e.g., flag == 1 when she chose the left option.
         	// Therefore, I need to translate this position into the actual option
         	// thisChoice is an indicator of the actual option chosen
         	thisChoice = optionOrder[flag -1];
 			payoffText.x = option1_positionX + space_between_boxes*(flag-1);
-        }
+		}
+
 		// calculating the payoff from this choice
 		if (distribution == 'miss') {
 			payoff = 0;
-			myLastChoiceFlag = flag;
 			if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-				// socket.emit('choice made 4ab', {                     choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
-				socket.emit('choice made 4ab', {chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+				socket.emit('choice made', {chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
 			} else {
-				saveChoiceDataLocally({chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+				saveChoiceDataLocally({choice: thisChoice, payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
 			}
         	//console.log('choice was made: choice = ' + thisChoice + ' and payoff = ' + 0 + '.');
 		} else if (distribution == 'binary') {
-			payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
-		} else if (distribution == 'binary_4ab') {
-			// console.log('optionOrder ==' + optionOrder + ' and flag == '+ flag);
-			// console.log('thisChoice == '+ thisChoice);
-			// console.log('randomChoiceFromFour with optionsKeyList == '+optionsKeyList[thisChoice-1]);
-			payoff = randomChoiceFromFour(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
-			// payoff = randomChoiceFromFour_decreasing(currentTrial, flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+			console.log('thisChoice = ' + thisChoice +' and optionsKeyList[thisChoice-1] = ' + optionsKeyList[thisChoice-1]);
+			payoff = randomChoiceFromBinary(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+			// payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
 		} else {
 			payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
 		}
@@ -2450,9 +2401,53 @@ window.onload = function() {
 		trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
     };
 
-    // random choice with probability -- binary distribution
-    function randomChoiceFromTwo(choice, payoffList, p_rare, socialInfo, publicInfo) {
-    	let roulette = Math.random()
+  //   function madeChoice_4ab (flag, distribution, optionOrder) {
+  //   	// A new cost is set
+  //   	info_share_cost = rand(100, 0);
+
+  //       let thisChoice;
+  //       if (flag == -1) {
+  //       	thisChoice = 0;//'miss';
+		// 	payoffText.x = 400;
+  //       } else {
+  //       	// flag is just a position of the chosen option,
+  //       	// e.g., flag == 1 when she chose option1.
+  //       	// Therefore, I need to translate this position into the actual option
+  //       	// thisChoice is an indicator of the actual option chosen
+  //       	thisChoice = optionOrder[flag -1];
+		// 	payoffText.x = option1_positionX + space_between_boxes*(flag-1);
+  //       }
+		// // calculating the payoff from this choice
+		// if (distribution == 'miss') {
+		// 	payoff = 0;
+		// 	myLastChoiceFlag = flag;
+		// 	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
+		// 		// socket.emit('choice made 4ab', {                     choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+		// 		socket.emit('choice made 4ab', {chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+		// 	} else {
+		// 		saveChoiceDataLocally({chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+		// 	}
+  //       	//console.log('choice was made: choice = ' + thisChoice + ' and payoff = ' + 0 + '.');
+		// } else if (distribution == 'binary') {
+		// 	payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
+		// } else if (distribution == 'binary_4ab') {
+		// 	// console.log('optionOrder ==' + optionOrder + ' and flag == '+ flag);
+		// 	// console.log('thisChoice == '+ thisChoice);
+		// 	// console.log('randomChoiceFromFour with optionsKeyList == '+optionsKeyList[thisChoice-1]);
+		// 	payoff = randomChoiceFromFour(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+		// 	// payoff = randomChoiceFromFour_decreasing(currentTrial, flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
+		// } else {
+		// 	payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
+		// }
+		// score += payoff;
+		// scoreText.setText('Total score: ' + score);
+		// payoffText.setText(payoff);
+		// payoffText.visible = true;
+		// trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
+  //   };
+
+    function randomChoiceFromBinary(chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
+		let roulette = Math.random()
     	let noise = BoxMuller(0, smallNoise)
     	let thisPayoff
     	if (p_rare < roulette) { // common event
@@ -2464,14 +2459,38 @@ window.onload = function() {
     		myEarnings.push(thisPayoff);
             myChoices.push(choice);
     	}
+    	myLastChoiceFlag = chosenOptionFlag;
     	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-			socket.emit('choice made', {choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+			socket.emit('choice made', {chosenOptionFlag:chosenOptionFlag, num_choice: num_choice, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
     	} else {
-    		saveChoiceDataLocally({choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+    		saveChoiceDataLocally({chosenOptionFlag:chosenOptionFlag, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
     	}
         //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
     	return thisPayoff;
 	}
+
+    // random choice with probability -- binary distribution
+ //    function randomChoiceFromTwo(choice, payoffList, p_rare, socialInfo, publicInfo) {
+ //    	let roulette = Math.random()
+ //    	let noise = BoxMuller(0, smallNoise)
+ //    	let thisPayoff
+ //    	if (p_rare < roulette) { // common event
+ //    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
+ //    		myEarnings.push(thisPayoff);
+ //            myChoices.push(choice);
+ //    	} else { // rare event
+ //    		thisPayoff = Math.floor((payoffList[1] + noise)*100);
+ //    		myEarnings.push(thisPayoff);
+ //            myChoices.push(choice);
+ //    	}
+ //    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
+	// 		socket.emit('choice made', {choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+ //    	} else {
+ //    		saveChoiceDataLocally({choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+ //    	}
+ //        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
+ //    	return thisPayoff;
+	// }
 
 	function randomChoiceFromFour_decreasing(this_trial, chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
 		let roulette = Math.random()
@@ -2509,28 +2528,28 @@ window.onload = function() {
     	return thisPayoff;
 	}
 
-	function randomChoiceFromFour(chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
-		let roulette = Math.random()
-    	let noise = BoxMuller(0, smallNoise)
-    	let thisPayoff
-    	if (p_rare < roulette) { // common event
-    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
-    		myEarnings.push(thisPayoff);
-            myChoices.push(choice);
-    	} else { // rare event
-    		thisPayoff = Math.floor((payoffList[1] + noise)*100);
-    		myEarnings.push(thisPayoff);
-            myChoices.push(choice);
-    	}
-    	myLastChoiceFlag = chosenOptionFlag;
-    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-			socket.emit('choice made 4ab', {chosenOptionFlag:chosenOptionFlag, num_choice: num_choice, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
-    	} else {
-    		saveChoiceDataLocally({chosenOptionFlag:chosenOptionFlag, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
-    	}
-        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
-    	return thisPayoff;
-	}
+	// function randomChoiceFromFour(chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
+	// 	let roulette = Math.random()
+ //    	let noise = BoxMuller(0, smallNoise)
+ //    	let thisPayoff
+ //    	if (p_rare < roulette) { // common event
+ //    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
+ //    		myEarnings.push(thisPayoff);
+ //            myChoices.push(choice);
+ //    	} else { // rare event
+ //    		thisPayoff = Math.floor((payoffList[1] + noise)*100);
+ //    		myEarnings.push(thisPayoff);
+ //            myChoices.push(choice);
+ //    	}
+ //    	myLastChoiceFlag = chosenOptionFlag;
+ //    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
+	// 		socket.emit('choice made 4ab', {chosenOptionFlag:chosenOptionFlag, num_choice: num_choice, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
+ //    	} else {
+ //    		saveChoiceDataLocally({chosenOptionFlag:chosenOptionFlag, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
+ //    	}
+ //        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
+ //    	return thisPayoff;
+	// }
 
 	// random choice with probability -- Gaussian distribution
     function randomChoiceFromGaussian(choice, socialInfo, publicInfo) {
@@ -2654,8 +2673,8 @@ window.onload = function() {
 
 	function settingRiskDistribution (id) {
 		switch (id) {
-			// -- either 0 or 1 case is used in the experimental session --
-			case 0: // Optimal-risky condition
+			// 0, 1, 2, 3
+			case 0: // Optimal-risky, positively-skewed
 				pRiskyRare = 0.2;
 				pSure = 1;
 				payoff_sureL = 1.5;
@@ -2666,7 +2685,7 @@ window.onload = function() {
 				mean_sure = 1.5;
 				mean_risky = 1.6;
 				break;
-			case 1: // Suboptimal-risky condition
+			case 1: // Suboptimal-risky positively-skewed
 				pRiskyRare = 0.2;
 				pSure = 1;
 				payoff_sureL = 1.5;
@@ -2677,8 +2696,7 @@ window.onload = function() {
 				mean_sure = 1.5;
 				mean_risky = 1.4;
 				break;
-			// -- The following cases were used in the pilot test
-		    case 2:
+		    case 2: // Optimal-risky, negatively-skewed
 				pRiskyRare = 0.2;
 				pSure = 1;
 				payoff_sureL = 1.5;
@@ -2686,7 +2704,7 @@ window.onload = function() {
 				payoff_riskyCommon = 1.00;
 				payoff_riskyRare = 4.00;
 				break;
-			case 3:
+			case 3: // Suboptimal-risky, negatively-skewed
 				pRiskyRare = 0.1;
 				pSure = 1;
 				payoff_sureL = 1.5;
@@ -2694,40 +2712,8 @@ window.onload = function() {
 				payoff_riskyCommon = 1.25;
 				payoff_riskyRare = 4.75;
 				break;
-			case 4:
-				pRiskyRare = 0.1;
-				pSure = 1;
-				payoff_sureL = 1.5;
-				payoff_sureH = 1.5;
-				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 11.50;
-				break;
-			// ==== Pilot-2 (August 2020) =====
-			case 5:
-				pRiskyRare = 0.2;
-				pSure = 1;
-				payoff_sureL = 1.5;
-				payoff_sureH = 1.5;
-				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 8.0;
-				break;
-			case 6:
-				pRiskyRare = 0.3;
-				pSure = 1;
-				payoff_sureL = 1.5;
-				payoff_sureH = 1.5;
-				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 5.5;
-				break;
-			case 7:
-				pRiskyRare = 0.4;
-				pSure = 1;
-				payoff_sureL = 1.5;
-				payoff_sureH = 1.5;
-				payoff_riskyCommon = 0.50;
-				payoff_riskyRare = 4.25;
-				break;
-			// ==== Pilot-2 (August 2020) END =
+
+			// ==== Pilot condition =
 		    default:
 		        pRiskyRare = 0.2;
 				pSure = 1;
@@ -2737,10 +2723,15 @@ window.onload = function() {
 				payoff_riskyRare = 6.00;
 				break;
 		}
-		probabilityList = {sure:pSure, risky:pRiskyRare};
+		optionsKeyList = ['sure','risky'];
+		probabilityList = {
+			sure:pSure
+			, risky:pRiskyRare
+		};
 		payoffList = {
-				sure:[payoff_sureL, payoff_sureH],
-				risky:[payoff_riskyCommon, payoff_riskyRare]};
+				sure:[payoff_sureL, payoff_sureH]
+				, risky:[payoff_riskyCommon, payoff_riskyRare]
+			};
 	}
 
 	function settingRiskDistribution_4ab (id) {
@@ -2893,6 +2884,7 @@ window.onload = function() {
 				payoff_riskyRare = 4.917;
 				break;
 		}
+		optionsKeyList = ['sure1','sure2','sure3','risky']
 		// probabilityList = {sure:pSure, risky:pRiskyRare};
 		probabilityList = {
 			sure1:pSure,

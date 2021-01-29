@@ -45,7 +45,7 @@ const horizon = 20 // 100?
 , maxGroupSize = 4//8 // maximum 12
 , minGroupSize = 2//4
 , maxWaitingTime = 5 * 1000
-, numOptions = 4 // 2 or 4
+, numOptions = 2 // 2 or 4
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
 
@@ -53,7 +53,7 @@ const horizon = 20 // 100?
 
 //, sigmaGlobal = 6 //0.9105
 //, sigmaIndividual = 6 //0.9105 // this gives 50% overlap between two normal distributions whose mean diff. is 1.1666..
-, exp_condition_list = ['binary_4ab', 'gaussian']
+, exp_condition_list = ['binary', 'gaussian'] //['binary_4ab', 'gaussian']
 , prob_binary = 1.0//0.8
 , isLeftRisky_list = [true, false]
 , options = [];
@@ -561,18 +561,16 @@ io.on('connection', function (client) {
 			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.choice;
 			roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.payoff;
 			roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1][doneNum-1] = client.subjectNumber;
+
 			if( roomStatus[client.room]['round'] < horizon ) {
 				if (doneNum <= 1) {
 					// summarise social information
-				  	for (let i = 0; i < numOptions; i++) {
+					for (let i = 0; i < numOptions; i++) {
 						roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][i] = 0;
 					}
 				}
-				if (data.choice === 'sure') {
-					roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0]++;
-				} else if (data.choice === 'risky') {
-					roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][1]++;
-				}
+				// roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
+				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.num_choice]++;
 			}
 			//client.emit('your instant number is ', client.subjectNumber-1);
 			io.to(client.room).emit('these are done subjects', {doneSubject:roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]});
@@ -590,6 +588,7 @@ io.on('connection', function (client) {
 				,	subjectNumber: client.subjectNumber
 				,	amazonID: client.amazonID
 				,	round: roomStatus[client.room]['round']
+				,	chosenOptionFlag: data.chosenOptionFlag
 				,	choice: data.choice
 				,	payoff: data.payoff
 				,	totalEarning: data.totalEarning
@@ -603,7 +602,7 @@ io.on('connection', function (client) {
 				,	riskDistributionId: data.riskDistributionId
 				,	optionOrder: roomStatus[client.room]['optionOrder']
 				}
-				);
+			);
 			// =========  save data to mongodb
 		}
 	});
