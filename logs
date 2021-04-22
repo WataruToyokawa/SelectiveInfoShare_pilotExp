@@ -1,0 +1,296 @@
+2021-04-22T10:58:28: [2021/4/22/10:58:28] - Four-armed bandit task server listening on port 8080; max_n_per_rooom = 4
+2021-04-22T10:58:58: [2021/4/22/10:58:58] - Connected successfully to 'loggingtutorial
+2021-04-22T10:59:52: [2021/4/22/10:59:52]- sessionName was just assigned to NATtOAJxDRjZDBhnAAAA
+2021-04-22T10:59:53: [2021/4/22/10:59:53] - Client: NATtOAJxDRjZDBhnAAAA(INHOUSETEST3) responds with an average latency = 0 ms.
+2021-04-22T10:59:53: [2021/4/22/10:59:53] - NATtOAJxDRjZDBhnAAAA(INHOUSETEST3) joined to uMTZegN_session_0 (n: 1, total N: 1)
+2021-04-22T10:59:53: [2021/4/22/10:59:53] - parameters were sent to NATtOAJxDRjZDBhnAAAA in room uMTZegN_session_0
+2021-04-22T10:59:53: [2021/4/22/10:59:53] - The first participant came in to the room uMTZegN_session_0.
+2021-04-22T10:59:53: [2021/4/22/10:59:53] - Waiting room opened at uMTZegN_session_0
+2021-04-22T10:59:58: [2021/4/22/10:59:58] - session started in 04221058_sessionIndiv_1
+2021-04-22T10:59:59: [2021/4/22/10:59:59]  - NATtOAJxDRjZDBhnAAAA passed the test.
+2021-04-22T10:59:59: [2021/4/22/10:59:59] - 04221058_sessionIndiv_1 is ready to start the game.
+2021-04-22T11:00:07: [2021/4/22/11:0:7] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 63 at trial 1.
+2021-04-22T11:00:09: [2021/4/22/11:0:9] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 63 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:09: groupTotalPayoff = 63
+2021-04-22T11:00:09: [2021/4/22/11:0:9] - doneNo: 1, current round is 1 at 04221058_sessionIndiv_1
+2021-04-22T11:00:09: [2021/4/22/11:0:9] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:10: [2021/4/22/11:0:10] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 153 at trial 2.
+2021-04-22T11:00:11: [2021/4/22/11:0:11] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 153 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:11: groupTotalPayoff = 63,153
+2021-04-22T11:00:11: [2021/4/22/11:0:11] - doneNo: 1, current round is 2 at 04221058_sessionIndiv_1
+2021-04-22T11:00:11: [2021/4/22/11:0:11] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:14: [2021/4/22/11:0:14] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 158 at trial 3.
+2021-04-22T11:00:15: [2021/4/22/11:0:15] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 158 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:15: groupTotalPayoff = 63,153,158
+2021-04-22T11:00:15: [2021/4/22/11:0:15] - doneNo: 1, current round is 3 at 04221058_sessionIndiv_1
+2021-04-22T11:00:15: [2021/4/22/11:0:15] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:16: [2021/4/22/11:0:16] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 33 at trial 4.
+2021-04-22T11:00:18: [2021/4/22/11:0:18] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 33 at trial 4? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:18: groupTotalPayoff = 63,153,158,33
+2021-04-22T11:00:18: [2021/4/22/11:0:18] - doneNo: 1, current round is 4 at 04221058_sessionIndiv_1
+2021-04-22T11:00:18: [2021/4/22/11:0:18] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:18: [2021/4/22/11:0:18] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 40 at trial 5.
+2021-04-22T11:00:20: [2021/4/22/11:0:20] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 40 at trial 5? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:20: groupTotalPayoff = 63,153,158,33,40
+2021-04-22T11:00:20: [2021/4/22/11:0:20] - doneNo: 1, current round is 5 at 04221058_sessionIndiv_1
+2021-04-22T11:00:20: [2021/4/22/11:0:20] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:21: [2021/4/22/11:0:21] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 153 at trial 6.
+2021-04-22T11:00:23: [2021/4/22/11:0:23] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 153 at trial 6? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:23: groupTotalPayoff = 63,153,158,33,40,153
+2021-04-22T11:00:23: [2021/4/22/11:0:23] - doneNo: 1, current round is 6 at 04221058_sessionIndiv_1
+2021-04-22T11:00:23: [2021/4/22/11:0:23] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:24: [2021/4/22/11:0:24] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 145 at trial 7.
+2021-04-22T11:00:25: [2021/4/22/11:0:25] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 145 at trial 7? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:25: groupTotalPayoff = 63,153,158,33,40,153,145
+2021-04-22T11:00:25: [2021/4/22/11:0:25] - doneNo: 1, current round is 7 at 04221058_sessionIndiv_1
+2021-04-22T11:00:25: [2021/4/22/11:0:25] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:26: [2021/4/22/11:0:26] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 47 at trial 8.
+2021-04-22T11:00:28: [2021/4/22/11:0:28] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 47 at trial 8? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:28: groupTotalPayoff = 63,153,158,33,40,153,145,47
+2021-04-22T11:00:28: [2021/4/22/11:0:28] - doneNo: 1, current round is 8 at 04221058_sessionIndiv_1
+2021-04-22T11:00:28: [2021/4/22/11:0:28] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:29: [2021/4/22/11:0:29] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 140 at trial 9.
+2021-04-22T11:00:30: [2021/4/22/11:0:30] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 140 at trial 9? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:30: groupTotalPayoff = 63,153,158,33,40,153,145,47,140
+2021-04-22T11:00:30: [2021/4/22/11:0:30] - doneNo: 1, current round is 9 at 04221058_sessionIndiv_1
+2021-04-22T11:00:30: [2021/4/22/11:0:30] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:32: [2021/4/22/11:0:32] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 64 at trial 10.
+2021-04-22T11:00:33: [2021/4/22/11:0:33] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 64 at trial 10? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:33: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64
+2021-04-22T11:00:33: [2021/4/22/11:0:33] - doneNo: 1, current round is 10 at 04221058_sessionIndiv_1
+2021-04-22T11:00:33: [2021/4/22/11:0:33] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:37: [2021/4/22/11:0:37] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 158 at trial 11.
+2021-04-22T11:00:38: [2021/4/22/11:0:38] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 158 at trial 11? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:38: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158
+2021-04-22T11:00:38: [2021/4/22/11:0:38] - doneNo: 1, current round is 11 at 04221058_sessionIndiv_1
+2021-04-22T11:00:38: [2021/4/22/11:0:38] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:40: [2021/4/22/11:0:40] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 48 at trial 12.
+2021-04-22T11:00:41: [2021/4/22/11:0:41] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 48 at trial 12? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:41: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48
+2021-04-22T11:00:41: [2021/4/22/11:0:41] - doneNo: 1, current round is 12 at 04221058_sessionIndiv_1
+2021-04-22T11:00:41: [2021/4/22/11:0:41] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:42: [2021/4/22/11:0:42] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 154 at trial 13.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: [2021/4/22/11:0:43] - [Main] Message got from worker [Worker] Finished 04221058_sessionIndiv_1
+2021-04-22T11:00:43: err at worker INHOUSETEST3.
+2021-04-22T11:00:43: [2021/4/22/11:0:43] - exitted! : undefined
+2021-04-22T11:00:44: [2021/4/22/11:0:44] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 154 at trial 13? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:44: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154
+2021-04-22T11:00:44: [2021/4/22/11:0:44] - doneNo: 1, current round is 13 at 04221058_sessionIndiv_1
+2021-04-22T11:00:44: [2021/4/22/11:0:44] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:44: [2021/4/22/11:0:44] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 55 at trial 14.
+2021-04-22T11:00:46: [2021/4/22/11:0:46] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 55 at trial 14? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:46: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55
+2021-04-22T11:00:46: [2021/4/22/11:0:46] - doneNo: 1, current round is 14 at 04221058_sessionIndiv_1
+2021-04-22T11:00:46: [2021/4/22/11:0:46] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:47: [2021/4/22/11:0:47] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 144 at trial 15.
+2021-04-22T11:00:48: [2021/4/22/11:0:48] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 144 at trial 15? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:48: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55,144
+2021-04-22T11:00:48: [2021/4/22/11:0:48] - doneNo: 1, current round is 15 at 04221058_sessionIndiv_1
+2021-04-22T11:00:48: [2021/4/22/11:0:48] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:49: [2021/4/22/11:0:49] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 139 at trial 16.
+2021-04-22T11:00:50: [2021/4/22/11:0:50] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 139 at trial 16? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:50: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55,144,139
+2021-04-22T11:00:50: [2021/4/22/11:0:50] - doneNo: 1, current round is 16 at 04221058_sessionIndiv_1
+2021-04-22T11:00:50: [2021/4/22/11:0:50] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:51: [2021/4/22/11:0:51] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 56 at trial 17.
+2021-04-22T11:00:52: [2021/4/22/11:0:52] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 56 at trial 17? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:52: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55,144,139,56
+2021-04-22T11:00:52: [2021/4/22/11:0:52] - doneNo: 1, current round is 17 at 04221058_sessionIndiv_1
+2021-04-22T11:00:52: [2021/4/22/11:0:52] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:52: [2021/4/22/11:0:52] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose risky and got 26 at trial 18.
+2021-04-22T11:00:54: [2021/4/22/11:0:54] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 26 at trial 18? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:54: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55,144,139,56,26
+2021-04-22T11:00:54: [2021/4/22/11:0:54] - doneNo: 1, current round is 18 at 04221058_sessionIndiv_1
+2021-04-22T11:00:54: [2021/4/22/11:0:54] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:54: [2021/4/22/11:0:54] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 148 at trial 19.
+2021-04-22T11:00:56: [2021/4/22/11:0:56] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 148 at trial 19? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:56: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55,144,139,56,26,148
+2021-04-22T11:00:56: [2021/4/22/11:0:56] - doneNo: 1, current round is 19 at 04221058_sessionIndiv_1
+2021-04-22T11:00:56: [2021/4/22/11:0:56] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:00:56: [2021/4/22/11:0:56] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose sure and got 152 at trial 20.
+2021-04-22T11:00:58: [2021/4/22/11:0:58] - Did client 1 in 04221058_sessionIndiv_1 share the payoff info 152 at trial 20? -> 0 (0:NO / 1:YES)
+2021-04-22T11:00:58: groupTotalPayoff = 63,153,158,33,40,153,145,47,140,64,158,48,154,55,144,139,56,26,148,152
+2021-04-22T11:00:58: [2021/4/22/11:0:58] - doneNo: 1, current round is 20 at 04221058_sessionIndiv_1
+2021-04-22T11:00:58: [2021/4/22/11:0:58] - result stage ended at: 04221058_sessionIndiv_1
+2021-04-22T11:01:00: [2021/4/22/11:1:0] - client disconnected: NATtOAJxDRjZDBhnAAAA (INHOUSETEST3) (room N: 1, total N: 0) - handshakeID:NATtOAJxDRjZDBhnAAAA
+2021-04-22T11:01:02: [2021/4/22/11:1:2] - NATtOAJxDRjZDBhnAAAA (INHOUSETEST3) in room uMTZegN_session_0 reconnected to the server
+2021-04-22T11:01:02: [2021/4/22/11:1:2] - session started in 04221058_sessionIndiv_2
+2021-04-22T11:01:03: [2021/4/22/11:1:3]  - NATtOAJxDRjZDBhnAAAA passed the test.
+2021-04-22T11:01:03: [2021/4/22/11:1:3] - 04221058_sessionIndiv_2 is ready to start the game.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: [2021/4/22/11:1:8] - [Main] Message got from worker [Worker] Finished 04221058_sessionIndiv_1
+2021-04-22T11:01:08: err at worker INHOUSETEST3.
+2021-04-22T11:01:08: [2021/4/22/11:1:8] - exitted! : undefined
+2021-04-22T11:01:26: [2021/4/22/11:1:26] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 21.
+2021-04-22T11:01:28: [2021/4/22/11:1:28] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 21? -> 0 (0:NO / 1:YES)
+2021-04-22T11:01:28: groupTotalPayoff = 0
+2021-04-22T11:01:28: [2021/4/22/11:1:28] - doneNo: 1, current round is 1 at 04221058_sessionIndiv_2
+2021-04-22T11:01:28: [2021/4/22/11:1:28] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:01:30: [2021/4/22/11:1:30] - Connected successfully to server (room: undefined)
+2021-04-22T11:01:30: [2021/4/22/11:1:30] - exitted! : undefined
+2021-04-22T11:01:44: [2021/4/22/11:1:44] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 22.
+2021-04-22T11:01:45: [2021/4/22/11:1:45] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 22? -> 0 (0:NO / 1:YES)
+2021-04-22T11:01:45: groupTotalPayoff = 0,0
+2021-04-22T11:01:45: [2021/4/22/11:1:45] - doneNo: 1, current round is 2 at 04221058_sessionIndiv_2
+2021-04-22T11:01:45: [2021/4/22/11:1:45] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:02:02: [2021/4/22/11:2:2] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 23.
+2021-04-22T11:02:03: [2021/4/22/11:2:3] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 23? -> 0 (0:NO / 1:YES)
+2021-04-22T11:02:03: groupTotalPayoff = 0,0,0
+2021-04-22T11:02:03: [2021/4/22/11:2:3] - doneNo: 1, current round is 3 at 04221058_sessionIndiv_2
+2021-04-22T11:02:03: [2021/4/22/11:2:3] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:02:20: [2021/4/22/11:2:20] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 24.
+2021-04-22T11:02:21: [2021/4/22/11:2:21] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 24? -> 0 (0:NO / 1:YES)
+2021-04-22T11:02:21: groupTotalPayoff = 0,0,0,0
+2021-04-22T11:02:21: [2021/4/22/11:2:21] - doneNo: 1, current round is 4 at 04221058_sessionIndiv_2
+2021-04-22T11:02:21: [2021/4/22/11:2:21] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:02:37: [2021/4/22/11:2:37] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 25.
+2021-04-22T11:02:39: [2021/4/22/11:2:39] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 25? -> 0 (0:NO / 1:YES)
+2021-04-22T11:02:39: groupTotalPayoff = 0,0,0,0,0
+2021-04-22T11:02:39: [2021/4/22/11:2:39] - doneNo: 1, current round is 5 at 04221058_sessionIndiv_2
+2021-04-22T11:02:39: [2021/4/22/11:2:39] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:02:55: [2021/4/22/11:2:55] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 26.
+2021-04-22T11:02:57: [2021/4/22/11:2:57] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 26? -> 0 (0:NO / 1:YES)
+2021-04-22T11:02:57: groupTotalPayoff = 0,0,0,0,0,0
+2021-04-22T11:02:57: [2021/4/22/11:2:57] - doneNo: 1, current round is 6 at 04221058_sessionIndiv_2
+2021-04-22T11:02:57: [2021/4/22/11:2:57] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:03:13: [2021/4/22/11:3:13] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 27.
+2021-04-22T11:03:15: [2021/4/22/11:3:15] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 27? -> 0 (0:NO / 1:YES)
+2021-04-22T11:03:15: groupTotalPayoff = 0,0,0,0,0,0,0
+2021-04-22T11:03:15: [2021/4/22/11:3:15] - doneNo: 1, current round is 7 at 04221058_sessionIndiv_2
+2021-04-22T11:03:15: [2021/4/22/11:3:15] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:03:31: [2021/4/22/11:3:31] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 28.
+2021-04-22T11:03:32: [2021/4/22/11:3:32] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 28? -> 0 (0:NO / 1:YES)
+2021-04-22T11:03:32: groupTotalPayoff = 0,0,0,0,0,0,0,0
+2021-04-22T11:03:32: [2021/4/22/11:3:32] - doneNo: 1, current round is 8 at 04221058_sessionIndiv_2
+2021-04-22T11:03:32: [2021/4/22/11:3:32] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:03:49: [2021/4/22/11:3:49] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 29.
+2021-04-22T11:03:50: [2021/4/22/11:3:50] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 29? -> 0 (0:NO / 1:YES)
+2021-04-22T11:03:50: groupTotalPayoff = 0,0,0,0,0,0,0,0,0
+2021-04-22T11:03:50: [2021/4/22/11:3:50] - doneNo: 1, current round is 9 at 04221058_sessionIndiv_2
+2021-04-22T11:03:50: [2021/4/22/11:3:50] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:04:07: [2021/4/22/11:4:7] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 30.
+2021-04-22T11:04:08: [2021/4/22/11:4:8] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 30? -> 0 (0:NO / 1:YES)
+2021-04-22T11:04:08: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:04:08: [2021/4/22/11:4:8] - doneNo: 1, current round is 10 at 04221058_sessionIndiv_2
+2021-04-22T11:04:08: [2021/4/22/11:4:8] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: [2021/4/22/11:4:19] - [Main] Message got from worker [Worker] Finished 04221058_sessionIndiv_2
+2021-04-22T11:04:19: err at worker INHOUSETEST3.
+2021-04-22T11:04:19: [2021/4/22/11:4:19] - exitted! : undefined
+2021-04-22T11:04:24: [2021/4/22/11:4:24] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 31.
+2021-04-22T11:04:26: [2021/4/22/11:4:26] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 31? -> 0 (0:NO / 1:YES)
+2021-04-22T11:04:26: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:04:26: [2021/4/22/11:4:26] - doneNo: 1, current round is 11 at 04221058_sessionIndiv_2
+2021-04-22T11:04:26: [2021/4/22/11:4:26] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:04:42: [2021/4/22/11:4:42] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 32.
+2021-04-22T11:04:44: [2021/4/22/11:4:44] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 32? -> 0 (0:NO / 1:YES)
+2021-04-22T11:04:44: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:04:44: [2021/4/22/11:4:44] - doneNo: 1, current round is 12 at 04221058_sessionIndiv_2
+2021-04-22T11:04:44: [2021/4/22/11:4:44] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:05:00: [2021/4/22/11:5:0] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 33.
+2021-04-22T11:05:02: [2021/4/22/11:5:2] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 33? -> 0 (0:NO / 1:YES)
+2021-04-22T11:05:02: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:05:02: [2021/4/22/11:5:2] - doneNo: 1, current round is 13 at 04221058_sessionIndiv_2
+2021-04-22T11:05:02: [2021/4/22/11:5:2] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:05:18: [2021/4/22/11:5:18] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 34.
+2021-04-22T11:05:20: [2021/4/22/11:5:20] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 34? -> 0 (0:NO / 1:YES)
+2021-04-22T11:05:20: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:05:20: [2021/4/22/11:5:20] - doneNo: 1, current round is 14 at 04221058_sessionIndiv_2
+2021-04-22T11:05:20: [2021/4/22/11:5:20] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:05:36: [2021/4/22/11:5:36] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 35.
+2021-04-22T11:05:37: [2021/4/22/11:5:37] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 35? -> 0 (0:NO / 1:YES)
+2021-04-22T11:05:37: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:05:37: [2021/4/22/11:5:37] - doneNo: 1, current round is 15 at 04221058_sessionIndiv_2
+2021-04-22T11:05:37: [2021/4/22/11:5:37] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:05:54: [2021/4/22/11:5:54] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 36.
+2021-04-22T11:05:55: [2021/4/22/11:5:55] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 36? -> 0 (0:NO / 1:YES)
+2021-04-22T11:05:55: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:05:55: [2021/4/22/11:5:55] - doneNo: 1, current round is 16 at 04221058_sessionIndiv_2
+2021-04-22T11:05:55: [2021/4/22/11:5:55] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:06:12: [2021/4/22/11:6:12] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 37.
+2021-04-22T11:06:13: [2021/4/22/11:6:13] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 37? -> 0 (0:NO / 1:YES)
+2021-04-22T11:06:13: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:06:13: [2021/4/22/11:6:13] - doneNo: 1, current round is 17 at 04221058_sessionIndiv_2
+2021-04-22T11:06:13: [2021/4/22/11:6:13] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:06:29: [2021/4/22/11:6:29] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 38.
+2021-04-22T11:06:31: [2021/4/22/11:6:31] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 38? -> 0 (0:NO / 1:YES)
+2021-04-22T11:06:31: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:06:31: [2021/4/22/11:6:31] - doneNo: 1, current round is 18 at 04221058_sessionIndiv_2
+2021-04-22T11:06:31: [2021/4/22/11:6:31] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:06:47: [2021/4/22/11:6:47] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 39.
+2021-04-22T11:06:49: [2021/4/22/11:6:49] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 39? -> 0 (0:NO / 1:YES)
+2021-04-22T11:06:49: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:06:49: [2021/4/22/11:6:49] - doneNo: 1, current round is 19 at 04221058_sessionIndiv_2
+2021-04-22T11:06:49: [2021/4/22/11:6:49] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:07:05: [2021/4/22/11:7:5] - Client NATtOAJxDRjZDBhnAAAA (subNo = 1) chose miss and got 0 at trial 40.
+2021-04-22T11:07:07: [2021/4/22/11:7:7] - Did client 1 in 04221058_sessionIndiv_2 share the payoff info 0 at trial 40? -> 0 (0:NO / 1:YES)
+2021-04-22T11:07:07: groupTotalPayoff = 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+2021-04-22T11:07:07: [2021/4/22/11:7:7] - doneNo: 1, current round is 20 at 04221058_sessionIndiv_2
+2021-04-22T11:07:07: [2021/4/22/11:7:7] - result stage ended at: 04221058_sessionIndiv_2
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: [2021/4/22/11:7:17] - [Main] Message got from worker [Worker] Finished 04221058_sessionIndiv_2
+2021-04-22T11:07:17: err at worker INHOUSETEST3.
+2021-04-22T11:07:17: [2021/4/22/11:7:17] - exitted! : undefined
+2021-04-22T11:27:23: [2021/4/22/11:27:23] - client disconnected: NATtOAJxDRjZDBhnAAAA (INHOUSETEST3) (room N: 1, total N: 0) - handshakeID:NATtOAJxDRjZDBhnAAAA
