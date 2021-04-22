@@ -103,6 +103,8 @@ let isEnvironmentReady = false
 ,	riskDistributionId
 ,	isLeftRisky
 ,	optionOrder
+,	taskOrder
+,	stage
 ,   connectionCounter
 ,	incorrectCount = 0
 ,	maxChoiceStageTime
@@ -1911,9 +1913,9 @@ window.onload = function() {
 
 			// YES button
 			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
-			let buttonContainer_yes = this.add.container(150, 200); //position
+			let buttonContainer_yes = this.add.container(200, 200); //position
 			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
-			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: -' + info_share_cost + ' points)', button_style);
+			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: ' + info_share_cost + ' points)', button_style);
 			buttonText_yes.setOrigin(0.5, 0.5);
 			buttonContainer_yes.add(buttonImage_yes);
 			buttonContainer_yes.add(buttonText_yes);
@@ -2017,6 +2019,7 @@ window.onload = function() {
 			}
 
 			if (indivOrGroup == 1) {
+				// When this is a group condition, sharing choice will appear
 				setTimeout(function(){
 					waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
 					buttonContainer_yes.visible = true;
@@ -2107,7 +2110,7 @@ window.onload = function() {
 			}
 
 			if (indivOrGroup == 1) {
-				waitOthersText = this.add.text(16, 60, 'Please wait for others...', { fontSize: '30px', fill: '#000'});
+				waitOthersText = this.add.text(16, 60, 'This is the info sharing scene!', { fontSize: '30px', fill: '#000'});
 			} else {
 				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000'});
 			}
@@ -2143,7 +2146,8 @@ window.onload = function() {
 			const noteStyle =
 				{ fontSize: '36px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
-			let totalEarning_USD = Math.round((totalEarning*cent_per_point))/100
+			// let totalEarning_USD = Math.round((totalEarning*cent_per_point))/100
+			let totalEarning_USD = Math.round((totalPayoff_perIndiv*cent_per_point))/100
 			let waitingBunis_USD = Math.round(waitingBonus)/100
 		    let title = this.add.text(configWidth/2, 18, goToQuestionnaireText[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
 		    let note1 = this.add.text(configWidth/2, 90, goToQuestionnaireText[1]+totalEarning_USD, noteStyle);
@@ -2673,6 +2677,69 @@ window.onload = function() {
 
 	function settingRiskDistribution (id) {
 		switch (id) {
+			// 1, 2, 3, 5
+			case 1: // Optimal-risky, positively-skewed
+				pRiskyRare = 0.2;
+				pSure = 1;
+				payoff_sureL = 1.5;
+				payoff_sureH = 1.5;
+				payoff_riskyCommon = 0.5;
+				payoff_riskyRare = 6.00; // E[R] = 1.6
+				// Gaussian
+				mean_sure = 1.5;
+				mean_risky = 1.6;
+				break;
+			case 2: // Suboptimal-risky positively-skewed
+				pRiskyRare = 0.2;
+				pSure = 1;
+				payoff_sureL = 1.5;
+				payoff_sureH = 1.5;
+				payoff_riskyCommon = 0.5;
+				payoff_riskyRare = 5.00; // E[R] = 1.4
+				// Gaussian
+				mean_sure = 1.5;
+				mean_risky = 1.4;
+				break;
+		    case 3: // Optimal-risky, negatively-skewed
+				pRiskyRare = 0.2;
+				pSure = 1;
+				payoff_sureL = 1.5;
+				payoff_sureH = 1.5;
+				payoff_riskyCommon = 2.00; // E[R] = 1.6
+				payoff_riskyRare = 0;
+				break;
+			case 4: // Suboptimal-risky, negatively-skewed
+				pRiskyRare = 0.2;
+				pSure = 1;
+				payoff_sureL = 1.5;
+				payoff_sureH = 1.5;
+				payoff_riskyCommon = 1.75; // E[R] = 1.4
+				payoff_riskyRare = 0;
+				break;
+
+			// ==== Pilot condition =
+		    default:
+		        pRiskyRare = 0.2;
+				pSure = 1;
+				payoff_sureL = 1.5;
+				payoff_sureH = 1.5;
+				payoff_riskyCommon = 0.5;
+				payoff_riskyRare = 6.00;
+				break;
+		}
+		optionsKeyList = ['sure','risky'];
+		probabilityList = {
+			sure:pSure
+			, risky:pRiskyRare
+		};
+		payoffList = {
+				sure:[payoff_sureL, payoff_sureH]
+				, risky:[payoff_riskyCommon, payoff_riskyRare]
+			};
+	}
+
+	function settingRiskDistribution_old (id) {
+		switch (id) {
 			// 0, 1, 2, 3
 			case 0: // Optimal-risky, positively-skewed
 				pRiskyRare = 0.2;
@@ -2913,18 +2980,20 @@ window.onload = function() {
         maxChoiceStageTime = data.maxChoiceStageTime;
         indivOrGroup = data.indivOrGroup;
         exp_condition = data.exp_condition; //binary_4ab
-        riskDistributionId = data.riskDistributionId;
+        // riskDistributionId = data.riskDistributionId;
         subjectNumber = data.subjectNumber;
         isLeftRisky = data.isLeftRisky;
         numOptions = data.numOptions;
         // info_share_cost = data.info_share_cost;
         optionOrder = data.optionOrder;
+        taskOrder = data.taskOrder;
         instructionText_indiv[1] = instructionText_indiv[1] + numOptions + ' slot machines.';
         instructionText_group[1] = instructionText_group[1] + numOptions + ' slot machines.';
         console.log('this is your optionOrder: ' + optionOrder);
         //setSlotPosition(data.isLeftRisky);
         if (data.numOptions == 2) {
-        	settingRiskDistribution(data.riskDistributionId);
+        	// settingRiskDistribution(data.riskDistributionId);
+        	settingRiskDistribution(taskOrder[data.stage]);
         } else {
         	settingRiskDistribution_4ab(data.riskDistributionId);
         }
@@ -3034,7 +3103,7 @@ window.onload = function() {
         // console.log('mySocialInfo: ' + mySocialInfo);
         // console.log('myPublicInfo: ' + myPublicInfo);
         // console.log('choiceOrder: ' + choiceOrder);
-        // console.log('totalPayoff_perIndiv: ' + totalPayoff_perIndiv + ' with group total = ' + groupTotalScore);
+        console.log('totalPayoff_perIndiv: ' + totalPayoff_perIndiv + ' with group total = ' + groupTotalScore);
         for (let i = 0; i < maxGroupSize; i++) {
         	if(share_or_not[i] != null) {
         		console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
@@ -3060,8 +3129,10 @@ window.onload = function() {
         currentTrial++;
         totalEarning += payoff - (info_share_cost * didShare);
 
-        $("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
-        $("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
+        //$("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
+        //$("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
+        $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
+        $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
         $("#exp_condition").val(exp_condition);
         //$("#confirmationID").val(confirmationID);
@@ -3084,8 +3155,10 @@ window.onload = function() {
         //mySocialInfoList['risky'] = data.socialFreq[data.round-1][riskyPosition];
         currentTrial++;
         totalEarning += payoff;
-        $("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
-        $("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
+        // $("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
+        // $("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
+        $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
+        $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
         $("#completed").val(1);
         $("#exp_condition").val(exp_condition);
@@ -3097,6 +3170,10 @@ window.onload = function() {
         }
     	game.scene.sleep('ScenePayoffFeedback');
     	game.scene.start('SceneGoToQuestionnaire');
+    });
+
+    socket.on('New stage starts', function(data) {
+    	console.log('New stage starts!!!!!!!!!!!!!!');
     });
 
     socket.on('S_to_C_welcomeback', function(data) {

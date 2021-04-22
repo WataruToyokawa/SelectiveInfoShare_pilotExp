@@ -50,6 +50,7 @@ const horizon = 20 // 100?
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
 
 // , info_share_cost = 30
+, task_order = [1, 2, 3, 4]
 
 //, sigmaGlobal = 6 //0.9105
 //, sigmaIndividual = 6 //0.9105 // this gives 50% overlap between two normal distributions whose mean diff. is 1.1666..
@@ -115,6 +116,7 @@ roomStatus['finishedRoom'] = {
     riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
     isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
     optionOrder: shuffle(options),
+    taskOrder: shuffle(task_order),
     indivOrGroup: -1,
     n: 0,
     membersID: [],
@@ -125,6 +127,7 @@ roomStatus['finishedRoom'] = {
     stage: 'firstWaiting',
     maxChoiceStageTime: maxChoiceStageTime,
     choiceTime: [],
+    stange: 0,
     round: 1,
     doneId: createArray(horizon, 0),
     doneNo: createArray(horizon),
@@ -148,6 +151,7 @@ roomStatus[firstRoomName] = {
     riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
     isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
     optionOrder: shuffle(options),
+    taskOrder: shuffle(task_order),
     indivOrGroup: -1,
     n: 0,
     membersID: [],
@@ -158,6 +162,7 @@ roomStatus[firstRoomName] = {
     stage: 'firstWaiting',
     maxChoiceStageTime: maxChoiceStageTime,
     choiceTime: [],
+    stange: 0,
     round: 1,
     doneId: createArray(horizon, 0),
     doneNo: createArray(horizon),
@@ -240,6 +245,7 @@ io.on('connection', function (client) {
 				riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 				isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 				optionOrder: shuffle(options),
+				taskOrder: shuffle(task_order),
 				indivOrGroup: -1,
 				n: 0,
 				membersID: [],
@@ -250,6 +256,7 @@ io.on('connection', function (client) {
 				stage: 'resuming',
 				maxChoiceStageTime: maxChoiceStageTime,
 				choiceTime: [],
+				stange: 0,
 				round: 1,
 				doneId: createArray(horizon, 0),
 				doneNo: createArray(horizon),
@@ -334,6 +341,7 @@ io.on('connection', function (client) {
 				          riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 				          isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 				          optionOrder: shuffle(options),
+				          taskOrder: shuffle(task_order),
 				          indivOrGroup: -1,
 				          n: 0,
 				          membersID: [],
@@ -344,6 +352,7 @@ io.on('connection', function (client) {
 				          stage: 'firstWaiting',
 				          maxChoiceStageTime: maxChoiceStageTime,
 				          choiceTime: [],
+				          stange: 0,
 				          round: 1,
 				          doneId: createArray(horizon, 0),
 				          doneNo: createArray(horizon),
@@ -400,6 +409,7 @@ io.on('connection', function (client) {
 					riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 					isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 					optionOrder: shuffle(options),
+					taskOrder: shuffle(task_order),
 					indivOrGroup: 0,
 					n: 0,
 					membersID: [],
@@ -410,6 +420,7 @@ io.on('connection', function (client) {
 					stage: 'firstWaiting',
 					maxChoiceStageTime: maxChoiceStageTime,
 					choiceTime: [],
+					stange: 0,
 					round: 1,
 					doneId: createArray(horizon, 0),
 					doneNo: createArray(horizon),
@@ -483,6 +494,7 @@ io.on('connection', function (client) {
 				riskDistributionId: getRandomIntInclusive(max = 13, min = 13), // max = 2, min = 0
 				isLeftRisky: isLeftRisky_list[getRandomIntInclusive(max = 1, min = 0)],
 				optionOrder: shuffle(options),
+				taskOrder: shuffle(task_order),
 				indivOrGroup: 0,
 				n: 0,
 				membersID: [],
@@ -493,6 +505,7 @@ io.on('connection', function (client) {
 				stage: 'firstWaiting',
 				maxChoiceStageTime: maxChoiceStageTime,
 				choiceTime: [],
+				stange: 0,
 				round: 1,
 				doneId: createArray(horizon, 0),
 				doneNo: createArray(horizon),
@@ -974,7 +987,16 @@ function proceedRound (room) {
 	if(roomStatus[room]['round'] <= horizon) {
 		io.to(room).emit('Proceed to next round', roomStatus[room]);
 	} else {
-		io.to(room).emit('End this session', roomStatus[room]);
+		if(roomStatus[room]['stage']==3) {
+			io.to(room).emit('End this session', roomStatus[room]);
+		} else {
+			roomStatus[room]['stage'] += 1;
+			io.to(room).emit('New stage starts', roomStatus[room]);
+			var nowDate = new Date(),
+			  	logDate = '['+nowDate.getUTCFullYear()+'/'+(nowDate.getUTCMonth()+1)+'/';
+			  	logDate += nowDate.getUTCDate()+'/'+nowDate.getUTCHours()+':'+nowDate.getUTCMinutes()+':'+nowDate.getUTCSeconds()+']';
+			console.log(logDate+' - New stage '+ roomStatus[room]['stage'] +' starts in '+room);
+		}
 	}
 }
 
@@ -1021,13 +1043,14 @@ function parameterEmitting (client) {
 		, maxChoiceStageTime: maxChoiceStageTime
 		, maxTimeTestScene: maxTimeTestScene
 		, exp_condition:roomStatus[client.room]['exp_condition']
-		, riskDistributionId:roomStatus[client.room]['riskDistributionId']
+		// , riskDistributionId:roomStatus[client.room]['riskDistributionId']
 		, isLeftRisky:roomStatus[client.room]['isLeftRisky']
 		, subjectNumber: client.subjectNumber
 		, indivOrGroup: roomStatus[client.room]['indivOrGroup']
 		, numOptions: numOptions
 		, optionOrder: roomStatus[client.room]['optionOrder']
-		// , info_share_cost: info_share_cost
+		, taskOrder: roomStatus[client.room]['taskOrder']
+		, stage: roomStatus[client.room]['stage']
 		});
 	let nowEmitting = new Date(),
 	  	logdateEmitting = '['+nowEmitting.getUTCFullYear()+'/'+(nowEmitting.getUTCMonth()+1)+'/';
