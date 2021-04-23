@@ -40,7 +40,7 @@ const expFunctions = require('./models/expFunctions');
 const consoleLogInterceptor = require('./models/console-log-interceptor');
 
 // Experimental variables
-const horizon = 20 // 100?
+const horizon = 3//20 // 100?
 , sessionNo = 0 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
 , maxGroupSize = 4//8 // maximum 12
 , minGroupSize = 2//4
@@ -51,6 +51,7 @@ const horizon = 20 // 100?
 
 // , info_share_cost = 30
 , task_order = [1, 2, 3, 4]
+, totalGameRound = task_order.length
 
 //, sigmaGlobal = 6 //0.9105
 //, sigmaIndividual = 6 //0.9105 // this gives 50% overlap between two normal distributions whose mean diff. is 1.1666..
@@ -123,19 +124,20 @@ roomStatus['finishedRoom'] = {
     subjectNumbers: [],
     disconnectedList: [],
     testPassed: 0,
+    newGameRoundReady: 0,
     starting: 0,
     stage: 'firstWaiting',
     maxChoiceStageTime: maxChoiceStageTime,
     choiceTime: [],
-    stange: 0,
+    gameRound: 0,
     round: 1,
-    doneId: createArray(horizon, 0),
-    doneNo: createArray(horizon),
-    socialFreq: createArray(horizon, numOptions),
-    socialInfo: createArray(horizon, maxGroupSize),
-    publicInfo: createArray(horizon, maxGroupSize),
-    share_or_not: createArray(horizon, maxGroupSize),
-    choiceOrder: createArray(horizon, maxGroupSize),
+    doneId: createArray(horizon * totalGameRound, 0),
+    doneNo: createArray(horizon * totalGameRound),
+    socialFreq: createArray(horizon * totalGameRound, numOptions),
+    socialInfo: createArray(horizon * totalGameRound, maxGroupSize),
+    publicInfo: createArray(horizon * totalGameRound, maxGroupSize),
+    share_or_not: createArray(horizon * totalGameRound, maxGroupSize),
+    choiceOrder: createArray(horizon * totalGameRound, maxGroupSize),
     saveDataThisRound: [],
     restTime:maxWaitingTime,
     groupTotalPayoff: [0],
@@ -158,19 +160,20 @@ roomStatus[firstRoomName] = {
     subjectNumbers: [],
     disconnectedList: [],
     testPassed: 0,
+    newGameRoundReady: 0,
     starting: 0,
     stage: 'firstWaiting',
     maxChoiceStageTime: maxChoiceStageTime,
     choiceTime: [],
-    stange: 0,
+    gameRound: 0,
     round: 1,
-    doneId: createArray(horizon, 0),
-    doneNo: createArray(horizon),
-    socialFreq: createArray(horizon, numOptions),
-    socialInfo:createArray(horizon, maxGroupSize),
-    publicInfo: createArray(horizon, maxGroupSize),
-    share_or_not: createArray(horizon, maxGroupSize),
-    choiceOrder:createArray(horizon, maxGroupSize),
+    doneId: createArray(horizon * totalGameRound, 0),
+    doneNo: createArray(horizon * totalGameRound),
+    socialFreq: createArray(horizon * totalGameRound, numOptions),
+    socialInfo:createArray(horizon * totalGameRound, maxGroupSize),
+    publicInfo: createArray(horizon * totalGameRound, maxGroupSize),
+    share_or_not: createArray(horizon * totalGameRound, maxGroupSize),
+    choiceOrder:createArray(horizon * totalGameRound, maxGroupSize),
     saveDataThisRound: [],
     restTime:maxWaitingTime,
     groupTotalPayoff: [0],
@@ -252,19 +255,20 @@ io.on('connection', function (client) {
 				subjectNumbers: [],
 				disconnectedList: [],
 				testPassed: 0,
+				newGameRoundReady: 0,
 				starting: 0,
 				stage: 'resuming',
 				maxChoiceStageTime: maxChoiceStageTime,
 				choiceTime: [],
-				stange: 0,
+				gameRound: 0,
 				round: 1,
-				doneId: createArray(horizon, 0),
-				doneNo: createArray(horizon),
-				socialFreq: createArray(horizon, numOptions),
-				socialInfo:createArray(horizon, maxGroupSize),
-				publicInfo: createArray(horizon, maxGroupSize),
-				share_or_not: createArray(horizon, maxGroupSize),
-				choiceOrder:createArray(horizon, maxGroupSize),
+				doneId: createArray(horizon * totalGameRound, 0),
+				doneNo: createArray(horizon * totalGameRound),
+				socialFreq: createArray(horizon * totalGameRound, numOptions),
+				socialInfo:createArray(horizon * totalGameRound, maxGroupSize),
+				publicInfo: createArray(horizon * totalGameRound, maxGroupSize),
+				share_or_not: createArray(horizon * totalGameRound, maxGroupSize),
+				choiceOrder:createArray(horizon * totalGameRound, maxGroupSize),
 				saveDataThisRound: [],
 				restTime:maxWaitingTime,
 				groupTotalPayoff: [0],
@@ -348,19 +352,20 @@ io.on('connection', function (client) {
 				          subjectNumbers: [],
 				          disconnectedList: [],
 				          testPassed: 0,
+				          newGameRoundReady: 0,
 				          starting: 0,
 				          stage: 'firstWaiting',
 				          maxChoiceStageTime: maxChoiceStageTime,
 				          choiceTime: [],
-				          stange: 0,
+				          gameRound: 0,
 				          round: 1,
-				          doneId: createArray(horizon, 0),
-				          doneNo: createArray(horizon),
-				          socialFreq: createArray(horizon, numOptions),
-				          socialInfo:createArray(horizon, maxGroupSize),
-				          publicInfo: createArray(horizon, maxGroupSize),
-				          share_or_not: createArray(horizon, maxGroupSize),
-				          choiceOrder:createArray(horizon, maxGroupSize),
+				          doneId: createArray(horizon * totalGameRound, 0),
+				          doneNo: createArray(horizon * totalGameRound),
+				          socialFreq: createArray(horizon * totalGameRound, numOptions),
+				          socialInfo:createArray(horizon * totalGameRound, maxGroupSize),
+				          publicInfo: createArray(horizon * totalGameRound, maxGroupSize),
+				          share_or_not: createArray(horizon * totalGameRound, maxGroupSize),
+				          choiceOrder:createArray(horizon * totalGameRound, maxGroupSize),
 				          saveDataThisRound: [],
 				          restTime:maxWaitingTime,
 				          groupTotalPayoff: [0],
@@ -416,19 +421,20 @@ io.on('connection', function (client) {
 					subjectNumbers: [],
 					disconnectedList: [],
 					testPassed: 0,
+					newGameRoundReady: 0,
 					starting: 0,
 					stage: 'firstWaiting',
 					maxChoiceStageTime: maxChoiceStageTime,
 					choiceTime: [],
-					stange: 0,
+					gameRound: 0,
 					round: 1,
-					doneId: createArray(horizon, 0),
-					doneNo: createArray(horizon),
-					socialFreq: createArray(horizon, numOptions),
-					socialInfo:createArray(horizon, maxGroupSize),
-					publicInfo: createArray(horizon, maxGroupSize),
-					share_or_not: createArray(horizon, maxGroupSize),
-					choiceOrder:createArray(horizon, maxGroupSize),
+					doneId: createArray(horizon * totalGameRound, 0),
+					doneNo: createArray(horizon * totalGameRound),
+					socialFreq: createArray(horizon * totalGameRound, numOptions),
+					socialInfo:createArray(horizon * totalGameRound, maxGroupSize),
+					publicInfo: createArray(horizon * totalGameRound, maxGroupSize),
+					share_or_not: createArray(horizon * totalGameRound, maxGroupSize),
+					choiceOrder:createArray(horizon * totalGameRound, maxGroupSize),
 					saveDataThisRound: [],
 					restTime:1000
 		      	};
@@ -501,19 +507,20 @@ io.on('connection', function (client) {
 				subjectNumbers: [],
 				disconnectedList: [],
 				testPassed: 0,
+				newGameRoundReady: 0,
 				starting: 0,
 				stage: 'firstWaiting',
 				maxChoiceStageTime: maxChoiceStageTime,
 				choiceTime: [],
-				stange: 0,
+				gameRound: 0,
 				round: 1,
-				doneId: createArray(horizon, 0),
-				doneNo: createArray(horizon),
-				socialFreq: createArray(horizon, numOptions),
-				socialInfo:createArray(horizon, maxGroupSize),
-				publicInfo: createArray(horizon, maxGroupSize),
-				share_or_not: createArray(horizon, maxGroupSize),
-				choiceOrder:createArray(horizon, maxGroupSize),
+				doneId: createArray(horizon * totalGameRound, 0),
+				doneNo: createArray(horizon * totalGameRound),
+				socialFreq: createArray(horizon * totalGameRound, numOptions),
+				socialInfo:createArray(horizon * totalGameRound, maxGroupSize),
+				publicInfo: createArray(horizon * totalGameRound, maxGroupSize),
+				share_or_not: createArray(horizon * totalGameRound, maxGroupSize),
+				choiceOrder:createArray(horizon * totalGameRound, maxGroupSize),
 				saveDataThisRound: [],
 				restTime:maxWaitingTime,
 				groupTotalPayoff: [0],
@@ -556,6 +563,29 @@ io.on('connection', function (client) {
 		  	roomStatus[client.room]['stage'] = 'mainTask';
 		} else {
 		  	io.to(client.session).emit('wait for others finishing test');
+		}
+	});
+
+	client.on('new gameRound ready', function () {
+		if (roomStatus[client.room]['newGameRoundReady']==0) {
+		  	roomStatus[client.room]['stage'] = 'thirdWaitingRoom';
+		}
+		roomStatus[client.room]['newGameRoundReady']++;
+		var now670 = new Date(),
+		    logdate670 = '['+now670.getUTCFullYear()+'/'+(now670.getUTCMonth()+1)+'/';
+		    logdate670 += now670.getUTCDate()+'/'+now670.getUTCHours()+':'+now670.getUTCMinutes()+':'+now670.getUTCSeconds()+'] ';
+		console.log(logdate670 +' - '+ client.session + ' is ready to move on.');
+		if (roomStatus[client.room]['newGameRoundReady'] >= roomStatus[client.room]['n']) {
+		  	var now675 = new Date(),
+		    logdate675 = '['+now675.getUTCFullYear()+'/'+(now675.getUTCMonth()+1)+'/';
+		    logdate675 += now675.getUTCDate()+'/'+now675.getUTCHours()+':'+now675.getUTCMinutes()+':'+now675.getUTCSeconds()+']';
+		  	console.log(logdate675 + ' - ' + client.room + ' is ready to start the new game round.');
+		  	io.to(client.room).emit('all are ready to move on', {gameRound:roomStatus[client.room]['gameRound'], newGameRoundReady:roomStatus[client.room]['newGameRoundReady'], exp_condition:roomStatus[client.room]['exp_condition']});
+		  	// io.to(client.room).emit('all passed the test', {n:roomStatus[client.room]['n'], testPassed:roomStatus[client.room]['testPassed'], exp_condition:roomStatus[client.room]['exp_condition']});
+		  	firstTrialStartingTime = now675;
+		  	roomStatus[client.room]['stage'] = 'mainTask';
+		} else {
+		  	io.to(client.session).emit('wait for others get ready to move on');
 		}
 	});
 
@@ -987,15 +1017,16 @@ function proceedRound (room) {
 	if(roomStatus[room]['round'] <= horizon) {
 		io.to(room).emit('Proceed to next round', roomStatus[room]);
 	} else {
-		if(roomStatus[room]['stage']==3) {
+		if(roomStatus[room]['gameRound']==3) {
 			io.to(room).emit('End this session', roomStatus[room]);
 		} else {
-			roomStatus[room]['stage'] += 1;
-			io.to(room).emit('New stage starts', roomStatus[room]);
+			roomStatus[room]['gameRound'] += 1;
+			roomStatus[room]['newGameRoundReady'] = 0;
+			io.to(room).emit('New gameRound starts', roomStatus[room]);
 			var nowDate = new Date(),
 			  	logDate = '['+nowDate.getUTCFullYear()+'/'+(nowDate.getUTCMonth()+1)+'/';
 			  	logDate += nowDate.getUTCDate()+'/'+nowDate.getUTCHours()+':'+nowDate.getUTCMinutes()+':'+nowDate.getUTCSeconds()+']';
-			console.log(logDate+' - New stage '+ roomStatus[room]['stage'] +' starts in '+room);
+			console.log(logDate+' - New gameRound '+ (roomStatus[room]['gameRound']+1) +' starts in '+room);
 		}
 	}
 }
@@ -1050,7 +1081,7 @@ function parameterEmitting (client) {
 		, numOptions: numOptions
 		, optionOrder: roomStatus[client.room]['optionOrder']
 		, taskOrder: roomStatus[client.room]['taskOrder']
-		, stage: roomStatus[client.room]['stage']
+		, gameRound: roomStatus[client.room]['gameRound']
 		});
 	let nowEmitting = new Date(),
 	  	logdateEmitting = '['+nowEmitting.getUTCFullYear()+'/'+(nowEmitting.getUTCMonth()+1)+'/';

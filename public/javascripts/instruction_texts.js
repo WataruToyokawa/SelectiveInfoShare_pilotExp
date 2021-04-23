@@ -1,6 +1,6 @@
 'use strict';
 
-const waitingRoomText0 = 
+const waitingRoomText0 =
 	[ 'Welcome!'
 	, 'The task will start shortly.'
 	// , 'If nothing happens and you seem getting stuck in this page for more than 15 seconds, please reload this page.'
@@ -8,7 +8,7 @@ const waitingRoomText0 =
 	, ''
 	//, 'The study starts in ' + '???' + ' sec.'
 	];
-const waitingRoomText = 
+const waitingRoomText =
 	[ 'Waiting Room'
 	, 'Please do not reload this page or open a new browser window.'
 	, 'Also please do not hide this browser window by other tab or apps.'
@@ -16,14 +16,14 @@ const waitingRoomText =
 	, ''
 	//, 'The study starts in ' + '???' + ' sec.'
 	];
-const waitingForOthers = 
+const waitingForOthers =
 	[ 'Wait for others'
 	, 'Please do not reload this page or open a new browser window.'
 	, 'Also please do not hide this browser window by other tab or apps.'
 	, 'If you do so, the task will be terminated automatically.'
 	, 'Your waiting bonus is ' + '???' + ' cents.'
 	];
-const instructionText_indiv = 
+const instructionText_indiv =
 	[ 'Please read the following instructions carefully. After reading the instructions, we will ask a few questions to verify your understanding of the experimental task.'
 
 	, '<br><br>Throughout the main task, you are to make a series of choices between '//+numOptions+' slot machines.'
@@ -39,7 +39,7 @@ const instructionText_indiv =
 
 	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
 	];
-const tutorialText_indiv = 
+const tutorialText_indiv =
 	[ '<br>This is the tutorial task. <br><br>Start by choosing whichever slot machine you like!'
 
 	, '<br><br>You got 30 points! Well done.'
@@ -48,13 +48,13 @@ const tutorialText_indiv =
 
 	, '<br><br>Hooray! You got 50 points!'
 
-	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.' 
+	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.'
 
 	, '<br><br>Time was up and you missed the trial! So you got nothing.'
 
 	, '<br>The tutorial is done. <br><br>Next, you will proceed to a short comprehension quiz!'
 	];
-const understandingCheckText_indiv = 
+const understandingCheckText_indiv =
 	[ '<h3>Please answer the following questions.</h3>'
 
 	, 'How many trials will you play in total?' // 70
@@ -64,7 +64,7 @@ const understandingCheckText_indiv =
 	, 'Does your bonus of this task increase by getting more reward points from the task?' //YES
 	];
 
-const instructionText_group = 
+const instructionText_group =
 	[ 'Please read the following instructions carefully. After reading the instructions, we will ask a few questions to verify your understanding of the experimental task. <br><br>After answering these questions, you may spend some more time in a waiting room until sufficient number of participants have arrived to start the task. <br><br>You will be paid <span class="note">13.2 cents per minute</span> (that is, $8 per hour) for any time spent in the waiting room. When your group is ready, the main task will start.'
 
 	, '<br><br>Throughout the main task, you are to make a series of choices between '//+numOptions+' slot machines.'
@@ -89,7 +89,7 @@ const instructionText_group =
 
 	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
 	];
-const tutorialText_group = 
+const tutorialText_group =
 	[ '<br>This is the tutorial task. <br><br>Start by choosing whichever slot machine you like!'
 
 	, '<br><br>You got 30 points! Well done.'
@@ -98,13 +98,13 @@ const tutorialText_group =
 
 	, '<br><br>Hooray! You got 50 points!'
 
-	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.' 
+	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.'
 
 	, '<br><br>Time was up and you missed the trial! So you got nothing.'
 
 	, '<br>The tutorial is done. <br><br>Next, you will proceed to a short comprehension quiz!'
 	];
-const understandingCheckText_group = 
+const understandingCheckText_group =
 	[ '<h3>Please answer the following questions.</h3>'
 
 	, 'How many trials will you and the other players play in total?' // 70
@@ -118,17 +118,24 @@ const understandingCheckText_group =
 	, 'Does your reward points change by how many players are choosing your option?' //NO
 	];
 
-const revisitingInstructionText = 
+const revisitingInstructionText =
 	[ '<br><br><span class="note">Woops! One or more answers were incorrect.</span> Please read the instruction again!'
 
 	, '<br><br>That\'s it! Take the comprehension quiz again in the next page.'
 	]
 
-const goToQuestionnaireText = 
+const goToQuestionnaireText =
 	[ 'Well done!'
 	, 'Your total game reward: $'
 	, 'Waiting bonus: $'
 	, 'Flat fee for completion of the task: $'
+	];
+
+const goToNewGameRoundText =
+	[ 'Well done!'
+	, 'You have completed Round No. '
+	, 'Please proceed to the new game!'
+	, ''
 	];
 
 const testText = ['this is a test'];

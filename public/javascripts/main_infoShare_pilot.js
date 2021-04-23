@@ -104,7 +104,7 @@ let isEnvironmentReady = false
 ,	isLeftRisky
 ,	optionOrder
 ,	taskOrder
-,	stage
+,	gameRound = 0
 ,   connectionCounter
 ,	incorrectCount = 0
 ,	maxChoiceStageTime
@@ -251,6 +251,7 @@ window.onload = function() {
 
 	, groupTotalScore = 0
 	, totalPayoff_perIndiv = 0
+	, totalPayoff_perIndiv_all = []
 
 	, gameOver = false
 	, choiceFlag
@@ -870,7 +871,7 @@ window.onload = function() {
 				    	tutorialFlag = 0;
 				    	if (tutorialPosition < tutorialText.length) {
 				    		choice_tutorial = i;
-				    		//game.scene.sleep('SceneTutorial');
+				    		//game.scene.stop('SceneTutorial');
 				    		game.scene.start('SceneTutorialFeedback', { indivOrGroup: indivOrGroup, choice: i, tutorialPosition: tutorialPosition });
 				    	} else {
 				    		game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
@@ -1098,7 +1099,7 @@ window.onload = function() {
 		    	// going back to the tutorial
 		    	let updatedTutorialPosition = tutorialPosition + 1;
 		    	tutorialTrial++;
-		    	game.scene.sleep('SceneTutorialFeedback');
+		    	game.scene.stop('SceneTutorialFeedback');
 		    	game.scene.start('SceneTutorial', { indivOrGroup: indivOrGroup, exp_condition: exp_condition,tutorialPosition: updatedTutorialPosition });
 		    }, 4000);
 		}
@@ -1475,11 +1476,11 @@ window.onload = function() {
 		    			instructionPosition = 0;
 		    			if (incorrectCount<4) {
 			    			// When you want to go back to previous scene,
-			    			// you have to 'sleep' scenes which are above the target scene
+			    			// you have to 'stop' scenes which are above the target scene
 			    			// Otherwise, objects defined in those above scenes would hid the target scene
-			    			game.scene.sleep('SceneUnderstandingTest');
-			    			game.scene.sleep('SceneTutorialFeedback');
-			    			game.scene.sleep('SceneTutorial');
+			    			game.scene.stop('SceneUnderstandingTest');
+			    			game.scene.stop('SceneTutorialFeedback');
+			    			game.scene.stop('SceneTutorial');
 			    			game.scene.start('SceneInstruction', {indivOrGroup:indivOrGroup, exp_condition:exp_condition});
 			    		} else {
 			    			// completed = 'droppedTestScene';
@@ -1496,9 +1497,9 @@ window.onload = function() {
 		    			isInstructionRevisit = true;
 		    			instructionPosition = 0;
 		    			if (incorrectCount<4) {
-			    			game.scene.sleep('SceneUnderstandingTest');
-			    			game.scene.sleep('SceneTutorialFeedback');
-			    			game.scene.sleep('SceneTutorial');
+			    			game.scene.stop('SceneUnderstandingTest');
+			    			game.scene.stop('SceneTutorialFeedback');
+			    			game.scene.stop('SceneTutorial');
 			    			game.scene.start('SceneInstruction', {indivOrGroup:indivOrGroup, exp_condition:exp_condition});
 			    		} else {
 			    			// completed = 'droppedTestScene';
@@ -1548,7 +1549,7 @@ window.onload = function() {
 		        scale: { value: 1.5, duration: 1500, ease: 'Power1' },
 		        //delay: 5000,
 		        yoyo: true,
-		        loop: -1
+		        loop: 0 //-1
 		    });
             setTimeout(function(){
                 socket.emit('test passed');
@@ -1579,14 +1580,14 @@ window.onload = function() {
 			//  Texts
 		    let title = this.add.text(configWidth/2, configHeight/2, '5', { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
 
-		    tween = this.tweens.add({
-		        targets: startImg,
-		        alpha: { value: 0.9, duration: 1500, ease: 'Power1' },
-		        scale: { value: 3, duration: 1500, ease: 'Power1' },
-		        delay: 5000,
-		        yoyo: true,
-		        loop: -1
-		    });
+		    // tween = this.tweens.add({
+		    //     targets: startImg,
+		    //     alpha: { value: 0.9, duration: 1500, ease: 'Power1' },
+		    //     scale: { value: 3, duration: 1500, ease: 'Power1' },
+		    //     delay: 5000,
+		    //     yoyo: true,
+		    //     loop: 0 //-1
+		    // });
 
 		    setTimeout(function(){
                 title.setText('4');
@@ -1600,14 +1601,29 @@ window.onload = function() {
             setTimeout(function(){
                 title.setText('1');
             },4000);
-            setTimeout(function(){
+            setTimeout(function(that){
             	//let startImg = this.add.sprite(configWidth/2, configHeight/2, 'startImg').setAlpha(0);
             	title.destroy();
 
+            	tween = that.tweens.add({
+			        targets: startImg,
+			        alpha: { value: 0.9, duration: 1500, ease: 'Power1' },
+			        scale: { value: 3, duration: 1500, ease: 'Power1' },
+			        delay: 0,
+			        yoyo: true,
+			        loop: 0 //-1
+			    });
+
             	//this.add.tween(startImg).to( { alpha: 1 }, 2000, Phaser.Easing.Linear.None, true, 0, 1000, true);
-            }, 5000);
+            }, 5000, this);
             setTimeout(function(){
-                game.scene.start('SceneMain');
+            	// tween.stop(); // To remove 'START' image tween
+            	tween.remove();
+            	startImg.visible = false;
+                game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
+                game.scene.stop('SceneStartCountdown');
+                game.scene.stop('ScenePerfect');
+                game.scene.stop('SceneWaitingRoom');
             },6500);
 		}
 
@@ -1623,6 +1639,11 @@ window.onload = function() {
 
 		preload(){
 			}
+
+		init (data) {
+			this.gameRound = data.gameRound;
+			this.round = data.round;
+		}
 
 		create(){
 
@@ -1804,6 +1825,7 @@ window.onload = function() {
 		    payoffText = this.add.text(feedbackTextPosition, slotY_main+100
 		    	, ``
 		    	, { fontSize: '25px', fill: nomalTextColor, align: 'center' }).setOrigin(0.5, 0.5);
+
 		    // payoffText.setText(`You produced\n${payoff}`);
 
 		    // // The following 'You earned $??' might be misleading as this is a group-optimization task
@@ -1814,11 +1836,12 @@ window.onload = function() {
 		    // }
 		    // // ==============================================================================
 
-		    if(currentTrial === 1) {
-		    	payoffText.visible = false;
-		    } else {
-		    	payoffText.visible = true;
-		    }
+		    // if(currentTrial === 1) {
+		    // 	payoffText.visible = false;
+		    // } else {
+		    // 	payoffText.visible = false; //true;
+		    // }
+		    payoffText.visible = false;
 		    // --------------------------------------------
 
 		    // social information
@@ -1870,8 +1893,11 @@ window.onload = function() {
 		    // showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], slotY_main-90);
 		    //
 		    // --------------------------------------------------------------------
-
-		    showPublicInfo.call(this, shared_payoff, shared_option_position, slotY_main-90);
+		    if(this.round > 1) {
+		    	showPublicInfo.call(this, shared_payoff, shared_option_position, slotY_main-90);
+		    } else {
+		    	console.log('No public info should be shown!')
+		    }
 
 		}
 
@@ -2019,18 +2045,47 @@ window.onload = function() {
 			}
 
 			if (indivOrGroup == 1) {
-				// When this is a group condition, sharing choice will appear
-				setTimeout(function(){
-					waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
-					buttonContainer_yes.visible = true;
-					buttonContainer_no.visible = true;
-				}.bind(this),  1 * 1000);
+				if(!this.didMiss & currentTrial < horizon) {
+					// When this is a group condition, sharing choice will appear
+					setTimeout(function(){
+						waitOthersText = this.add.text(16, 60, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
+						buttonContainer_yes.visible = true;
+						buttonContainer_no.visible = true;
+					}.bind(this),  1 * 1000);
+				} else if (currentTrial >= horizon) {
+					waitOthersText = this.add.text(16, 60, 'Please wait for others...', { fontSize: '30px', fill: '#000', align: "center"});
+					setTimeout(function(){
+				    	currentChoiceFlag = 0;
+				    	socket.emit('result stage ended'
+			    			, {share: 0
+			    			, payoff: payoff
+			    			, num_choice: this.flag
+			    			, info_share_cost: info_share_cost
+			    			, totalEarning: (payoff - didShare * info_share_cost)
+			    			, thisTrial: currentTrial
+			    		});
+				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
+				} else {
+					// if missed
+					waitOthersText = this.add.text(16, 60, 'Please wait for others...', { fontSize: '30px', fill: '#000', align: "center"});
+					setTimeout(function(){
+				    	currentChoiceFlag = 0;
+				    	socket.emit('result stage ended'
+			    			, {share: 0
+			    			, payoff: payoff
+			    			, num_choice: this.flag
+			    			, info_share_cost: info_share_cost
+			    			, totalEarning: (payoff - 0 * info_share_cost)
+			    			, thisTrial: currentTrial
+			    		});
+				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
+				}
 			} else {
 				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
 				setTimeout(function(){
 			    	//payoffText.destroy();
-			    	//game.scene.sleep('ScenePayoffFeedback');
-			    	//game.scene.start('SceneMain');
+			    	//game.scene.stop('ScenePayoffFeedback');
+			    	//game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
 			    	//console.log('emitting result stage ended!');
 			    	currentChoiceFlag = 0;
 			    	socket.emit('result stage ended'
@@ -2117,8 +2172,8 @@ window.onload = function() {
 
 		    setTimeout(function(){
 		    	//payoffText.destroy();
-		    	//game.scene.sleep('ScenePayoffFeedback');
-		    	//game.scene.start('SceneMain');
+		    	//game.scene.stop('ScenePayoffFeedback');
+		    	//game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
 		    	//console.log('emitting result stage ended!');
 		    	currentChoiceFlag = 0;
 		    	socket.emit('result stage ended');
@@ -2170,6 +2225,69 @@ window.onload = function() {
 		update(){}
 	};
 
+	// SceneGoToQuestionnaire
+	class SceneGoToNewGameRound extends Phaser.Scene {
+
+		constructor (){
+		    super({ key: 'SceneGoToNewGameRound', active: false });
+		}
+
+		preload(){
+		}
+
+		create(){
+			payoffText.visible = false;
+			// background colour
+			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
+			// text styles
+			const textStyle =
+				{ fontSize: '30px', fill: nomalTextColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true } };
+			const noteStyle =
+				{ fontSize: '36px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
+			//  Texts
+			// let totalEarning_USD = Math.round((totalEarning*cent_per_point))/100
+			let totalEarning_USD = Math.round((totalPayoff_perIndiv*cent_per_point))/100
+			let waitingBunis_USD = Math.round(waitingBonus)/100
+		    let title = this.add.text(configWidth/2, 18, goToNewGameRoundText[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
+		    let note1 = this.add.text(configWidth/2, 90, goToNewGameRoundText[1] + gameRound, noteStyle);
+		    let note2 = this.add.text(configWidth/2, 90+50*2, goToNewGameRoundText[2], noteStyle);
+		    //let note3 = this.add.text(configWidth/2, 90+50*4, goToNewGameRoundText[3], noteStyle);
+		    title.setOrigin(0.5, 0.5);
+		    note1.setOrigin(0.5, 0.5);
+		    note2.setOrigin(0.5, 0.5);
+		    //note3.setOrigin(0.5, 0.5);
+
+		    // Next game round button
+			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
+			let buttonContainer_nextGameRound = this.add.container(configWidth/2, 400); //position
+			let buttonImage_nextGameRound = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_nextGameRound = this.add.text(0, 0, 'Go to Round ' + (gameRound+1), button_style);
+			buttonText_nextGameRound.setOrigin(0.5, 0.5);
+			buttonContainer_nextGameRound.add(buttonImage_nextGameRound);
+			buttonContainer_nextGameRound.add(buttonText_nextGameRound);
+			buttonContainer_nextGameRound.visible = true;
+
+			// pointer over & out effects
+		    buttonImage_nextGameRound.on('pointerover', function (pointer) {
+		    	buttonImage_nextGameRound.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_nextGameRound.on('pointerout', function (pointer) {
+		    	buttonImage_nextGameRound.clearTint();
+		    }, this);
+
+		    buttonImage_nextGameRound.on('pointerdown', function (pointer) {
+		    	game.scene.stop('SceneMain');
+		    	game.scene.stop('ScenePerfect');
+		    	game.scene.stop('SceneStartCountdown');
+		    	// currentTrial = 1;
+		    	socket.emit('new gameRound ready');
+		    }, this);
+
+		}
+
+		update(){}
+	};
+
 	let config = {
 	    type: Phaser.AUTO, // Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO
 	    width: configWidth,
@@ -2195,7 +2313,7 @@ window.onload = function() {
 	    scene:
 	    [ SceneWaitingRoom0
 	    , SceneWaitingRoom
-	    // , SceneWaitingRoom2
+	    , SceneWaitingRoom2
 	    // , SceneInstruction
     	// , SceneTutorial
     	// , SceneTutorialFeedback
@@ -2204,6 +2322,7 @@ window.onload = function() {
     	, SceneStartCountdown
     	, SceneMain
     	, ScenePayoffFeedback
+    	, SceneGoToNewGameRound
     	, SceneGoToQuestionnaire
     	]
 	};
@@ -2211,6 +2330,7 @@ window.onload = function() {
 	let game = new Phaser.Game(config);
 	game.scene.add('SceneWaitingRoom0');
 	game.scene.add('SceneWaitingRoom');
+	game.scene.add('SceneWaitingRoom2');
 	game.scene.add('SceneInstruction');
 	game.scene.add('SceneTutorial');
 	game.scene.add('SceneTutorialFeedback');
@@ -2220,6 +2340,7 @@ window.onload = function() {
 	game.scene.add('SceneMain');
 	game.scene.add('ScenePayoffFeedback');
 	game.scene.add('SceneGoToQuestionnaire');
+	game.scene.add('SceneGoToNewGameRound');
 
 
 	// functions
@@ -2993,7 +3114,7 @@ window.onload = function() {
         //setSlotPosition(data.isLeftRisky);
         if (data.numOptions == 2) {
         	// settingRiskDistribution(data.riskDistributionId);
-        	settingRiskDistribution(taskOrder[data.stage]);
+        	settingRiskDistribution(taskOrder[data.gameRound]);
         } else {
         	settingRiskDistribution_4ab(data.riskDistributionId);
         }
@@ -3037,12 +3158,26 @@ window.onload = function() {
     });
 
     socket.on('wait for others finishing test', function () {
-    	game.scene.sleep('SceneWaitingRoom');
-    	game.scene.sleep('SceneInstruction');
-    	game.scene.sleep('SceneTutorial');
-    	game.scene.sleep('SceneTutorialFeedback');
-    	game.scene.sleep('SceneUnderstandingTest');
-    	game.scene.sleep('ScenePerfect');
+    	game.scene.stop('SceneWaitingRoom0');
+    	game.scene.stop('SceneWaitingRoom');
+    	game.scene.stop('SceneInstruction');
+    	game.scene.stop('SceneTutorial');
+    	game.scene.stop('SceneTutorialFeedback');
+    	game.scene.stop('SceneUnderstandingTest');
+    	game.scene.stop('ScenePerfect');
+    	game.scene.stop('SceneGoToNewGameRound');
+        game.scene.start('SceneWaitingRoom2');
+    });
+
+    socket.on('wait for others get ready to move on', function () {
+    	game.scene.stop('SceneWaitingRoom0');
+    	game.scene.stop('SceneWaitingRoom');
+    	game.scene.stop('SceneInstruction');
+    	game.scene.stop('SceneTutorial');
+    	game.scene.stop('SceneTutorialFeedback');
+    	game.scene.stop('SceneUnderstandingTest');
+    	game.scene.stop('ScenePerfect');
+    	game.scene.stop('SceneGoToNewGameRound');
         game.scene.start('SceneWaitingRoom2');
     });
 
@@ -3062,7 +3197,8 @@ window.onload = function() {
             choiceOpportunities = 1;
         }*/
         waitingRoomFinishedFlag = 1;
-        game.scene.sleep('SceneWaitingRoom');
+        game.scene.stop('SceneWaitingRoom0');
+        game.scene.stop('SceneWaitingRoom');
 
         game.scene.start('ScenePerfect', data); // debug
 
@@ -3077,8 +3213,31 @@ window.onload = function() {
 
     socket.on('all passed the test', function(data) {
         //console.log('testPassed reached ' + data.testPassed + ' conditoin: ' + data.exp_condition);
-        game.scene.sleep('SceneWaitingRoom');
-        game.scene.sleep('SceneWaitingRoom2');
+        game.scene.stop('SceneWaitingRoom0');
+        game.scene.stop('SceneWaitingRoom');
+    	game.scene.stop('SceneInstruction');
+    	game.scene.stop('SceneTutorial');
+    	game.scene.stop('SceneTutorialFeedback');
+    	game.scene.stop('SceneUnderstandingTest');
+    	game.scene.stop('ScenePerfect');
+    	game.scene.stop('SceneGoToNewGameRound');
+        game.scene.stop('SceneWaitingRoom2');
+        game.scene.start('SceneStartCountdown');
+    });
+
+    socket.on('all are ready to move on', function(data) {
+        currentTrial = 1;
+        gameRound = data.gameRound;
+        console.log('All are ready to move on to gameRound '+(gameRound+1))
+        game.scene.stop('SceneWaitingRoom0');
+        game.scene.stop('SceneWaitingRoom');
+    	game.scene.stop('SceneInstruction');
+    	game.scene.stop('SceneTutorial');
+    	game.scene.stop('SceneTutorialFeedback');
+    	game.scene.stop('SceneUnderstandingTest');
+    	game.scene.stop('ScenePerfect');
+    	game.scene.stop('SceneGoToNewGameRound');
+        game.scene.stop('SceneWaitingRoom2');
         game.scene.start('SceneStartCountdown');
     });
 
@@ -3137,13 +3296,13 @@ window.onload = function() {
         $("#exp_condition").val(exp_condition);
         //$("#confirmationID").val(confirmationID);
         $("#bonus_for_waiting").val(Math.round(waitingBonus));
-        payoffText.destroy();
-        waitOthersText.destroy();
+        // payoffText.destroy();
+        // waitOthersText.destroy();
         for (let i =1; i<numOptions+1; i++) {
         	objects_feedbackStage['box'+i].destroy();
         }
-    	game.scene.sleep('ScenePayoffFeedback');
-    	game.scene.start('SceneMain');
+    	game.scene.stop('ScenePayoffFeedback');
+    	game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
     	//console.log('restarting the main scene!: mySocialInfo = '+data.socialFreq[data.round-1]);
     });
 
@@ -3163,17 +3322,41 @@ window.onload = function() {
         $("#completed").val(1);
         $("#exp_condition").val(exp_condition);
         //$("#confirmationID").val(confirmationID);
-        payoffText.destroy();
-        waitOthersText.destroy();
+        // payoffText.destroy();
+        // waitOthersText.destroy();
         for (let i =1; i<numOptions+1; i++) {
         	objects_feedbackStage['box'+i].destroy();
         }
-    	game.scene.sleep('ScenePayoffFeedback');
+    	game.scene.stop('ScenePayoffFeedback');
     	game.scene.start('SceneGoToQuestionnaire');
     });
 
-    socket.on('New stage starts', function(data) {
-    	console.log('New stage starts!!!!!!!!!!!!!!');
+    socket.on('New gameRound starts', function(data) {
+    	console.log('New gameRound starts!!!!!!!!!!!!!!');
+    	// Destroying the objects in the feedback scene
+    	// payoffText.destroy();
+     //    waitOthersText.destroy();
+        for (let i =1; i<numOptions+1; i++) {
+        	objects_feedbackStage['box'+i].destroy();
+        }
+    	// reset the previous data
+    	// currentTrial = 1;
+    	mySocialInfo = [];
+        myPublicInfo = [];
+        choiceOrder = [];
+        share_or_not = [];
+    	totalPayoff_perIndiv_all[gameRound] = totalPayoff_perIndiv;
+    	totalPayoff_perIndiv = 0;
+    	groupTotalScore = 0;
+    	gameRound = data.gameRound;
+    	if (numOptions == 2) {
+        	settingRiskDistribution(taskOrder[data.gameRound]);
+        } else {
+        	console.log('data.numOptions != 2 why????');
+        }
+    	// starting the new game round
+    	game.scene.stop('ScenePayoffFeedback');
+    	game.scene.start('SceneGoToNewGameRound');
     });
 
     socket.on('S_to_C_welcomeback', function(data) {
