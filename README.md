@@ -1,5 +1,9 @@
 # Selective information sharing in risky bandit task -- pilot test
 
+## Sample size
+
+A group of 3 * 10 groups = 30 people
+
 ## Task
 
 A two-armed bandit task (one risky one safe) with the following 2 * 2 different task setups:
