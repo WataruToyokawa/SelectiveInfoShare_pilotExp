@@ -104,7 +104,7 @@ let isEnvironmentReady = false
 ,	isLeftRisky
 ,	optionOrder
 ,	taskOrder
-,	gameRound = 0
+,	gameRound = 0 // 0,1,2,3
 ,   connectionCounter
 ,	incorrectCount = 0
 ,	maxChoiceStageTime
@@ -153,6 +153,7 @@ window.onload = function() {
 	$("#amazonID").val(amazonID);
     $("#completed").val(completed);
     $("#currentTrial").val(currentTrial);
+    $("#gameRound").val(gameRound);
 
     // connecting to the experimental server
     const socket = io.connect(htmlServer+portnum, { query: 'amazonID='+amazonID });
@@ -3226,8 +3227,8 @@ window.onload = function() {
     });
 
     socket.on('all are ready to move on', function(data) {
-        currentTrial = 1;
-        gameRound = data.gameRound;
+        currentTrial = 1; // resetting the trial number
+        gameRound = data.gameRound; // updating the game round
         console.log('All are ready to move on to gameRound '+(gameRound+1))
         game.scene.stop('SceneWaitingRoom0');
         game.scene.stop('SceneWaitingRoom');
@@ -3293,6 +3294,7 @@ window.onload = function() {
         $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
         $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
+        $("#gameRound").val(gameRound);
         $("#exp_condition").val(exp_condition);
         //$("#confirmationID").val(confirmationID);
         $("#bonus_for_waiting").val(Math.round(waitingBonus));
@@ -3319,6 +3321,7 @@ window.onload = function() {
         $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
         $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
+        $("#gameRound").val(gameRound);
         $("#completed").val(1);
         $("#exp_condition").val(exp_condition);
         //$("#confirmationID").val(confirmationID);
@@ -3332,7 +3335,7 @@ window.onload = function() {
     });
 
     socket.on('New gameRound starts', function(data) {
-    	console.log('New gameRound starts!!!!!!!!!!!!!!');
+    	console.log('New gameRound ' + (data.gameRound+1) + ' with gameType = ' + taskOrder[data.gameRound] + ' starts!');
     	// Destroying the objects in the feedback scene
     	// payoffText.destroy();
      //    waitOthersText.destroy();

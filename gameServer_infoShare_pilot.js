@@ -631,6 +631,8 @@ io.on('connection', function (client) {
 				,	subjectNumber: client.subjectNumber
 				,	amazonID: client.amazonID
 				,	round: roomStatus[client.room]['round']
+				,	gameRound: roomStatus[client.room]['gameRound']
+				,	gameType: roomStatus[client.room]['taskOrder'][roomStatus[client.room]['gameRound']]
 				,	chosenOptionFlag: data.chosenOptionFlag
 				,	choice: data.choice
 				,	payoff: data.payoff
@@ -709,6 +711,8 @@ io.on('connection', function (client) {
 				,	subjectNumber: client.subjectNumber
 				,	amazonID: client.amazonID
 				,	round: roomStatus[client.room]['round']
+				,	gameRound: roomStatus[client.room]['gameRound']
+				,	gameType: roomStatus[client.room]['taskOrder'][roomStatus[client.room]['gameRound']]
 				,	chosenOptionFlag: data.chosenOptionFlag
 				,	choice: data.choice
 				,	payoff: data.payoff
@@ -779,6 +783,8 @@ io.on('connection', function (client) {
 				,	subjectNumber: client.subjectNumber
 				,	amazonID: client.amazonID
 				,	round: roomStatus[client.room]['round']
+				,	gameRound: roomStatus[client.room]['gameRound']
+				,	gameType: roomStatus[client.room]['taskOrder'][roomStatus[client.room]['gameRound']]
 				// ,	chosenOptionFlag: data.chosenOptionFlag
 				// ,	choice: data.choice
 				// ,	payoff: data.payoff
@@ -803,18 +809,20 @@ io.on('connection', function (client) {
 			// Depending on the number of subject who has already done this round,
 			// the response to the client changes
 			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
-			if(typeof roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] != 'undefined') {
-				roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]++;
+			if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] != 'undefined') {
+				// roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]++;
+				roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ]++;
 			}else{
-				roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] = 1;
+				// roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] = 1;
+				roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] = 1;
 			}
 			let now_endFeedback = new Date()
 	        ,	logdate_endFeedback = '[' + now_endFeedback.getUTCFullYear() + '/' + (now_endFeedback.getUTCMonth() + 1) + '/'
 	    	;
 	    	logdate_endFeedback += now_endFeedback.getUTCDate() + '/' + now_endFeedback.getUTCHours() + ':' + now_endFeedback.getUTCMinutes() + ':' + now_endFeedback.getUTCSeconds() + ']';
-	    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
+	    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
 			console.log(logdate_endFeedback);
-			if (roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] >= roomStatus[client.room]['n']) {
+			if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] >= roomStatus[client.room]['n']) {
 				let now_endResultStage = new Date()
 		        ,	logdate_endResultStage = '[' + now_endResultStage.getUTCFullYear() + '/' + (now_endResultStage.getUTCMonth() + 1) + '/'
 		    	;
@@ -823,7 +831,7 @@ io.on('connection', function (client) {
 
 			  	// =========  save data to mongodb by loop
 			  	// if(typeof roomStatus[client.room]['round']!='undefined'&roomStatus[client.room]['round'] <= horizon) {
-			  	if(typeof roomStatus[client.room]['round']!='undefined'&roomStatus[client.room]['round'] % 10 == 0) { //if(roomStatus[client.room]['indivOrGroup'] != 0) {
+			  	if(typeof roomStatus[client.room]['round']!='undefined'&roomStatus[client.room]['round'] % 20 == 0) { //if(roomStatus[client.room]['indivOrGroup'] != 0) {
 			  		const worker = createWorker('./worker_threads/savingBehaviouralData_array.js', roomStatus[client.room]['saveDataThisRound']);
 			  		roomStatus[client.room]['saveDataThisRound'] = [];
 
@@ -878,8 +886,8 @@ io.on('connection', function (client) {
 				roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1].splice(doneOrNot, 1);
 				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1].splice(doneOrNot, 1);
 				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1].push(-1);
-				if(typeof roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] != 'undefined') {
-					roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]--;
+				if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] != 'undefined') {
+					roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ]--;
 				}
 			}
 
@@ -894,7 +902,7 @@ io.on('connection', function (client) {
 				// so than no one will never enter this room again.
 				// On the other hand, if this is a group session's room, reducing 'n' may open up
 				// a room for a new-comer if this room is still at the first waiting screen
-				if (roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] >= roomStatus[client.room]['n']) {
+				if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] >= roomStatus[client.room]['n']) {
 				  	console.log(`result stage ended at: ${client.room}`);
 				  	proceedRound(client.room);
 				}
@@ -1021,6 +1029,7 @@ function proceedRound (room) {
 			io.to(room).emit('End this session', roomStatus[room]);
 		} else {
 			roomStatus[room]['gameRound'] += 1;
+			roomStatus[room]['round'] = 1;
 			roomStatus[room]['newGameRoundReady'] = 0;
 			io.to(room).emit('New gameRound starts', roomStatus[room]);
 			var nowDate = new Date(),

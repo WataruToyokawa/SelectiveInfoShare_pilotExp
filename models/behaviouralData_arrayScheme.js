@@ -16,7 +16,7 @@ const Behaviour_Parent = new Schema({
 const Behaviour = new Schema({
     date: { type: String, require: false },
 	time: { type: String, require: false },
-    amazonID : { type: String, require: false, unique: false }, 
+    amazonID : { type: String, require: false, unique: false },
     exp_condition : { type: String, require: false },
     isLeftRisky : { type: String, require: false },
     indivOrGroup : { type: String, require: false },

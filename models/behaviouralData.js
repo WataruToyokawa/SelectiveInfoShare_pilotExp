@@ -8,7 +8,7 @@ const Schema = mongoose.Schema;
 const Behaviour = new Schema({
     date: { type: String, require: false },
 	time: { type: String, require: false },
-    amazonID : { type: String, require: false, unique: false }, 
+    amazonID : { type: String, require: false, unique: false },
     exp_condition : { type: String, require: false },
     isLeftRisky : { type: String, require: false },
     indivOrGroup : { type: String, require: false },
@@ -19,6 +19,8 @@ const Behaviour = new Schema({
     subjectNumber : { type: String, require: false },
     amazonID : { type: String, require: false },
     round: { type: String, require: false },
+    gameRound: { type: String, require: false },
+    gameType: { type: String, require: false },
     choice: { type: String, require: false },
     num_choice: { type: String, require: false },
     payoff: { type: String, require: false },

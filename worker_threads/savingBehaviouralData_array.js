@@ -49,6 +49,8 @@ for (let i = 0; i < workerData.length; i++) {
   behaviour.subjectNumber = this_workerData.subjectNumber;
   behaviour.amazonID = this_workerData.amazonID;
   behaviour.round = this_workerData.round;
+  behaviour.gameRound = this_workerData.gameRound;
+  behaviour.gameType = this_workerData.gameType;
   behaviour.choice = this_workerData.choice;
   behaviour.payoff = this_workerData.payoff;
   behaviour.totalEarning = this_workerData.totalEarning;
@@ -68,7 +70,7 @@ for (let i = 0; i < workerData.length; i++) {
   let dummyInfo0 = new Array(this_workerData.maxGroupSize).fill(-1);
 
   if (this_workerData.behaviouralType == 'choice') {
-    // --------- 
+    // ---------
     for(let j=0; j<this_workerData.maxGroupSize; j++) {
       if (j < 10) {
         eval('behaviour.socialInfo_0'+j+'= dummyInfo0['+j+'];');
@@ -80,7 +82,7 @@ for (let i = 0; i < workerData.length; i++) {
     }
 
     if(behaviour.round>1){
-      if(typeof this_workerData.socialInfo != 'undefined') { 
+      if(typeof this_workerData.socialInfo != 'undefined') {
         for(let j = 0; j < this_workerData.socialInfo.length; j++) {
           if ( j < 10) {
             eval('behaviour.socialInfo_0'+j+'= this_workerData.socialInfo['+j+'];');
@@ -94,7 +96,7 @@ for (let i = 0; i < workerData.length; i++) {
         console.log(` - [Worker] this_workerData.socialInfo is undefined!`);
       }
     }
-    // --------- 
+    // ---------
   }
 
   behaviour.save(function(err){
