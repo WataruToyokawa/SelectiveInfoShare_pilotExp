@@ -4872,3 +4872,272 @@
 2021-04-26T13:50:35: [2021/4/26/13:50:35] - exitted! : undefined
 2021-04-26T13:51:44: [2021/4/26/13:51:44] - client disconnected: nJOHRLXcJwqBLcInAAAA (INHOUSETEST3) (room N: 0, total N: 0) - handshakeID:nJOHRLXcJwqBLcInAAAA
 2021-04-26T13:51:45: [2021/4/26/13:51:45] - Connected successfully to server (room: undefined)
+2021-04-27T13:01:07: [2021/4/27/13:1:7] - Four-armed bandit task server listening on port 8080; max_n_per_rooom = 4
+2021-04-27T13:01:07: (node:15613) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-04-27T13:01:07: (Use `node --trace-deprecation ...` to show where the warning was created)
+2021-04-27T13:01:07: [2021/4/27/13:1:7] - Connected successfully to 'loggingtutorial
+2021-04-27T13:01:27: [2021/4/27/13:1:27]- sessionName was just assigned to 6VJ3V0s20v7uz-TuAAAA
+2021-04-27T13:01:28: [2021/4/27/13:1:28] - Client: 6VJ3V0s20v7uz-TuAAAA(INHOUSETEST3) responds with an average latency = 0 ms.
+2021-04-27T13:01:28: [2021/4/27/13:1:28] - 6VJ3V0s20v7uz-TuAAAA(INHOUSETEST3) joined to DKWlFNC_session_0 (n: 1, total N: 1)
+2021-04-27T13:01:28: [2021/4/27/13:1:28] - parameters were sent to 6VJ3V0s20v7uz-TuAAAA in room DKWlFNC_session_0
+2021-04-27T13:01:28: [2021/4/27/13:1:28] - The first participant came in to the room DKWlFNC_session_0.
+2021-04-27T13:01:28: [2021/4/27/13:1:28] - Waiting room opened at DKWlFNC_session_0
+2021-04-27T13:01:29: [2021/4/27/13:1:29]- sessionName was just assigned to lyBdwJt0aN7zGyJgAAAB
+2021-04-27T13:01:29: [2021/4/27/13:1:29] - Client: lyBdwJt0aN7zGyJgAAAB(INHOUSETEST3) responds with an average latency = 0 ms.
+2021-04-27T13:01:29: [2021/4/27/13:1:29] - lyBdwJt0aN7zGyJgAAAB(INHOUSETEST3) joined to DKWlFNC_session_0 (n: 2, total N: 2)
+2021-04-27T13:01:29: [2021/4/27/13:1:29] - parameters were sent to lyBdwJt0aN7zGyJgAAAB in room DKWlFNC_session_0
+2021-04-27T13:01:33: [2021/4/27/13:1:33] - session started in DKWlFNC_session_0
+2021-04-27T13:01:34: [2021/4/27/13:1:34]  - 6VJ3V0s20v7uz-TuAAAA passed the test.
+2021-04-27T13:01:34: [2021/4/27/13:1:34]  - lyBdwJt0aN7zGyJgAAAB passed the test.
+2021-04-27T13:01:34: [2021/4/27/13:1:34] - DKWlFNC_session_0 is ready to start the game.
+2021-04-27T13:01:42: [2021/4/27/13:1:42] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose sure and got 154 at trial 1.
+2021-04-27T13:01:43: [2021/4/27/13:1:43] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose sure and got 153 at trial 1.
+2021-04-27T13:01:45: [2021/4/27/13:1:45] - Did client 1 in DKWlFNC_session_0 share the payoff info 153 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T13:01:45: groupTotalPayoff = 153
+2021-04-27T13:01:45: [2021/4/27/13:1:45] - doneNo: 1, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:01:46: [2021/4/27/13:1:46] - Did client 2 in DKWlFNC_session_0 share the payoff info 154 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T13:01:46: groupTotalPayoff = 261
+2021-04-27T13:01:46: [2021/4/27/13:1:46] - doneNo: 2, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:01:46: [2021/4/27/13:1:46] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:01:47: [2021/4/27/13:1:47] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 194 at trial 2.
+2021-04-27T13:01:49: [2021/4/27/13:1:49] - Did client 2 in DKWlFNC_session_0 share the payoff info 194 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T13:01:49: groupTotalPayoff = 261,194
+2021-04-27T13:01:49: [2021/4/27/13:1:49] - doneNo: 1, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:01:50: [2021/4/27/13:1:50] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 185 at trial 2.
+2021-04-27T13:01:51: [2021/4/27/13:1:51] - Did client 1 in DKWlFNC_session_0 share the payoff info 185 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T13:01:51: groupTotalPayoff = 261,379
+2021-04-27T13:01:51: [2021/4/27/13:1:51] - doneNo: 2, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:01:51: [2021/4/27/13:1:51] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:01:52: [2021/4/27/13:1:52] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 176 at trial 3.
+2021-04-27T13:01:54: [2021/4/27/13:1:54] - Did client 1 in DKWlFNC_session_0 share the payoff info 176 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:01:54: groupTotalPayoff = 261,379,176
+2021-04-27T13:01:54: [2021/4/27/13:1:54] - doneNo: 1, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:01:54: [2021/4/27/13:1:54] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 178 at trial 3.
+2021-04-27T13:01:56: [2021/4/27/13:1:56] - Did client 2 in DKWlFNC_session_0 share the payoff info 178 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:01:56: groupTotalPayoff = 261,379,354
+2021-04-27T13:01:56: [2021/4/27/13:1:56] - doneNo: 2, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:01:56: [2021/4/27/13:1:56] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:01:56: [2021/4/27/13:1:56] - New gameRound 2 starts in DKWlFNC_session_0
+2021-04-27T13:01:59: [2021/4/27/13:1:59]  - lyBdwJt0aN7zGyJgAAAB is ready to move on.
+2021-04-27T13:02:00: [2021/4/27/13:2:0]  - 6VJ3V0s20v7uz-TuAAAA is ready to move on.
+2021-04-27T13:02:00: [2021/4/27/13:2:0] - DKWlFNC_session_0 is ready to start the new game round.
+2021-04-27T13:02:08: [2021/4/27/13:2:8] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose sure and got 152 at trial 1.
+2021-04-27T13:02:09: [2021/4/27/13:2:9] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 45 at trial 1.
+2021-04-27T13:02:10: [2021/4/27/13:2:10] - Did client 2 in DKWlFNC_session_0 share the payoff info 45 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T13:02:10: groupTotalPayoff = 258,379,354
+2021-04-27T13:02:10: [2021/4/27/13:2:10] - doneNo: 1, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:02:12: [2021/4/27/13:2:12] - Did client 1 in DKWlFNC_session_0 share the payoff info 152 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:12: groupTotalPayoff = 410,379,354
+2021-04-27T13:02:12: [2021/4/27/13:2:12] - doneNo: 2, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:02:12: [2021/4/27/13:2:12] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:02:13: [2021/4/27/13:2:13] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 53 at trial 2.
+2021-04-27T13:02:15: [2021/4/27/13:2:15] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose sure and got 155 at trial 2.
+2021-04-27T13:02:16: [2021/4/27/13:2:16] - Did client 2 in DKWlFNC_session_0 share the payoff info 155 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:16: groupTotalPayoff = 410,534,354
+2021-04-27T13:02:16: [2021/4/27/13:2:16] - doneNo: 1, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:02:18: [2021/4/27/13:2:18] - Did client 1 in DKWlFNC_session_0 share the payoff info 53 at trial 2? -> 1 (0:NO / 1:YES)
+2021-04-27T13:02:18: groupTotalPayoff = 410,562,354
+2021-04-27T13:02:18: [2021/4/27/13:2:18] - doneNo: 2, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:02:18: [2021/4/27/13:2:18] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:02:19: [2021/4/27/13:2:19] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 51 at trial 3.
+2021-04-27T13:02:20: [2021/4/27/13:2:20] - Did client 1 in DKWlFNC_session_0 share the payoff info 51 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:20: groupTotalPayoff = 410,562,401
+2021-04-27T13:02:20: [2021/4/27/13:2:20] - doneNo: 1, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:02:20: [2021/4/27/13:2:20] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 594 at trial 3.
+2021-04-27T13:02:22: [2021/4/27/13:2:22] - Did client 2 in DKWlFNC_session_0 share the payoff info 594 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:22: groupTotalPayoff = 410,562,995
+2021-04-27T13:02:22: [2021/4/27/13:2:22] - doneNo: 2, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:02:22: [2021/4/27/13:2:22] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:02:22: [2021/4/27/13:2:22] - New gameRound 3 starts in DKWlFNC_session_0
+2021-04-27T13:02:23: [2021/4/27/13:2:23]  - lyBdwJt0aN7zGyJgAAAB is ready to move on.
+2021-04-27T13:02:24: [2021/4/27/13:2:24]  - 6VJ3V0s20v7uz-TuAAAA is ready to move on.
+2021-04-27T13:02:24: [2021/4/27/13:2:24] - DKWlFNC_session_0 is ready to start the new game round.
+2021-04-27T13:02:32: [2021/4/27/13:2:32] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 58 at trial 1.
+2021-04-27T13:02:33: [2021/4/27/13:2:33] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 488 at trial 1.
+2021-04-27T13:02:36: [2021/4/27/13:2:36] - Did client 2 in DKWlFNC_session_0 share the payoff info 488 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T13:02:36: groupTotalPayoff = 884,562,995
+2021-04-27T13:02:36: [2021/4/27/13:2:36] - doneNo: 1, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:02:37: [2021/4/27/13:2:37] - Did client 1 in DKWlFNC_session_0 share the payoff info 58 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:37: groupTotalPayoff = 942,562,995
+2021-04-27T13:02:37: [2021/4/27/13:2:37] - doneNo: 2, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:02:37: [2021/4/27/13:2:37] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:02:38: [2021/4/27/13:2:38] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 60 at trial 2.
+2021-04-27T13:02:40: [2021/4/27/13:2:40] - Did client 1 in DKWlFNC_session_0 share the payoff info 60 at trial 2? -> 1 (0:NO / 1:YES)
+2021-04-27T13:02:40: groupTotalPayoff = 942,552,995
+2021-04-27T13:02:40: [2021/4/27/13:2:40] - doneNo: 1, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:02:41: [2021/4/27/13:2:41] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 54 at trial 2.
+2021-04-27T13:02:42: [2021/4/27/13:2:42] - Did client 2 in DKWlFNC_session_0 share the payoff info 54 at trial 2? -> 1 (0:NO / 1:YES)
+2021-04-27T13:02:42: groupTotalPayoff = 942,555,995
+2021-04-27T13:02:42: [2021/4/27/13:2:42] - doneNo: 2, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:02:42: [2021/4/27/13:2:42] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:02:43: [2021/4/27/13:2:43] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose sure and got 156 at trial 3.
+2021-04-27T13:02:45: [2021/4/27/13:2:45] - Did client 2 in DKWlFNC_session_0 share the payoff info 156 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:45: groupTotalPayoff = 942,555,1116
+2021-04-27T13:02:45: [2021/4/27/13:2:45] - doneNo: 1, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:02:45: [2021/4/27/13:2:45] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose sure and got 154 at trial 3.
+2021-04-27T13:02:47: [2021/4/27/13:2:47] - Did client 1 in DKWlFNC_session_0 share the payoff info 154 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:02:47: groupTotalPayoff = 942,555,1215
+2021-04-27T13:02:47: [2021/4/27/13:2:47] - doneNo: 2, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:02:47: [2021/4/27/13:2:47] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:02:47: [2021/4/27/13:2:47] - New gameRound 4 starts in DKWlFNC_session_0
+2021-04-27T13:02:51: [2021/4/27/13:2:51]  - lyBdwJt0aN7zGyJgAAAB is ready to move on.
+2021-04-27T13:02:56: [2021/4/27/13:2:56]  - 6VJ3V0s20v7uz-TuAAAA is ready to move on.
+2021-04-27T13:02:56: [2021/4/27/13:2:56] - DKWlFNC_session_0 is ready to start the new game round.
+2021-04-27T13:03:04: [2021/4/27/13:3:4] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose sure and got 152 at trial 1.
+2021-04-27T13:03:06: [2021/4/27/13:3:6] - Did client 1 in DKWlFNC_session_0 share the payoff info 152 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T13:03:06: groupTotalPayoff = 1023,555,1215
+2021-04-27T13:03:06: [2021/4/27/13:3:6] - doneNo: 1, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:03:14: [2021/4/27/13:3:14] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 24 at trial 1.
+2021-04-27T13:03:15: [2021/4/27/13:3:15] - Did client 2 in DKWlFNC_session_0 share the payoff info 24 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-27T13:03:15: groupTotalPayoff = 1047,555,1215
+2021-04-27T13:03:15: [2021/4/27/13:3:15] - doneNo: 2, current round is 1 at DKWlFNC_session_0
+2021-04-27T13:03:15: [2021/4/27/13:3:15] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:03:18: [2021/4/27/13:3:18] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose sure and got 141 at trial 2.
+2021-04-27T13:03:20: [2021/4/27/13:3:20] - Did client 2 in DKWlFNC_session_0 share the payoff info 141 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T13:03:20: groupTotalPayoff = 1047,696,1215
+2021-04-27T13:03:20: [2021/4/27/13:3:20] - doneNo: 1, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:03:23: [2021/4/27/13:3:23] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose sure and got 157 at trial 2.
+2021-04-27T13:03:25: [2021/4/27/13:3:25] - Did client 1 in DKWlFNC_session_0 share the payoff info 157 at trial 2? -> 1 (0:NO / 1:YES)
+2021-04-27T13:03:25: groupTotalPayoff = 1047,784,1215
+2021-04-27T13:03:25: [2021/4/27/13:3:25] - doneNo: 2, current round is 2 at DKWlFNC_session_0
+2021-04-27T13:03:25: [2021/4/27/13:3:25] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:03:31: [2021/4/27/13:3:31] - Client 6VJ3V0s20v7uz-TuAAAA (subNo = 1) chose risky and got 201 at trial 3.
+2021-04-27T13:03:32: [2021/4/27/13:3:32] - Did client 1 in DKWlFNC_session_0 share the payoff info 201 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:03:32: groupTotalPayoff = 1047,784,1343
+2021-04-27T13:03:32: [2021/4/27/13:3:32] - doneNo: 1, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:03:33: [2021/4/27/13:3:33] - Client lyBdwJt0aN7zGyJgAAAB (subNo = 2) chose risky and got 211 at trial 3.
+2021-04-27T13:03:34: [2021/4/27/13:3:34] - Did client 2 in DKWlFNC_session_0 share the payoff info 211 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T13:03:34: groupTotalPayoff = 1047,784,1554
+2021-04-27T13:03:34: [2021/4/27/13:3:34] - doneNo: 2, current round is 3 at DKWlFNC_session_0
+2021-04-27T13:03:34: [2021/4/27/13:3:34] - result stage ended at: DKWlFNC_session_0
+2021-04-27T13:03:52: [2021/4/27/13:3:52] - client disconnected: 6VJ3V0s20v7uz-TuAAAA (INHOUSETEST3) (room N: 1, total N: 1) - handshakeID:6VJ3V0s20v7uz-TuAAAA
+2021-04-27T13:03:53: [2021/4/27/13:3:53] - Connected successfully to server (room: DKWlFNC_session_0)
+2021-04-27T13:03:53: [2021/4/27/13:3:53] - [Worker] isMainThread: false, behaviour of DKWlFNC_session_0 saved
+2021-04-27T13:03:53: [2021/4/27/13:3:53] - [Main] Message got from worker [Worker] Finished DKWlFNC_session_0
+2021-04-27T13:03:53: [2021/4/27/13:3:53] - exitted! : undefined
+2021-04-27T13:03:53: [2021/4/27/13:3:53] - client disconnected: lyBdwJt0aN7zGyJgAAAB (INHOUSETEST3) (room N: 0, total N: 0) - handshakeID:lyBdwJt0aN7zGyJgAAAB
+2021-04-27T13:03:54: [2021/4/27/13:3:54] - Connected successfully to server (room: undefined)
+2021-04-27T15:18:27: [2021/4/27/15:18:27] - Four-armed bandit task server listening on port 8080; max_n_per_rooom = 4
+2021-04-27T15:18:27: (node:15748) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-04-27T15:18:27: (Use `node --trace-deprecation ...` to show where the warning was created)
+2021-04-27T15:18:27: [2021/4/27/15:18:27] - Connected successfully to 'loggingtutorial
+2021-04-27T15:18:38: [2021/4/27/15:18:38]- sessionName was just assigned to x6p3rRvNlnVdAOsBAAAA
+2021-04-27T15:18:38: [2021/4/27/15:18:38] - Client: x6p3rRvNlnVdAOsBAAAA(INHOUSETEST3) responds with an average latency = 0 ms.
+2021-04-27T15:18:38: [2021/4/27/15:18:38] - x6p3rRvNlnVdAOsBAAAA(INHOUSETEST3) joined to UHzDmWc_session_0 (n: 1, total N: 1)
+2021-04-27T15:18:38: [2021/4/27/15:18:38] - parameters were sent to x6p3rRvNlnVdAOsBAAAA in room UHzDmWc_session_0
+2021-04-27T15:18:38: [2021/4/27/15:18:38] - The first participant came in to the room UHzDmWc_session_0.
+2021-04-27T15:18:38: [2021/4/27/15:18:38] - Waiting room opened at UHzDmWc_session_0
+2021-04-27T15:18:39: [2021/4/27/15:18:39]- sessionName was just assigned to nTfnocEq8jt3vKu1AAAB
+2021-04-27T15:18:40: [2021/4/27/15:18:40] - Client: nTfnocEq8jt3vKu1AAAB(INHOUSETEST3) responds with an average latency = 0 ms.
+2021-04-27T15:18:40: [2021/4/27/15:18:40] - nTfnocEq8jt3vKu1AAAB(INHOUSETEST3) joined to UHzDmWc_session_0 (n: 2, total N: 2)
+2021-04-27T15:18:40: [2021/4/27/15:18:40] - parameters were sent to nTfnocEq8jt3vKu1AAAB in room UHzDmWc_session_0
+2021-04-27T15:18:43: [2021/4/27/15:18:43] - session started in UHzDmWc_session_0
+2021-04-27T15:18:45: [2021/4/27/15:18:45]  - x6p3rRvNlnVdAOsBAAAA passed the test.
+2021-04-27T15:18:45: [2021/4/27/15:18:45]  - nTfnocEq8jt3vKu1AAAB passed the test.
+2021-04-27T15:18:45: [2021/4/27/15:18:45] - UHzDmWc_session_0 is ready to start the game.
+2021-04-27T15:18:52: [2021/4/27/15:18:52] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose sure and got 145 at trial 1.
+2021-04-27T15:18:54: [2021/4/27/15:18:54] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose risky and got 179 at trial 1.
+2021-04-27T15:18:55: [2021/4/27/15:18:55] - Did client 1 in UHzDmWc_session_0 share the payoff info 179 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T15:18:55: groupTotalPayoff = 123
+2021-04-27T15:18:55: [2021/4/27/15:18:55] - doneNo: 1, current round is 1 at UHzDmWc_session_0
+2021-04-27T15:18:56: [2021/4/27/15:18:56] - Did client 2 in UHzDmWc_session_0 share the payoff info 145 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T15:18:56: groupTotalPayoff = 212
+2021-04-27T15:18:56: [2021/4/27/15:18:56] - doneNo: 2, current round is 1 at UHzDmWc_session_0
+2021-04-27T15:18:56: [2021/4/27/15:18:56] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:18:58: [2021/4/27/15:18:58] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose sure and got 139 at trial 2.
+2021-04-27T15:19:00: [2021/4/27/15:19:0] - Did client 2 in UHzDmWc_session_0 share the payoff info 139 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:00: groupTotalPayoff = 212,139
+2021-04-27T15:19:00: [2021/4/27/15:19:0] - doneNo: 1, current round is 2 at UHzDmWc_session_0
+2021-04-27T15:19:01: [2021/4/27/15:19:1] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose risky and got 187 at trial 2.
+2021-04-27T15:19:03: [2021/4/27/15:19:3] - Did client 1 in UHzDmWc_session_0 share the payoff info 187 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:03: groupTotalPayoff = 212,326
+2021-04-27T15:19:03: [2021/4/27/15:19:3] - doneNo: 2, current round is 2 at UHzDmWc_session_0
+2021-04-27T15:19:03: [2021/4/27/15:19:3] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:19:04: [2021/4/27/15:19:4] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose sure and got 143 at trial 3.
+2021-04-27T15:19:05: [2021/4/27/15:19:5] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got 164 at trial 3.
+2021-04-27T15:19:05: [2021/4/27/15:19:5] - Did client 1 in UHzDmWc_session_0 share the payoff info 143 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:05: groupTotalPayoff = 212,326,143
+2021-04-27T15:19:05: [2021/4/27/15:19:5] - doneNo: 1, current round is 3 at UHzDmWc_session_0
+2021-04-27T15:19:07: [2021/4/27/15:19:7] - Did client 2 in UHzDmWc_session_0 share the payoff info 164 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:07: groupTotalPayoff = 212,326,307
+2021-04-27T15:19:07: [2021/4/27/15:19:7] - doneNo: 2, current round is 3 at UHzDmWc_session_0
+2021-04-27T15:19:07: [2021/4/27/15:19:7] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:19:07: [2021/4/27/15:19:7] - New gameRound 2 starts in UHzDmWc_session_0
+2021-04-27T15:19:08: [2021/4/27/15:19:8]  - nTfnocEq8jt3vKu1AAAB is ready to move on.
+2021-04-27T15:19:15: [2021/4/27/15:19:15]  - x6p3rRvNlnVdAOsBAAAA is ready to move on.
+2021-04-27T15:19:15: [2021/4/27/15:19:15] - UHzDmWc_session_0 is ready to start the new game round.
+2021-04-27T15:19:22: [2021/4/27/15:19:22] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose sure and got 126 at trial 1.
+2021-04-27T15:19:24: [2021/4/27/15:19:24] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got 50 at trial 1.
+2021-04-27T15:19:25: [2021/4/27/15:19:25] - Did client 2 in UHzDmWc_session_0 share the payoff info 50 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:25: groupTotalPayoff = 212,326,307,50
+2021-04-27T15:19:25: [2021/4/27/15:19:25] - doneNo: 1, current round is 1 at UHzDmWc_session_0
+2021-04-27T15:19:27: [2021/4/27/15:19:27] - Did client 1 in UHzDmWc_session_0 share the payoff info 126 at trial 1? -> 1 (0:NO / 1:YES)
+2021-04-27T15:19:27: groupTotalPayoff = 212,326,307,105
+2021-04-27T15:19:27: [2021/4/27/15:19:27] - doneNo: 2, current round is 1 at UHzDmWc_session_0
+2021-04-27T15:19:27: [2021/4/27/15:19:27] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:19:28: [2021/4/27/15:19:28] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose risky and got 55 at trial 2.
+2021-04-27T15:19:29: [2021/4/27/15:19:29] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got 52 at trial 2.
+2021-04-27T15:19:31: [2021/4/27/15:19:31] - Did client 1 in UHzDmWc_session_0 share the payoff info 55 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:31: groupTotalPayoff = 212,326,307,105,55
+2021-04-27T15:19:31: [2021/4/27/15:19:31] - doneNo: 1, current round is 2 at UHzDmWc_session_0
+2021-04-27T15:19:32: [2021/4/27/15:19:32] - Did client 2 in UHzDmWc_session_0 share the payoff info 52 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:32: groupTotalPayoff = 212,326,307,105,107
+2021-04-27T15:19:32: [2021/4/27/15:19:32] - doneNo: 2, current round is 2 at UHzDmWc_session_0
+2021-04-27T15:19:32: [2021/4/27/15:19:32] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:19:33: [2021/4/27/15:19:33] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose sure and got 140 at trial 3.
+2021-04-27T15:19:35: [2021/4/27/15:19:35] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got 48 at trial 3.
+2021-04-27T15:19:35: [2021/4/27/15:19:35] - Did client 1 in UHzDmWc_session_0 share the payoff info 140 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:35: groupTotalPayoff = 212,326,307,105,107,140
+2021-04-27T15:19:35: [2021/4/27/15:19:35] - doneNo: 1, current round is 3 at UHzDmWc_session_0
+2021-04-27T15:19:36: [2021/4/27/15:19:36] - Did client 2 in UHzDmWc_session_0 share the payoff info 48 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:36: groupTotalPayoff = 212,326,307,105,107,188
+2021-04-27T15:19:36: [2021/4/27/15:19:36] - doneNo: 2, current round is 3 at UHzDmWc_session_0
+2021-04-27T15:19:36: [2021/4/27/15:19:36] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:19:36: [2021/4/27/15:19:36] - New gameRound 3 starts in UHzDmWc_session_0
+2021-04-27T15:19:42: [2021/4/27/15:19:42]  - x6p3rRvNlnVdAOsBAAAA is ready to move on.
+2021-04-27T15:19:44: [2021/4/27/15:19:44]  - nTfnocEq8jt3vKu1AAAB is ready to move on.
+2021-04-27T15:19:44: [2021/4/27/15:19:44] - UHzDmWc_session_0 is ready to start the new game round.
+2021-04-27T15:19:51: [2021/4/27/15:19:51] - Client x6p3rRvNlnVdAOsBAAAA (subNo = 1) chose sure and got 151 at trial 1.
+2021-04-27T15:19:52: [2021/4/27/15:19:52] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got 173 at trial 1.
+2021-04-27T15:19:57: [2021/4/27/15:19:57] - client disconnected: x6p3rRvNlnVdAOsBAAAA (INHOUSETEST3) (room N: 1, total N: 1) - handshakeID:x6p3rRvNlnVdAOsBAAAA
+2021-04-27T15:19:57: [2021/4/27/15:19:57] - Connected successfully to server (room: UHzDmWc_session_0)
+2021-04-27T15:19:57: [2021/4/27/15:19:57] - [Worker] isMainThread: false, behaviour of UHzDmWc_session_0 saved
+2021-04-27T15:19:57: [2021/4/27/15:19:57] - [Main] Message got from worker [Worker] Finished UHzDmWc_session_0
+2021-04-27T15:19:57: [2021/4/27/15:19:57] - exitted! : undefined
+2021-04-27T15:19:58: [2021/4/27/15:19:58] - Did client 2 in UHzDmWc_session_0 share the payoff info 173 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-27T15:19:58: groupTotalPayoff = 212,326,307,105,107,188,173
+2021-04-27T15:19:58: [2021/4/27/15:19:58] - doneNo: 1, current round is 1 at UHzDmWc_session_0
+2021-04-27T15:19:58: [2021/4/27/15:19:58] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:19:59: [2021/4/27/15:19:59] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose sure and got 145 at trial 2.
+2021-04-27T15:20:00: [2021/4/27/15:20:0] - Did client 2 in UHzDmWc_session_0 share the payoff info 145 at trial 2? -> 1 (0:NO / 1:YES)
+2021-04-27T15:20:00: groupTotalPayoff = 212,326,307,105,107,188,173,92
+2021-04-27T15:20:00: [2021/4/27/15:20:0] - doneNo: 1, current round is 2 at UHzDmWc_session_0
+2021-04-27T15:20:00: [2021/4/27/15:20:0] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:20:01: [2021/4/27/15:20:1] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got -3 at trial 3.
+2021-04-27T15:20:03: [2021/4/27/15:20:3] - Did client 2 in UHzDmWc_session_0 share the payoff info -3 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T15:20:03: groupTotalPayoff = 212,326,307,105,107,188,173,92,-9
+2021-04-27T15:20:03: [2021/4/27/15:20:3] - doneNo: 1, current round is 3 at UHzDmWc_session_0
+2021-04-27T15:20:03: [2021/4/27/15:20:3] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:20:03: [2021/4/27/15:20:3] - New gameRound 4 starts in UHzDmWc_session_0
+2021-04-27T15:20:04: [2021/4/27/15:20:4]  - nTfnocEq8jt3vKu1AAAB is ready to move on.
+2021-04-27T15:20:04: [2021/4/27/15:20:4] - UHzDmWc_session_0 is ready to start the new game round.
+2021-04-27T15:20:11: [2021/4/27/15:20:11] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose sure and got 154 at trial 1.
+2021-04-27T15:20:13: [2021/4/27/15:20:13] - Did client 2 in UHzDmWc_session_0 share the payoff info 154 at trial 1? -> 0 (0:NO / 1:YES)
+2021-04-27T15:20:13: groupTotalPayoff = 212,326,307,105,107,188,173,92,-9,154
+2021-04-27T15:20:13: [2021/4/27/15:20:13] - doneNo: 1, current round is 1 at UHzDmWc_session_0
+2021-04-27T15:20:13: [2021/4/27/15:20:13] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:20:14: [2021/4/27/15:20:14] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose risky and got 487 at trial 2.
+2021-04-27T15:20:16: [2021/4/27/15:20:16] - Did client 2 in UHzDmWc_session_0 share the payoff info 487 at trial 2? -> 0 (0:NO / 1:YES)
+2021-04-27T15:20:16: groupTotalPayoff = 212,326,307,105,107,188,173,92,-9,154,487
+2021-04-27T15:20:16: [2021/4/27/15:20:16] - doneNo: 1, current round is 2 at UHzDmWc_session_0
+2021-04-27T15:20:16: [2021/4/27/15:20:16] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:20:17: [2021/4/27/15:20:17] - Client nTfnocEq8jt3vKu1AAAB (subNo = 2) chose sure and got 137 at trial 3.
+2021-04-27T15:20:19: [2021/4/27/15:20:19] - Did client 2 in UHzDmWc_session_0 share the payoff info 137 at trial 3? -> 0 (0:NO / 1:YES)
+2021-04-27T15:20:19: groupTotalPayoff = 212,326,307,105,107,188,173,92,-9,154,487,137
+2021-04-27T15:20:19: [2021/4/27/15:20:19] - doneNo: 1, current round is 3 at UHzDmWc_session_0
+2021-04-27T15:20:19: [2021/4/27/15:20:19] - result stage ended at: UHzDmWc_session_0
+2021-04-27T15:20:22: [2021/4/27/15:20:22] - client disconnected: nTfnocEq8jt3vKu1AAAB (INHOUSETEST3) (room N: 0, total N: 0) - handshakeID:nTfnocEq8jt3vKu1AAAB
+2021-04-27T15:20:23: [2021/4/27/15:20:23] - Connected successfully to server (room: UHzDmWc_session_0)
+2021-04-27T15:20:23: [2021/4/27/15:20:23] - [Worker] isMainThread: false, behaviour of UHzDmWc_session_0 saved
+2021-04-27T15:20:23: [2021/4/27/15:20:23] - [Main] Message got from worker [Worker] Finished UHzDmWc_session_0
+2021-04-27T15:20:23: [2021/4/27/15:20:23] - exitted! : undefined

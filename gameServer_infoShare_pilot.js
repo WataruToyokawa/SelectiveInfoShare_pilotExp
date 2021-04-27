@@ -131,6 +131,7 @@ roomStatus['finishedRoom'] = {
     choiceTime: [],
     gameRound: 0,
     round: 1,
+    pointer: 1,
     doneId: createArray(horizon * totalGameRound, 0),
     doneNo: createArray(horizon * totalGameRound),
     socialFreq: createArray(horizon * totalGameRound, numOptions),
@@ -167,6 +168,7 @@ roomStatus[firstRoomName] = {
     choiceTime: [],
     gameRound: 0,
     round: 1,
+    pointer: 1,
     doneId: createArray(horizon * totalGameRound, 0),
     doneNo: createArray(horizon * totalGameRound),
     socialFreq: createArray(horizon * totalGameRound, numOptions),
@@ -262,6 +264,7 @@ io.on('connection', function (client) {
 				choiceTime: [],
 				gameRound: 0,
 				round: 1,
+				pointer: 1,
 				doneId: createArray(horizon * totalGameRound, 0),
 				doneNo: createArray(horizon * totalGameRound),
 				socialFreq: createArray(horizon * totalGameRound, numOptions),
@@ -359,6 +362,7 @@ io.on('connection', function (client) {
 				          choiceTime: [],
 				          gameRound: 0,
 				          round: 1,
+				          pointer: 1,
 				          doneId: createArray(horizon * totalGameRound, 0),
 				          doneNo: createArray(horizon * totalGameRound),
 				          socialFreq: createArray(horizon * totalGameRound, numOptions),
@@ -428,6 +432,7 @@ io.on('connection', function (client) {
 					choiceTime: [],
 					gameRound: 0,
 					round: 1,
+					pointer: 1,
 					doneId: createArray(horizon * totalGameRound, 0),
 					doneNo: createArray(horizon * totalGameRound),
 					socialFreq: createArray(horizon * totalGameRound, numOptions),
@@ -514,6 +519,7 @@ io.on('connection', function (client) {
 				choiceTime: [],
 				gameRound: 0,
 				round: 1,
+				pointer: 1,
 				doneId: createArray(horizon * totalGameRound, 0),
 				doneNo: createArray(horizon * totalGameRound),
 				socialFreq: createArray(horizon * totalGameRound, numOptions),
@@ -599,24 +605,24 @@ io.on('connection', function (client) {
     	console.log(logdate + ' - Client ' + client.session + ' (subNo = ' + client.subjectNumber + ') chose ' + data.choice + ' and got ' + data.payoff + ' at trial ' + data.thisTrial + '.');
     	// update roomStatus
     	if (typeof roomStatus[client.room] != 'undefined' & typeof client.subjectNumber != 'undefined') {
-	    	roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].push(client.subjectNumber);
-			doneNum = roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].length;
-			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.choice;
-			roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.payoff;
-			roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1][doneNum-1] = client.subjectNumber;
+	    	roomStatus[client.room]['doneId'][roomStatus[client.room]['pointer']-1].push(client.subjectNumber);
+			doneNum = roomStatus[client.room]['doneId'][roomStatus[client.room]['pointer']-1].length;
+			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['pointer']-1][doneNum-1] = data.choice;
+			roomStatus[client.room]['publicInfo'][roomStatus[client.room]['pointer']-1][doneNum-1] = data.payoff;
+			roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['pointer']-1][doneNum-1] = client.subjectNumber;
 
 			if( roomStatus[client.room]['round'] < horizon ) {
 				if (doneNum <= 1) {
 					// summarise social information
 					for (let i = 0; i < numOptions; i++) {
-						roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][i] = 0;
+						roomStatus[client.room]['socialFreq'][roomStatus[client.room]['pointer']][i] = 0;
 					}
 				}
-				// roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
-				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.num_choice]++;
+				// roomStatus[client.room]['socialFreq'][roomStatus[client.room]['pointer']][data.chosenOptionFlag-1]++;
+				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['pointer']][data.num_choice]++;
 			}
 			//client.emit('your instant number is ', client.subjectNumber-1);
-			io.to(client.room).emit('these are done subjects', {doneSubject:roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]});
+			io.to(client.room).emit('these are done subjects', {doneSubject:roomStatus[client.room]['doneId'][roomStatus[client.room]['pointer']-1]});
 
 			// =========  save data to mongodb
 			roomStatus[client.room]['saveDataThisRound'].push(
@@ -640,7 +646,7 @@ io.on('connection', function (client) {
 				,	behaviouralType: 'choice'
 				,	timeElapsed: timeElapsed
 				,	latency: client.latency
-				,	socialFreq: roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']-1]
+				,	socialFreq: roomStatus[client.room]['socialFreq'][roomStatus[client.room]['pointer']-1]
 				,	socialInfo: data.socialInfo
 				,	publicInfo: data.publicInfo
 				,	maxGroupSize: maxGroupSize
@@ -652,85 +658,6 @@ io.on('connection', function (client) {
 		}
 	});
 
-	client.on('choice made 4ab', function (data) {
-		let now = new Date()
-        ,	logdate = '[' + now.getUTCFullYear() + '/' + (now.getUTCMonth() + 1) + '/'
-    	, doneNum
-    	, timeElapsed = now - firstTrialStartingTime
-    	;
-    	logdate += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
-    	console.log(logdate + ' - Client ' + client.session + ' (subNo = ' + client.subjectNumber + ') chose ' + data.choice + ' and got ' + data.payoff + ' at trial ' + data.thisTrial + '.');
-    	// update roomStatus
-    	// if (typeof roomStatus[client.room] != 'undefined') {
-    	if (typeof roomStatus[client.room] != 'undefined' & typeof client.subjectNumber != 'undefined') {
-	    	roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].push(client.subjectNumber);
-			doneNum = roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1].length;
-			roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.choice;
-			roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1][doneNum-1] = data.payoff;
-			roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1][doneNum-1] = client.subjectNumber;
-
-			// summing up all the payoff earned by the members of this room
-			// roomStatus[client.room]['groupTotalPayoff'] += data.payoff;
-
-			if( roomStatus[client.room]['round'] < horizon ) {
-				if (doneNum <= 1) {
-					// summarise social information
-					for (let i = 0; i < numOptions; i++) {
-						roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][i] = 0;
-					}
-				}
-				// roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.chosenOptionFlag-1]++;
-				roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][data.num_choice]++;
-
-				// console.log('doneId '+roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]);
-				// console.log('socialInfo '+roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1]);
-				// console.log('publicInfo '+roomStatus[client.room]['publicInfo'][roomStatus[client.room]['round']-1]);
-				// console.log('choiceOrder '+roomStatus[client.room]['choiceOrder'][roomStatus[client.room]['round']-1]);
-				// console.log('socialFreq '+roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']]);
-
-				//console.log(roomStatus[client.room]);
-				// if (data.choice === 'sure') {
-				// 	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][0]++;
-				// } else if (data.choice === 'risky') {
-				// 	roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']][1]++;
-				// }
-			}
-			//client.emit('your instant number is ', client.subjectNumber-1);
-			io.to(client.room).emit('these are done subjects', {doneSubject:roomStatus[client.room]['doneId'][roomStatus[client.room]['round']-1]});
-
-			// =========  save data to mongodb
-			roomStatus[client.room]['saveDataThisRound'].push(
-				{	date: now.getUTCFullYear() + '-' + (now.getUTCMonth() + 1) +'-' + now.getUTCDate()
-				,	time: now.getUTCHours()+':'+now.getUTCMinutes()+':'+now.getUTCSeconds()
-				,	exp_condition: roomStatus[client.room]['exp_condition']
-				,	isLeftRisky: roomStatus[client.room]['isLeftRisky']
-				,	indivOrGroup: roomStatus[client.room]['indivOrGroup']
-				,	groupSize: roomStatus[client.room]['n']
-				,	room: client.room
-				,	confirmationID: client.session
-				,	subjectNumber: client.subjectNumber
-				,	amazonID: client.amazonID
-				,	round: roomStatus[client.room]['round']
-				,	gameRound: roomStatus[client.room]['gameRound']
-				,	gameType: roomStatus[client.room]['taskOrder'][roomStatus[client.room]['gameRound']]
-				,	chosenOptionFlag: data.chosenOptionFlag
-				,	choice: data.choice
-				,	payoff: data.payoff
-				,	totalEarning: data.totalEarning
-				,	behaviouralType: 'choice'
-				,	timeElapsed: timeElapsed
-				,	latency: client.latency
-				,	socialFreq: roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']-1]
-				,	socialInfo: data.socialInfo
-				,	publicInfo: data.publicInfo
-				,	maxGroupSize: maxGroupSize
-				,	riskDistributionId: data.riskDistributionId
-				,	optionOrder: roomStatus[client.room]['optionOrder']
-				}
-			);
-			// =========  save data to mongodb
-		}
-	});
 
 	client.on('Data from Indiv', function (data) {
 		let now = new Date()
@@ -758,13 +685,13 @@ io.on('connection', function (client) {
 
 		if(typeof client.subjectNumber != 'undefined') {
 
-			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['round']-1][client.subjectNumber-1] = {share: data.share, payoff: data.payoff, position: data.num_choice};
+			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['pointer']-1][client.subjectNumber-1] = {share: data.share, payoff: data.payoff, position: data.num_choice};
 
 			// summing up all the payoff earned by the members of this room
-			if(typeof roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['round']-1] != 'undefined') {
-				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['round']-1] += data.totalEarning;
+			if(typeof roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] != 'undefined') {
+				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] += data.totalEarning;
 			} else {
-				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['round']-1] = data.totalEarning;
+				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] = data.totalEarning;
 			}
 
 			console.log('groupTotalPayoff = ' + roomStatus[client.room]['groupTotalPayoff']);
@@ -792,7 +719,7 @@ io.on('connection', function (client) {
 				,	behaviouralType: 'info-sharing'
 				,	timeElapsed: timeElapsed
 				,	latency: client.latency
-				,	socialFreq: roomStatus[client.room]['socialFreq'][roomStatus[client.room]['round']-1]
+				,	socialFreq: roomStatus[client.room]['socialFreq'][roomStatus[client.room]['pointer']-1]
 				// ,	socialInfo: data.socialInfo
 				// ,	publicInfo: data.publicInfo
 				,	maxGroupSize: maxGroupSize
@@ -809,20 +736,20 @@ io.on('connection', function (client) {
 			// Depending on the number of subject who has already done this round,
 			// the response to the client changes
 			// (i.e., the next round only starts after all the subject at the moment have chosen their option)
-			if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] != 'undefined') {
+			if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] != 'undefined') {
 				// roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1]++;
-				roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ]++;
+				roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ]++;
 			}else{
 				// roomStatus[client.room]['doneNo'][roomStatus[client.room]['round']-1] = 1;
-				roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] = 1;
+				roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] = 1;
 			}
 			let now_endFeedback = new Date()
 	        ,	logdate_endFeedback = '[' + now_endFeedback.getUTCFullYear() + '/' + (now_endFeedback.getUTCMonth() + 1) + '/'
 	    	;
 	    	logdate_endFeedback += now_endFeedback.getUTCDate() + '/' + now_endFeedback.getUTCHours() + ':' + now_endFeedback.getUTCMinutes() + ':' + now_endFeedback.getUTCSeconds() + ']';
-	    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
+	    	logdate_endFeedback += ` - doneNo: ${roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ]}, current round is ${roomStatus[client.room]['round']} at ${client.room}`;
 			console.log(logdate_endFeedback);
-			if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] >= roomStatus[client.room]['n']) {
+			if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] >= roomStatus[client.room]['n']) {
 				let now_endResultStage = new Date()
 		        ,	logdate_endResultStage = '[' + now_endResultStage.getUTCFullYear() + '/' + (now_endResultStage.getUTCMonth() + 1) + '/'
 		    	;
@@ -879,15 +806,15 @@ io.on('connection', function (client) {
 			// This doneOrNot checks whether the disconnected client has not
 			// yet made a choice in the main stage. If doneOrNot > -1, it means
 			// this client has already done the choice.
-			if(typeof roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1] != 'undefined') {
-				doneOrNot = roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1].indexOf(client.subjectNumber);
+			if(typeof roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['pointer']-1] != 'undefined') {
+				doneOrNot = roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['pointer']-1].indexOf(client.subjectNumber);
 			}
 			if(doneOrNot > -1){
-				roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['round']-1].splice(doneOrNot, 1);
-				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1].splice(doneOrNot, 1);
-				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['round']-1].push(-1);
-				if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] != 'undefined') {
-					roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ]--;
+				roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['pointer']-1].splice(doneOrNot, 1);
+				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['pointer']-1].splice(doneOrNot, 1);
+				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['pointer']-1].push(-1);
+				if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] != 'undefined') {
+					roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ]--;
 				}
 			}
 
@@ -902,7 +829,7 @@ io.on('connection', function (client) {
 				// so than no one will never enter this room again.
 				// On the other hand, if this is a group session's room, reducing 'n' may open up
 				// a room for a new-comer if this room is still at the first waiting screen
-				if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['round']-1 + horizon*roomStatus[client.room]['gameRound'] ] >= roomStatus[client.room]['n']) {
+				if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] >= roomStatus[client.room]['n']) {
 				  	console.log(`result stage ended at: ${client.room}`);
 				  	proceedRound(client.room);
 				}
@@ -1018,10 +945,11 @@ function rand(max, min = 0) {
 
 function proceedRound (room) {
 
-	roomStatus[room]['totalPayoff_perIndiv'][roomStatus[room]['round']-1] =
-		Math.round( roomStatus[room]['groupTotalPayoff'][roomStatus[room]['round']-1] / roomStatus[room]['n'] );
+	roomStatus[room]['totalPayoff_perIndiv'][roomStatus[room]['pointer']-1] =
+		Math.round( roomStatus[room]['groupTotalPayoff'][roomStatus[room]['pointer']-1] / roomStatus[room]['n'] );
 
 	roomStatus[room]['round']++;
+	roomStatus[room]['pointer']++; // pointer keep tracks round + horizon * gameRound
 	if(roomStatus[room]['round'] <= horizon) {
 		io.to(room).emit('Proceed to next round', roomStatus[room]);
 	} else {

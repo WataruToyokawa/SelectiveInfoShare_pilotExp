@@ -2578,10 +2578,12 @@ window.onload = function() {
     	let thisPayoff
     	if (p_rare < roulette) { // common event
     		thisPayoff = Math.floor((payoffList[0] + noise)*100);
+    		if (thisPayoff<0) thisPayoff = 0;
     		myEarnings.push(thisPayoff);
             myChoices.push(choice);
     	} else { // rare event
     		thisPayoff = Math.floor((payoffList[1] + noise)*100);
+    		if (thisPayoff<0) thisPayoff = 0;
     		myEarnings.push(thisPayoff);
             myChoices.push(choice);
     	}
