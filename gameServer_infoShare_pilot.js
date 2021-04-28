@@ -40,7 +40,7 @@ const expFunctions = require('./models/expFunctions');
 const consoleLogInterceptor = require('./models/console-log-interceptor');
 
 // Experimental variables
-const horizon = 3//20 // 100?
+const horizon = 4//20 // 100?
 , sessionNo = 0 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
 , maxGroupSize = 4//8 // maximum 12
 , minGroupSize = 2//4
@@ -143,6 +143,7 @@ roomStatus['finishedRoom'] = {
     restTime:maxWaitingTime,
     groupTotalPayoff: [0],
     totalPayoff_perIndiv: [0],
+    totalPayoff_perIndiv_perGame: new Array(totalGameRound).fill(0),
     groupTotalCost: [0],
     block: 0
 };
@@ -180,6 +181,7 @@ roomStatus[firstRoomName] = {
     restTime:maxWaitingTime,
     groupTotalPayoff: [0],
     totalPayoff_perIndiv: [0],
+    totalPayoff_perIndiv_perGame: new Array(totalGameRound).fill(0),
     groupTotalCost: [0],
     block: 0
 };
@@ -276,6 +278,7 @@ io.on('connection', function (client) {
 				restTime:maxWaitingTime,
 				groupTotalPayoff: [0],
 				totalPayoff_perIndiv: [0],
+				totalPayoff_perIndiv_perGame: new Array(totalGameRound).fill(0),
 				groupTotalCost: [0],
 				block: 0
 			};
@@ -374,6 +377,7 @@ io.on('connection', function (client) {
 				          restTime:maxWaitingTime,
 				          groupTotalPayoff: [0],
 				          totalPayoff_perIndiv: [0],
+				          totalPayoff_perIndiv_perGame: new Array(totalGameRound).fill(0),
 				          groupTotalCost: [0],
 				          block: 0
 				      };
@@ -531,6 +535,7 @@ io.on('connection', function (client) {
 				restTime:maxWaitingTime,
 				groupTotalPayoff: [0],
 				totalPayoff_perIndiv: [0],
+				totalPayoff_perIndiv_perGame: new Array(totalGameRound).fill(0),
 				groupTotalCost: [0],
 				block: 0
 			};
@@ -685,13 +690,13 @@ io.on('connection', function (client) {
 
 		if(typeof client.subjectNumber != 'undefined') {
 
-			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['pointer']-1][client.subjectNumber-1] = {share: data.share, payoff: data.payoff, position: data.num_choice};
+			roomStatus[client.room]['share_or_not'][roomStatus[client.room]['pointer']-1][client.subjectNumber-1] = {share: data.share, payoff: data.payoff, position: data.num_choice, sharing_cost: data.sharing_cost};
 
 			// summing up all the payoff earned by the members of this room
 			if(typeof roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] != 'undefined') {
-				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] += data.totalEarning;
+				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] += data.payoff - data.sharing_cost;
 			} else {
-				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] = data.totalEarning;
+				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] = data.payoff - data.sharing_cost;
 			}
 
 			console.log('groupTotalPayoff = ' + roomStatus[client.room]['groupTotalPayoff']);
@@ -715,7 +720,7 @@ io.on('connection', function (client) {
 				// ,	chosenOptionFlag: data.chosenOptionFlag
 				// ,	choice: data.choice
 				// ,	payoff: data.payoff
-				,	totalEarning: data.totalEarning
+				,	totalEarning: data.payoff - data.sharing_cost
 				,	behaviouralType: 'info-sharing'
 				,	timeElapsed: timeElapsed
 				,	latency: client.latency
@@ -945,8 +950,14 @@ function rand(max, min = 0) {
 
 function proceedRound (room) {
 
+	// every single individual payoff
 	roomStatus[room]['totalPayoff_perIndiv'][roomStatus[room]['pointer']-1] =
 		Math.round( roomStatus[room]['groupTotalPayoff'][roomStatus[room]['pointer']-1] / roomStatus[room]['n'] );
+	// total individual payoff for each game
+	roomStatus[room]['totalPayoff_perIndiv_perGame'][roomStatus[room]['gameRound']] +=
+		Math.round( roomStatus[room]['groupTotalPayoff'][roomStatus[room]['pointer']-1] / roomStatus[room]['n'] );
+
+	roomStatus[room]['optionOrder'] = shuffle(options);
 
 	roomStatus[room]['round']++;
 	roomStatus[room]['pointer']++; // pointer keep tracks round + horizon * gameRound

@@ -164,7 +164,7 @@ window.onload = function() {
             // Redirecting to the questionnaire
             socket.io.opts.query = 'sessionName=already_finished';
             socket.disconnect();
-            window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
+            window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
         }
     }
     //======== end: monitoring reload activity =====
@@ -203,7 +203,7 @@ window.onload = function() {
                     socket.io.opts.query = 'sessionName=already_finished';
                     socket.disconnect();
                     completed = 'browserHidden';
-                    window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+completed+'&latency='+submittedLatency;
+                    window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+completed+'&latency='+submittedLatency;
                 }, 200); // wait until waitingBonus is fully calculated
             }
             hidden_elapsedTime = 0;
@@ -252,7 +252,8 @@ window.onload = function() {
 
 	, groupTotalScore = 0
 	, totalPayoff_perIndiv = 0
-	, totalPayoff_perIndiv_all = []
+	// , totalPayoff_perIndiv_all = []
+	, totalPayoff_perIndiv_perGame = new Array(4).fill(0) // = [0,0,0,0]
 
 	, gameOver = false
 	, choiceFlag
@@ -1485,7 +1486,7 @@ window.onload = function() {
 			    			game.scene.start('SceneInstruction', {indivOrGroup:indivOrGroup, exp_condition:exp_condition});
 			    		} else {
 			    			// completed = 'droppedTestScene';
-			    			window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+'droppedTestScene'+'&latency='+submittedLatency;
+			    			window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+'droppedTestScene'+'&latency='+submittedLatency;
 			    		}
 		    		}
 		    	} else { // group condition
@@ -1504,7 +1505,7 @@ window.onload = function() {
 			    			game.scene.start('SceneInstruction', {indivOrGroup:indivOrGroup, exp_condition:exp_condition});
 			    		} else {
 			    			// completed = 'droppedTestScene';
-			    			window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+'droppedTestScene'+'&latency='+submittedLatency;
+			    			window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+'droppedTestScene'+'&latency='+submittedLatency;
 			    		}
 		    		}
 		    	}
@@ -1982,7 +1983,9 @@ window.onload = function() {
 		    			, payoff: payoff
 		    			, num_choice: this.flag
 		    			, info_share_cost: info_share_cost
-		    			, totalEarning: (payoff - didShare * info_share_cost)
+		    			// , totalEarning: (payoff - didShare * info_share_cost)
+		    			// , what_produced: payoff
+		    			, sharing_cost: didShare * info_share_cost
 		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_yes.visible = false;
@@ -1998,7 +2001,9 @@ window.onload = function() {
 		    			, payoff: payoff
 		    			, num_choice: this.flag
 		    			, info_share_cost: info_share_cost
-		    			, totalEarning: (payoff - didShare * info_share_cost)
+		    			// , totalEarning: (payoff - didShare * info_share_cost)
+		    			// , what_produced: payoff
+		    			, sharing_cost: didShare * info_share_cost
 		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_yes.visible = false;
@@ -2062,7 +2067,9 @@ window.onload = function() {
 			    			, payoff: payoff
 			    			, num_choice: this.flag
 			    			, info_share_cost: info_share_cost
-			    			, totalEarning: (payoff - didShare * info_share_cost)
+			    			// , totalEarning: (payoff - didShare * info_share_cost)
+			    			// , what_produced: payoff
+		    				, sharing_cost: didShare * info_share_cost
 			    			, thisTrial: currentTrial
 			    		});
 				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
@@ -2076,7 +2083,9 @@ window.onload = function() {
 			    			, payoff: payoff
 			    			, num_choice: this.flag
 			    			, info_share_cost: info_share_cost
-			    			, totalEarning: (payoff - 0 * info_share_cost)
+			    			// , totalEarning: (payoff - 0 * info_share_cost)
+			    			// , what_produced: payoff
+		    				, sharing_cost: didShare * info_share_cost
 			    			, thisTrial: currentTrial
 			    		});
 				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
@@ -2094,91 +2103,15 @@ window.onload = function() {
 		    			, payoff: payoff
 		    			, num_choice: this.flag
 		    			, info_share_cost: info_share_cost
-		    			, totalEarning: (payoff - 0 * info_share_cost)
+		    			// , totalEarning: (payoff - 0 * info_share_cost)
+		    			// , what_produced: payoff
+		    			, sharing_cost: didShare * info_share_cost
 		    			, thisTrial: currentTrial
 		    		});
 			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
 			}
 
 
-		}
-		update(){}
-	};
-
-	// SceneInfoShare
-	class SceneInfoShare extends Phaser.Scene {
-
-		constructor (){
-		    super({ key: 'SceneInfoShare', active: false });
-		}
-
-		preload(){
-			}
-
-		init (data) {
-			this.didMiss = data.didMiss;
-			this.flag = data.flag;
-		}
-
-		create(){
-			// background colour
-			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);//#d9d9d9 = grey #ffffff = white
-			//  Texts
-			let slotY_main = 400;
-			objects_feedbackStage = {};
-			for (let i=1; i<numOptions+1; i++) {
-				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
-				if (i != this.flag) {
-					objects_feedbackStage['box'+i].visible = false;
-					// console.log('option '+ i +' is invisible because thisflag = '+this.flag);
-				} else {
-					objects_feedbackStage['box'+i].visible = true;
-					// console.log('option '+ i +' is visible because thisflag = '+this.flag);
-				}
-			}
-
-
-			if(this.flag == -1) {
-				feedbackTextPosition = missPositionX;
-				//this.flag = 0;
-				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
-			} else {
-				// console.log('scenefeedbackstage: this.flag == '+ this.flag);
-				// for(let i=1; i<numOptions+1; i++) {
-				// 	if(i == this.flag){
-				// 		objects_feedbackStage['box'+this.flag].visible = true;
-				// 	}else{
-				// 		objects_feedbackStage['box'+this.flag].visible = false;
-				// 	}
-				// }
-				// objects_feedbackStage['box'+this.flag].visible = true;
-				feedbackTextPosition = option1_positionX + space_between_boxes * (this.flag - 1);
-				//this.flag = 0;
-				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
-			}
-
-
-			if (this.didMiss) {
-				payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `Missed!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
-			} else {
-		    	payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `${payoff} points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
-		    	payoffText.setFontSize(10 + 1.5*Math.sqrt(1/2 * payoff)); //originally: 1*Math.sqrt(2/3 * payoff)
-			}
-
-			if (indivOrGroup == 1) {
-				waitOthersText = this.add.text(16, 60, 'This is the info sharing scene!', { fontSize: '30px', fill: '#000'});
-			} else {
-				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000'});
-			}
-
-		    setTimeout(function(){
-		    	//payoffText.destroy();
-		    	//game.scene.stop('ScenePayoffFeedback');
-		    	//game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
-		    	//console.log('emitting result stage ended!');
-		    	currentChoiceFlag = 0;
-		    	socket.emit('result stage ended');
-		    }, feedbackTime * 1000); //2.5 * 1000 ms was the original
 		}
 		update(){}
 	};
@@ -2202,7 +2135,7 @@ window.onload = function() {
 			const noteStyle =
 				{ fontSize: '36px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
-			// let totalEarning_USD = Math.round((totalEarning*cent_per_point))/100
+			// let totalEarning_USD = Math.round((totalPayoff_perIndiv*cent_per_point))/100
 			let totalEarning_USD = Math.round((totalPayoff_perIndiv*cent_per_point))/100
 			let waitingBunis_USD = Math.round(waitingBonus)/100
 		    let title = this.add.text(configWidth/2, 18, goToQuestionnaireText[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
@@ -2246,7 +2179,7 @@ window.onload = function() {
 			const noteStyle =
 				{ fontSize: '36px', fill: noteColor, wordWrap: { width: configWidth-80, useAdvancedWrap: true }, fontstyle: 'bold' };
 			//  Texts
-			// let totalEarning_USD = Math.round((totalEarning*cent_per_point))/100
+			// let totalEarning_USD = Math.round((totalPayoff_perIndiv*cent_per_point))/100
 			let totalEarning_USD = Math.round((totalPayoff_perIndiv*cent_per_point))/100
 			let waitingBunis_USD = Math.round(waitingBonus)/100
 		    let title = this.add.text(configWidth/2, 18, goToNewGameRoundText[0], { fontSize: '36px', fill: '#000', fontstyle: 'bold' });
@@ -3254,18 +3187,19 @@ window.onload = function() {
     });
 
     socket.on('Proceed to next round', function(data) {
-        mySocialInfo = data.socialInfo[data.round-2];
-        myPublicInfo = data.publicInfo[data.round-2];
-        choiceOrder = data.choiceOrder[data.round-2];
-        share_or_not = data.share_or_not[data.round-2];
+        mySocialInfo = data.socialInfo[data.pointer-2]; //[data.round-2];
+        myPublicInfo = data.publicInfo[data.pointer-2];
+        choiceOrder = data.choiceOrder[data.pointer-2];
+        share_or_not = data.share_or_not[data.pointer-2];
         groupTotalScore = sum( data.groupTotalPayoff );
         totalPayoff_perIndiv = sum( data.totalPayoff_perIndiv );
+        totalPayoff_perIndiv_perGame[gameRound] = data.totalPayoff_perIndiv_perGame[gameRound];
         // payoff_info = data.share_or_not[data.round-2]['payoff'];
         // shared_position = data.share_or_not[data.round-2]['position'];
         // console.log('mySocialInfo: ' + mySocialInfo);
         // console.log('myPublicInfo: ' + myPublicInfo);
         // console.log('choiceOrder: ' + choiceOrder);
-        console.log('totalPayoff_perIndiv: ' + totalPayoff_perIndiv + ' with group total = ' + groupTotalScore);
+        console.log('totalPayoff_perIndiv_perGame: ' + totalPayoff_perIndiv_perGame[gameRound] + ' with group total = ' + groupTotalScore);
         for (let i = 0; i < maxGroupSize; i++) {
         	if(share_or_not[i] != null) {
         		console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
@@ -3291,8 +3225,8 @@ window.onload = function() {
         currentTrial++;
         totalEarning += payoff - (info_share_cost * didShare);
 
-        //$("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
-        //$("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
+        //$("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
+        //$("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
         $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
@@ -3318,8 +3252,8 @@ window.onload = function() {
         //mySocialInfoList['risky'] = data.socialFreq[data.round-1][riskyPosition];
         currentTrial++;
         totalEarning += payoff;
-        // $("#totalEarningInCent").val(Math.round((totalEarning*cent_per_point)));
-        // $("#totalEarningInUSD").val(Math.round((totalEarning*cent_per_point))/100);
+        // $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
+        // $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#totalEarningInCent").val(Math.round((totalPayoff_perIndiv*cent_per_point)));
         $("#totalEarningInUSD").val(Math.round((totalPayoff_perIndiv*cent_per_point))/100);
         $("#currentTrial").val(currentTrial);
@@ -3350,10 +3284,11 @@ window.onload = function() {
         myPublicInfo = [];
         choiceOrder = [];
         share_or_not = [];
-    	totalPayoff_perIndiv_all[gameRound] = totalPayoff_perIndiv;
+    	totalPayoff_perIndiv_perGame[gameRound] = data.totalPayoff_perIndiv_perGame[gameRound];
     	totalPayoff_perIndiv = 0;
     	groupTotalScore = 0;
     	gameRound = data.gameRound;
+    	optionOrder = data.optionOrder; // new option order
     	if (numOptions == 2) {
         	settingRiskDistribution(taskOrder[data.gameRound]);
         } else {
@@ -3371,7 +3306,7 @@ window.onload = function() {
 	    	// However, for now I just redirect them to the questionnaire
 	        socket.io.opts.query = 'sessionName=already_finished';
 	        socket.disconnect();
-	        window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalEarning*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
+	        window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
 	        console.log('Received: "S_to_C_welcomeback": client = '+data.sessionName +'; room = '+data.roomName);
 	    } else if (waitingRoomFinishedFlag != 1) {
 	    	console.log('Received: "S_to_C_welcomeback" but the waiting room is not finished yet: client = '+data.sessionName +'; room = '+data.roomName);
