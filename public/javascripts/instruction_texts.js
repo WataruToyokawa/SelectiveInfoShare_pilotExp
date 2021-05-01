@@ -28,14 +28,16 @@ const instructionText_indiv =
 
 	, '<br><br>Throughout the main task, you are to make a series of choices between '//+numOptions+' slot machines.'
 
-	, '<br><br>Overall, there will be <span class="note">70&nbsp;trials</span>. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
+	, '<br><br>Overall, you will play <span class="note">4&nbsp;rounds</span> of the similar game. There will be <span class="note">20&nbsp;trials</span> in each game. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
 
-	, '<br><br>Each choice will earn you a reward. Your total payout will be based on <span class="note">the sum of all points</span> you earn over the 70&nbsp;trials.'
+	, '<br><br>Each choice will earn you a reward. Your total payout will be based on <span class="note">the sum of all points</span> you earn over the 20&nbsp;trials.'
 
-	, '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">100&nbsp;points = 1&nbsp;US cent.</span>'
+	, '<br><br>The total reward you get will be converted into real money in the end. The exchange rate is <span class="note">100&nbsp;points = 1&nbsp;US cent.</span>'
 	// , '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;US cents.</span>'
 
-	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over the long run (i.e., does not vary throughout the game).'
+	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over trials (that is, it does not vary throughout one game).'
+
+	, '<br><br>However, the setting of the slot machines will be reset for every game.'
 
 	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
 	];

@@ -89,8 +89,8 @@ let isEnvironmentReady = false
 ,	isWaitingRoomStarted = false
 ,   myChoices = []
 ,   myEarnings = []
-,   payoff
-,	didShare
+,   payoff = 0
+,	didShare = 0
 ,	payoffTransformed
 ,   totalEarning = 0
 ,	cent_per_point = 1/100 // 1 cent per 100 points
@@ -1985,7 +1985,7 @@ window.onload = function() {
 		    			, info_share_cost: info_share_cost
 		    			// , totalEarning: (payoff - didShare * info_share_cost)
 		    			// , what_produced: payoff
-		    			, sharing_cost: didShare * info_share_cost
+		    			, sharing_cost: 1 * info_share_cost
 		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_yes.visible = false;
@@ -2003,7 +2003,7 @@ window.onload = function() {
 		    			, info_share_cost: info_share_cost
 		    			// , totalEarning: (payoff - didShare * info_share_cost)
 		    			// , what_produced: payoff
-		    			, sharing_cost: didShare * info_share_cost
+		    			, sharing_cost: 0 * info_share_cost
 		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_yes.visible = false;
@@ -2069,7 +2069,7 @@ window.onload = function() {
 			    			, info_share_cost: info_share_cost
 			    			// , totalEarning: (payoff - didShare * info_share_cost)
 			    			// , what_produced: payoff
-		    				, sharing_cost: didShare * info_share_cost
+		    				, sharing_cost: 0 * info_share_cost
 			    			, thisTrial: currentTrial
 			    		});
 				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
@@ -2085,7 +2085,7 @@ window.onload = function() {
 			    			, info_share_cost: info_share_cost
 			    			// , totalEarning: (payoff - 0 * info_share_cost)
 			    			// , what_produced: payoff
-		    				, sharing_cost: didShare * info_share_cost
+		    				, sharing_cost: 0 * info_share_cost
 			    			, thisTrial: currentTrial
 			    		});
 				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
@@ -2105,7 +2105,7 @@ window.onload = function() {
 		    			, info_share_cost: info_share_cost
 		    			// , totalEarning: (payoff - 0 * info_share_cost)
 		    			// , what_produced: payoff
-		    			, sharing_cost: didShare * info_share_cost
+		    			, sharing_cost: 0 * info_share_cost
 		    			, thisTrial: currentTrial
 		    		});
 			    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
@@ -2248,10 +2248,10 @@ window.onload = function() {
 	    [ SceneWaitingRoom0
 	    , SceneWaitingRoom
 	    , SceneWaitingRoom2
-	    // , SceneInstruction
-    	// , SceneTutorial
-    	// , SceneTutorialFeedback
-    	// , SceneUnderstandingTest
+	    , SceneInstruction
+    	, SceneTutorial
+    	, SceneTutorialFeedback
+    	, SceneUnderstandingTest
     	, ScenePerfect
     	, SceneStartCountdown
     	, SceneMain
@@ -2440,6 +2440,7 @@ window.onload = function() {
 		// calculating the payoff from this choice
 		if (distribution == 'miss') {
 			payoff = 0;
+			didShare = 0;
 			if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
 				socket.emit('choice made', {chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
 			} else {
@@ -3136,9 +3137,9 @@ window.onload = function() {
         game.scene.stop('SceneWaitingRoom0');
         game.scene.stop('SceneWaitingRoom');
 
-        game.scene.start('ScenePerfect', data); // debug
+        // game.scene.start('ScenePerfect', data); // debug
 
-       	// game.scene.start('SceneInstruction', data);
+       	game.scene.start('SceneInstruction', data);
 
     });
 
