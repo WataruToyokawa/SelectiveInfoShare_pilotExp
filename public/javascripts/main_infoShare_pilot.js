@@ -346,23 +346,60 @@ window.onload = function() {
 			this.load.image('startImg', 'assets/start.png');
 			this.load.image('energycontainer', 'assets/energycontainer.png');
 			this.load.image('energybar', 'assets/energybar.png');
-			this.load.image('machine1_normal', 'assets/machine_normal_1.png');
-			this.load.image('machine2_normal', 'assets/machine_normal_2.png');
-			this.load.image('machine3_normal', 'assets/machine_normal_3.png');
-			this.load.image('machine4_normal', 'assets/machine_normal_4.png');
-			this.load.image('machine1_active', 'assets/machine_active_1.png');
-			this.load.image('machine2_active', 'assets/machine_active_2.png');
-			this.load.image('machine3_active', 'assets/machine_active_3.png');
-			this.load.image('machine4_active', 'assets/machine_active_4.png');
-			this.load.image('instructionPictures_4ab_1', 'assets/instructionPictures_4ab.001.png');
-			this.load.image('instructionPictures_4ab_2', 'assets/instructionPictures_4ab.002.png');
-			this.load.image('instructionPictures_4ab_3', 'assets/instructionPictures_4ab.003.png');
-			this.load.image('instructionPictures_4ab_4', 'assets/instructionPictures_4ab.004.png');
-			this.load.image('instructionPictures_4ab_5', 'assets/instructionPictures_4ab.005.png');
-			this.load.image('instructionPictures_4ab_6', 'assets/instructionPictures_4ab.006.png');
-			this.load.image('instructionPictures_4ab_7', 'assets/instructionPictures_4ab.007.png');
-			this.load.image('instructionPictures_4ab_8', 'assets/instructionPictures_4ab.008.png');
-			this.load.image('instructionPictures_4ab_9', 'assets/instructionPictures_4ab.009.png');
+			// this.load.image('machine1_normal', 'assets/machine_normal_1.png');
+			// this.load.image('machine2_normal', 'assets/machine_normal_2.png');
+			// this.load.image('machine3_normal', 'assets/machine_normal_3.png');
+			// this.load.image('machine4_normal', 'assets/machine_normal_4.png');
+			// this.load.image('machine1_active', 'assets/machine_active_1.png');
+			// this.load.image('machine2_active', 'assets/machine_active_2.png');
+			// this.load.image('machine3_active', 'assets/machine_active_3.png');
+			// this.load.image('machine4_active', 'assets/machine_active_4.png');
+			this.load.image('machine1_normal', 'assets/slot1_normal.png');
+			this.load.image('machine2_normal', 'assets/slot2_normal.png');
+			this.load.image('machine3_normal', 'assets/slot3_normal.png');
+			this.load.image('machine4_normal', 'assets/slot4_normal.png');
+			this.load.image('machine5_normal', 'assets/slot5_normal.png');
+			this.load.image('machine6_normal', 'assets/slot6_normal.png');
+			this.load.image('machine7_normal', 'assets/slot7_normal.png');
+			this.load.image('machine8_normal', 'assets/slot8_normal.png');
+			this.load.image('machine1_active', 'assets/slot1_active.png');
+			this.load.image('machine2_active', 'assets/slot2_active.png');
+			this.load.image('machine3_active', 'assets/slot3_active.png');
+			this.load.image('machine4_active', 'assets/slot4_active.png');
+			this.load.image('machine5_active', 'assets/slot5_active.png');
+			this.load.image('machine6_active', 'assets/slot6_active.png');
+			this.load.image('machine7_active', 'assets/slot7_active.png');
+			this.load.image('machine8_active', 'assets/slot8_active.png');
+			this.load.image('instructionPictures_indiv_1', 'assets/instructionPictures_indiv.001.png');
+			this.load.image('instructionPictures_indiv_2', 'assets/instructionPictures_indiv.002.png');
+			this.load.image('instructionPictures_indiv_3', 'assets/instructionPictures_indiv.003.png');
+			this.load.image('instructionPictures_indiv_4', 'assets/instructionPictures_indiv.004.png');
+			this.load.image('instructionPictures_indiv_5', 'assets/instructionPictures_indiv.005.png');
+			this.load.image('instructionPictures_indiv_6', 'assets/instructionPictures_indiv.006.png');
+
+			this.load.image('instructionPictures_group_1', 'assets/instructionPictures_group.001.png');
+			this.load.image('instructionPictures_group_2', 'assets/instructionPictures_group.002.png');
+			this.load.image('instructionPictures_group_3', 'assets/instructionPictures_group.003.png');
+			this.load.image('instructionPictures_group_4', 'assets/instructionPictures_group.004.png');
+			this.load.image('instructionPictures_group_5', 'assets/instructionPictures_group.005.png');
+			this.load.image('instructionPictures_group_6', 'assets/instructionPictures_group.006.png');
+			this.load.image('instructionPictures_group_7', 'assets/instructionPictures_group.007.png');
+			this.load.image('instructionPictures_group_8', 'assets/instructionPictures_group.008.png');
+			this.load.image('instructionPictures_group_9', 'assets/instructionPictures_group.009.png');
+			this.load.image('instructionPictures_group_10', 'assets/instructionPictures_group.010.png');
+			this.load.image('instructionPictures_group_11', 'assets/instructionPictures_group.011.png');
+			this.load.image('instructionPictures_group_12', 'assets/instructionPictures_group.012.png');
+			this.load.image('instructionPictures_group_13', 'assets/instructionPictures_group.013.png');
+
+			// this.load.image('instructionPictures_4ab_1', 'assets/instructionPictures_4ab.001.png');
+			// this.load.image('instructionPictures_4ab_2', 'assets/instructionPictures_4ab.002.png');
+			// this.load.image('instructionPictures_4ab_3', 'assets/instructionPictures_4ab.003.png');
+			// this.load.image('instructionPictures_4ab_4', 'assets/instructionPictures_4ab.004.png');
+			// this.load.image('instructionPictures_4ab_5', 'assets/instructionPictures_4ab.005.png');
+			// this.load.image('instructionPictures_4ab_6', 'assets/instructionPictures_4ab.006.png');
+			// this.load.image('instructionPictures_4ab_7', 'assets/instructionPictures_4ab.007.png');
+			// this.load.image('instructionPictures_4ab_8', 'assets/instructionPictures_4ab.008.png');
+			// this.load.image('instructionPictures_4ab_9', 'assets/instructionPictures_4ab.009.png');
 			this.load.image('blackbox', 'assets/blackbox.png');
 			// progress bar functions
 			this.load.on('progress', function (value) {
@@ -605,10 +642,18 @@ window.onload = function() {
 
 		    // instruction Picture
 		    let currentInstructionPicture = [];
-		    for (let i=0; i<10; i++) {
-		    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_4ab_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
-		    	currentInstructionPicture[i].visible = false;
+		    if (this.indivOrGroup == 0) {
+		    	for (let i=0; i<7; i++) {
+			    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_indiv_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
+			    	currentInstructionPicture[i].visible = false;
+			    }
+		    } else {
+		    	for (let i=0; i<14; i++) {
+			    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
+			    	currentInstructionPicture[i].visible = false;
+			    }
 		    }
+
 
 		    // next button
 		    this.nextButtonContainer = this.add.container(550, 520);
@@ -664,7 +709,9 @@ window.onload = function() {
 		    		instructionPosition -= 1;
 		    		instructionDiv.innerHTML = instructionText[instructionPosition];
 		    		if (instructionPosition > 0) {
-		    			currentInstructionPicture[instructionPosition + 1].visible = false;
+		    			if(typeof currentInstructionPicture[instructionPosition + 1] != 'undefined') {
+		    				currentInstructionPicture[instructionPosition + 1].visible = false;
+		    			}
 		    			currentInstructionPicture[instructionPosition].visible = true;
 					} else {
 						backButtonImage.visible = false;
@@ -853,10 +900,7 @@ window.onload = function() {
 						}
 				    }, this);
 				    this.options['box_active'+i].on('pointerdown', function (pointer) {
-						this.options.box1.visible = false;
-			    		this.options.box2.visible = false;
-			    		this.options.box3.visible = false;
-			    		this.options.box4.visible = false;
+				    	for (let m = 1; m < numOptions+1; m++) this.options['box'+m].visible = false;
 			    		this.options['box_active'+i].visible = false;
 
 			    		confirmationContainer.visible = false;
@@ -882,10 +926,7 @@ window.onload = function() {
 				}
 
 			} else { // the final trial (i.e. the transition to the understanding quiz)
-				this.options.box1.visible = false;
-		    	this.options.box2.visible = false;
-		    	this.options.box3.visible = false;
-		    	this.options.box4.visible = false;
+				for (let m = 1; m < numOptions+1; m++) this.options['box'+m].visible = false;
 		    	trialText_tutorial.visible = false;
 		    	scoreText_tutorial.visible = false;
 		    	timeText_tutorial.visible = false;
@@ -1674,8 +1715,8 @@ window.onload = function() {
 
 			// Creating options
 		    for (let i=1; i<numOptions+1; i++) {
-		    	options['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_normal');
-		    	options['box_active'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_active');
+		    	options['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+(i + numOptions*gameRound)+'_normal');
+		    	options['box_active'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+(i + numOptions*gameRound)+'_active');
 		    	options['box'+i].setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
 		    	options['box_active'+i].setDisplaySize(optionWidth, optionHeight).setInteractive({ cursor: 'pointer' });
 		    	options['box_active'+i].visible = false;
@@ -1929,7 +1970,7 @@ window.onload = function() {
 			let slotY_main = 400;
 			objects_feedbackStage = {};
 			for (let i=1; i<numOptions+1; i++) {
-				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
+				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_main, 'machine'+(i+numOptions*gameRound)+'_active').setDisplaySize(optionWidth, optionHeight);
 				if (i != this.flag) {
 					objects_feedbackStage['box'+i].visible = false;
 					// console.log('option '+ i +' is invisible because thisflag = '+this.flag);

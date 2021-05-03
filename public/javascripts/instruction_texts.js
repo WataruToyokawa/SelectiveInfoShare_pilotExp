@@ -28,16 +28,16 @@ const instructionText_indiv =
 
 	, '<br><br>Throughout the main task, you are to make a series of choices between '//+numOptions+' slot machines.'
 
-	, '<br><br>Overall, you will play <span class="note">4&nbsp;rounds</span> of the similar game. There will be <span class="note">20&nbsp;trials</span> in each game. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
+	, '<br><br>Overall, you will play <span class="note">4&nbsp;games</span>. There will be <span class="note">20&nbsp;trials</span> in each game. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
 
 	, '<br><br>Each choice will earn you a reward. Your total payout will be based on <span class="note">the sum of all points</span> you earn over the 20&nbsp;trials.'
 
-	, '<br><br>The total reward you get will be converted into real money in the end. The exchange rate is <span class="note">100&nbsp;points = 1&nbsp;US cent.</span>'
+	, '<br><br>The total reward you get will be converted into real money in the end. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;pence.</span>'
 	// , '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;US cents.</span>'
 
-	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over trials (that is, it does not vary throughout one game).'
+	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over trials.'
 
-	, '<br><br>However, the setting of the slot machines will be reset for every game.'
+	, '<br><br>However, the average payoff of the slot machines will be reset for every new game.'
 
 	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
 	];
@@ -69,27 +69,33 @@ const understandingCheckText_indiv =
 const instructionText_group =
 	[ 'Please read the following instructions carefully. After reading the instructions, we will ask a few questions to verify your understanding of the experimental task. <br><br>After answering these questions, you may spend some more time in a waiting room until sufficient number of participants have arrived to start the task. <br><br>You will be paid <span class="note">13.2 cents per minute</span> (that is, $8 per hour) for any time spent in the waiting room. When your group is ready, the main task will start.'
 
-	, '<br><br>Throughout the main task, you are to make a series of choices between '//+numOptions+' slot machines.'
+	, '<br>Throughout the main task, you are to make a series of choices between '//+numOptions+' slot machines.'
 
-	, '<br><br>Overall, there will be <span class="note">70&nbsp;trials</span>. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
+	, '<br>Overall, you will play <span class="note">4&nbsp;games</span>. There will be <span class="note">20&nbsp;trials</span> in each game. On <span class="note">each trial</span>, you are to make <span class="note">1&nbsp;choice</span>.'
 
-	, '<br><br>Each choice will earn you a reward. Your total payout will be based on <span class="note">the sum of all points</span> you earn over the 70&nbsp;trials.'
+	, '<br>The slot machines will be reset for every new game.'
 
-	, '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">100&nbsp;points = 1&nbsp;US cent.</span>'
-	// , '<br><br>The total reward you get will be converted into real money. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;US cents.</span>'
+	, '<br>Other people will participate in this online experiment at the same time with you. You will be in a group of 3 people.'
 
-	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over the long run (i.e., does not vary throughout the game).'
+	, '<br>Your choice will generate some rewards. The points you and other members generate are summed up. The sum of the points is your group\'s total reward.'
 
-	, '<br><br>Other people will participate in this online experiment at the same time with you.'
+	, '<br>Your final payout will be one third of <span class=“note">group\'s total points</span> over the 20&nbsp;trials.'
 
-	// , '<br>You will see the <span class="note">number of people (including yourself)</span> choosing each slot. <br><br>The example below shows that 4 people chose the left and other 6 chose the right in the preceding trial.'
-	, '<br>You will see the <span class="note">number of people (including yourself)</span> choosing each slot.'
+	, '<br>The total reward you get will be converted into real money. The exchange rate is <span class="note">500&nbsp;points = 10&nbsp;pence</span>.'
 
-	, '<br>Note: this <span class="note">"number of people" does not affect the amount of your reward</span>. The reward points are provided <span class="note">independently</span> from other people\'s choices.'
+	, '<br>The reward for each slot seems random, but <span class="note">some of the slots will generate a higher payoff on average than the other</span>. The average payoff of each slot is constant over trials, and is <span class="note">same for all members</span>. '
 
-	, '<br>Nevertheless, other people\'s choice may be worth checking because you all will be playing the same task. It may give you a hint for finding the better one between the slots.'
+	, '<br>After each choice, you can see how much points you generated. Here, <span class="note">you can tell your experience to other members</span> if you choose to pay some costs.'
 
-	, '<br><br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
+	, '<br>If you choose "YES", the cost is paid. In this case, 200 points minus the cost of 50 points, that is, 150 points will be added to the group\'s total payoff.'
+
+	, '<br>If you choose to share the information, other members can see how much payoffs the slot has generated in the preceding trial. This may be helpful for other members to quickly guess which seems to be a better option.'
+
+	, '<br>If you see numbers shown above the slots, this means that another group member has also chosen to share information at some costs.'
+
+	, '<br>The sharing cost will vary from trial to trial. At some trials, you can share information more cheaply, while other times it is more expensive. Use the "information sharing" wisely!'
+
+	, '<br><br><br>On the next page, you will play a tutorial to get familiar with the task!'
 	];
 const tutorialText_group =
 	[ '<br>This is the tutorial task. <br><br>Start by choosing whichever slot machine you like!'
