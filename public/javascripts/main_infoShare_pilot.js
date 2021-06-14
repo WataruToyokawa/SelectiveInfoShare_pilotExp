@@ -19,8 +19,8 @@ Requirements:
 =================================================================== */
 'use strict';
 
-const htmlServer = 'http://192.168.33.10:'; // vagrant server
-// const htmlServer = 'http://63-250-60-135.cloud-xip.io:'; //ipaddress 63.250.60.135
+// const htmlServer = 'http://192.168.33.10:'; // vagrant server
+const htmlServer = 'http://63-250-60-135.cloud-xip.io:'; //ipaddress 63.250.60.135
 //const portnum = 8080; //8181
 const portnumQuestionnaire = 8000;
 const exceptions = ['INHOUSETEST3', 'wataruDebug', 'wataruDebug'];
@@ -292,7 +292,7 @@ window.onload = function() {
 	;
 
 	// the info sharing cost for the first trial
-	info_share_cost = rand(100, 0);
+	info_share_cost = rand(100, 0); // rnorm()
 
 	// SceneWaitingRoom0
 	class SceneWaitingRoom0 extends Phaser.Scene {
@@ -390,6 +390,7 @@ window.onload = function() {
 			this.load.image('instructionPictures_group_11', 'assets/instructionPictures_group.011.png');
 			this.load.image('instructionPictures_group_12', 'assets/instructionPictures_group.012.png');
 			this.load.image('instructionPictures_group_13', 'assets/instructionPictures_group.013.png');
+			this.load.image('net_contribution', 'assets/net_contribution.png');
 
 			// this.load.image('instructionPictures_4ab_1', 'assets/instructionPictures_4ab.001.png');
 			// this.load.image('instructionPictures_4ab_2', 'assets/instructionPictures_4ab.002.png');
@@ -649,7 +650,7 @@ window.onload = function() {
 			    }
 		    } else {
 		    	for (let i=0; i<14; i++) {
-			    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
+			    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2 - 20, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
 			    	currentInstructionPicture[i].visible = false;
 			    }
 		    }
@@ -778,20 +779,20 @@ window.onload = function() {
 		    // slot machines and goToTest button
 		    let tutorialFlag = 0;
 		    //let objects = {};
-		    let slotY = 480
-		    ,	socialInfoY = slotY - 90
-		    ,	payoffTextY = slotY + 100
+		    let slotY_tutorial = 480
+		    ,	socialInfoY = slotY_tutorial - 90
+		    ,	payoffTextY = slotY_tutorial + 100
 		    ,	trialText_tutorialY = 16+165
 		    ,	scoreText_tutorialY = 56+165
 		    ,	energyBar_tutorialY = 96+165
 		    ;
 
 
-
+		    // slot machines
 		    this.options = {}
 		    for (let i=1; i<numOptions+1; i++) {
-		    	this.options['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY, 'machine'+i+'_normal');
-		    	this.options['box_active'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY, 'machine'+i+'_active');
+		    	this.options['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_tutorial, 'machine'+i+'_normal');
+		    	this.options['box_active'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_tutorial, 'machine'+i+'_active');
 		    	this.options['box'+i].setDisplaySize(optionWidth, optionHeight);
 		    	this.options['box_active'+i].setDisplaySize(optionWidth, optionHeight);
 		    	this.options['box_active'+i].visible = false;
@@ -801,30 +802,30 @@ window.onload = function() {
 				}
 		    }
 
-
 			// text
 			trialText_tutorial = this.add.text(16, trialText_tutorialY, 'Tutorial trial: ' + tutorialTrial + ' / 4', { fontSize: '25px', fill: '#000' });
-		    scoreText_tutorial = this.add.text(16, scoreText_tutorialY, 'Total score (tutorial): ' + score_tutorial, { fontSize: '25px', fill: '#000' });
+		    //scoreText_tutorial = this.add.text(16, scoreText_tutorialY, 'Total score (tutorial): ' + score_tutorial, { fontSize: '25px', fill: '#000' });
 		    timeText_tutorial = this.add.text(16, energyBar_tutorialY, 'Remaining time: ', { fontSize: '25px', fill: '#000' });
 		    payoffText = this.add.text(missPositionX, payoffTextY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5, 0.5);
-		    if (tutorialTrial == 1) {
-		    	payoffText.visible = false;
-		    } else if (tutorialTrial == 2) {
-		    	if (choice_tutorial == 1) payoffText.x = option1_positionX;
-		    	if (choice_tutorial == 2) payoffText.x = option1_positionX + space_between_boxes * 1;
-		    	if (choice_tutorial == 3) payoffText.x = option1_positionX + space_between_boxes * 2;
-		    	if (choice_tutorial == 4) payoffText.x = option1_positionX + space_between_boxes * 3;
-		    	payoffText.setText('You got 30')
-		    } else if (tutorialTrial == 3) {
-		    	if (choice_tutorial == 1) payoffText.x = option1_positionX;
-		    	if (choice_tutorial == 2) payoffText.x = option1_positionX + space_between_boxes * 1;
-		    	if (choice_tutorial == 3) payoffText.x = option1_positionX + space_between_boxes * 2;
-		    	if (choice_tutorial == 4) payoffText.x = option1_positionX + space_between_boxes * 3;
-		    	payoffText.setText('You got 50')
-		    }
+		    // if (tutorialTrial == 1) {
+		    // 	payoffText.visible = false;
+		    // } else if (tutorialTrial == 2) {
+		    // 	if (choice_tutorial == 1) payoffText.x = option1_positionX;
+		    // 	if (choice_tutorial == 2) payoffText.x = option1_positionX + space_between_boxes * 1;
+		    // 	if (choice_tutorial == 3) payoffText.x = option1_positionX + space_between_boxes * 2;
+		    // 	if (choice_tutorial == 4) payoffText.x = option1_positionX + space_between_boxes * 3;
+		    // 	payoffText.setText('You got 30')
+		    // } else if (tutorialTrial == 3) {
+		    // 	if (choice_tutorial == 1) payoffText.x = option1_positionX;
+		    // 	if (choice_tutorial == 2) payoffText.x = option1_positionX + space_between_boxes * 1;
+		    // 	if (choice_tutorial == 3) payoffText.x = option1_positionX + space_between_boxes * 2;
+		    // 	if (choice_tutorial == 4) payoffText.x = option1_positionX + space_between_boxes * 3;
+		    // 	payoffText.setText('You got 50')
+		    // }
+		    payoffText.visible = false;
 
 			// confirmation text
-			let confirmationContainer = this.add.container(175, slotY+20);
+			let confirmationContainer = this.add.container(175, slotY_tutorial+20);
 			let confirmationImage = this.add.sprite(0, 0, 'button').setDisplaySize(160,100).setAlpha(0.7);
 			let confirmationText = this.add.text(0, 0, `Click again\nto confirm \nyour choice`, { fontSize: '20px', fill: '#000' }).setOrigin(0.5, 0.5);
 			confirmationContainer.add(confirmationImage);
@@ -919,6 +920,7 @@ window.onload = function() {
 				    		choice_tutorial = i;
 				    		//game.scene.stop('SceneTutorial');
 				    		game.scene.start('SceneTutorialFeedback', { indivOrGroup: indivOrGroup, choice: i, tutorialPosition: tutorialPosition });
+				    		game.scene.stop('SceneTutorial');
 				    	} else {
 				    		game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
 				    	}
@@ -979,54 +981,37 @@ window.onload = function() {
 		    	}
 
 			} else if (indivOrGroup == 1 & tutorialTrial == 2) {
-			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `4 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    numberOfPreviousChoice[0] = 1;
-			    numberOfPreviousChoice[1] = 4;
-			    if(numOptions == 4) {
-				    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    numberOfPreviousChoice[2] = 1;
-				    numberOfPreviousChoice[3] = 2;
-				}
+			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `200`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
 			    // function.call(what_is_this, ...) method can specify what you mean by "this" in the function
 			    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], socialInfoY);
 			} else if (indivOrGroup == 1 & tutorialTrial == 3) {
-			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, `2 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-			    numberOfPreviousChoice[0] = 2;
-			    numberOfPreviousChoice[1] = 2;
-			    if(numOptions == 4) {
-				    socialFreqNumbers.option3 = this.add.text(option1_positionX+space_between_boxes*2, socialInfoY, `1 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    socialFreqNumbers.option4 = this.add.text(option1_positionX+space_between_boxes*3, socialInfoY, `3 people`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-				    numberOfPreviousChoice[2] = 1;
-				    numberOfPreviousChoice[3] = 3;
-				}
-			    // function.call(what_is_this, ...) method can specify what you mean by "this" in the function
-			    showStars_4ab.call(this, numberOfPreviousChoice[0], numberOfPreviousChoice[1], numberOfPreviousChoice[2], numberOfPreviousChoice[3], socialInfoY);
+			    socialFreqNumbers.option1 = this.add.text(option1_positionX+space_between_boxes*0, socialInfoY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+			    socialFreqNumbers.option2 = this.add.text(option1_positionX+space_between_boxes*1, socialInfoY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+
 			} else if (tutorialTrial != 4) {
-				for (let i = 1; i < numOptions+1; i++) {
-		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-		    		if (choice_tutorial == i) {
-		    			socialFreqNumbers['option'+i].visible = true;
-		    			numberOfPreviousChoice[i-1] = 1;
-		    		} else {
-		    			socialFreqNumbers['option'+i].visible = false;
-		    			numberOfPreviousChoice[i-1] = 0;
-		    		}
-		    	}
+				// for (let i = 1; i < numOptions+1; i++) {
+		  //   		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		  //   		if (choice_tutorial == i) {
+		  //   			socialFreqNumbers['option'+i].visible = true;
+		  //   			numberOfPreviousChoice[i-1] = 1;
+		  //   		} else {
+		  //   			socialFreqNumbers['option'+i].visible = false;
+		  //   			numberOfPreviousChoice[i-1] = 0;
+		  //   		}
+		  //   	}
 
 			} else {
-				for (let i = 1; i < numOptions+1; i++) {
-		    		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
-		    		socialFreqNumbers['option'+i].visible = false;
-		    		numberOfPreviousChoice[i-1] = 0;
-		    	}
+				// for (let i = 1; i < numOptions+1; i++) {
+		  //   		socialFreqNumbers['option'+i] = this.add.text(option1_positionX + space_between_boxes*(i-1), socialInfoY, `You chose this`, { fontSize: '25px', fill: noteColor }).setOrigin(0.5,0.5);
+		  //   		socialFreqNumbers['option'+i].visible = false;
+		  //   		numberOfPreviousChoice[i-1] = 0;
+		  //   	}
 
 			}
 
 			// the shadowed boxes to hide slots
-		    let shadow1 = this.add.image(400, slotY - 30, 'blackbox' ).setDisplaySize(780, 310)
+		    let shadow1 = this.add.image(400, slotY_tutorial - 30, 'blackbox' ).setDisplaySize(780, 310)
 		    ,	shadow2 = this.add.image(400, scoreText_tutorialY - 10, 'blackbox' ).setDisplaySize(780, 90)
 		    ;
 		    if (tutorialTrial == 3) {
@@ -1061,17 +1046,17 @@ window.onload = function() {
 
 		create(){
 			// destroy previous texts
-			trialText_tutorial.destroy();
-			scoreText_tutorial.destroy();
-			timeText_tutorial.destroy();
+			// trialText_tutorial.destroy();
+			// scoreText_tutorial.destroy();
+			// timeText_tutorial.destroy();
 			// background colour
 			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);// #d9d9d9 #ffffff
 
 			// tutorial texts
 		    let tutorialPosition = this.tutorialPosition;
-		    let slotY = 480//430
-		    //,	socialInfoY = slotY - 90
-		    ,	payoffTextY = slotY - 90
+		    let slotY_tutorial = 480//430
+		    //,	socialInfoY = slotY_tutorial - 90
+		    ,	payoffTextY = slotY_tutorial - 90
 		    //,	trialText_tutorialY = 16+165
 		    //,	scoreText_tutorialY = 65+165
 		    ;
@@ -1090,13 +1075,97 @@ window.onload = function() {
 			//  Texts
 			objects_feedbackStage = {};
 			for (let i = 1; i < numOptions+1; i++) {
-				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
+				objects_feedbackStage['box'+i] = this.add.sprite(option1_positionX+space_between_boxes*(i-1), slotY_tutorial, 'machine'+i+'_active').setDisplaySize(optionWidth, optionHeight);
 				objects_feedbackStage['box'+i].visible = false;
 			}
-			// objects_feedbackStage.box1 = this.add.sprite(200, slotY, 'machine1_active').setDisplaySize(optionWidth, optionHeight);
-			// objects_feedbackStage.box2 = this.add.sprite(600, slotY, 'machine2_active').setDisplaySize(optionWidth, optionHeight);
-			// objects_feedbackStage.box1.visible = false;
-			// objects_feedbackStage.box2.visible = false;
+
+			// ========================
+			// Share button
+			// YES button
+			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
+			let buttonContainer_yes = this.add.container(200, 310); //position
+			let buttonImage_yes = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_yes = this.add.text(0, 0, 'YES\n(cost: ' + 20 + ' points)', button_style);
+			if(tutorialTrial > 1) {
+				buttonText_yes.setText('YES\n(cost: 100 points)');
+			}
+			buttonText_yes.setOrigin(0.5, 0.5);
+			buttonContainer_yes.add(buttonImage_yes);
+			buttonContainer_yes.add(buttonText_yes);
+			buttonContainer_yes.visible = false;
+
+			// NO button
+			let buttonContainer_no = this.add.container(600, 310); //position
+			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_no = this.add.text(0, 0, 'NO\n(No cost)', button_style);
+			buttonText_no.setOrigin(0.5, 0.5);
+			buttonContainer_no.add(buttonImage_no);
+			buttonContainer_no.add(buttonText_no);
+			buttonContainer_no.visible = false;
+
+			// Next page button
+			let buttonContainerTutorial = this.add.container(400, 500);
+			let buttonImageTutorial = this.add.sprite(0, 0, 'button').setDisplaySize(300,150).setInteractive({ cursor: 'pointer' });
+			let buttonTextTutorial = this.add.text(0, 0, 'Go to the quiz', { fontSize: '28px', fill: '#000' });
+			buttonTextTutorial.setOrigin(0.5, 0.5);
+			buttonContainerTutorial.add(buttonImageTutorial);
+			buttonContainerTutorial.add(buttonTextTutorial);
+			buttonContainerTutorial.visible = false;
+
+			// pointer over & out effects
+		    buttonImage_yes.on('pointerover', function (pointer) {
+		    	buttonImage_yes.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_yes.on('pointerout', function (pointer) {
+		    	buttonImage_yes.clearTint();
+		    }, this);
+
+		    buttonImage_yes.on('pointerdown', function (pointer) {
+		    	// going back to the tutorial
+		    	let updatedTutorialPosition = tutorialPosition + 1;
+		    	tutorialTrial++;
+		    	game.scene.stop('SceneTutorialFeedback');
+		    	if (tutorialTrial == 2) {
+		    		game.scene.start('SceneTutorialShaingCostExplained', { tutorialPosition: updatedTutorialPosition });
+		    	} else {
+		    		game.scene.start('SceneTutorial', { indivOrGroup: indivOrGroup, exp_condition: exp_condition,tutorialPosition: updatedTutorialPosition });
+		    	}
+		    }, this);
+
+		    // In the first tutorial-trial, participants have to choose "yes" button
+		    // so the following tint function should be inactive on that trial
+		    if (tutorialTrial != 1) {
+			    buttonImage_no.on('pointerover', function (pointer) {
+			    	buttonImage_no.setTint(0xa9a9a9);
+			    }, this);
+			    buttonImage_no.on('pointerout', function (pointer) {
+			    	buttonImage_no.clearTint();
+			    }, this);
+			    buttonImage_no.on('pointerdown', function (pointer) {
+			    	// going back to the tutorial
+			    	let updatedTutorialPosition = tutorialPosition + 1;
+			    	tutorialTrial++;
+			    	game.scene.stop('SceneTutorialFeedback');
+			    	game.scene.start('SceneTutorial', { indivOrGroup: indivOrGroup, exp_condition: exp_condition,tutorialPosition: updatedTutorialPosition });
+			    }, this);
+			}
+
+			// click event
+			buttonImageTutorial.on('pointerdown', function (pointer) {
+				buttonImageTutorial.visible = false;
+				game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
+			});
+
+			// pointer over & out effects
+			buttonImageTutorial.on('pointerover', function (pointer) {
+				buttonImageTutorial.setTint(0xa9a9a9);
+			}, this);
+			buttonImageTutorial.on('pointerout', function (pointer) {
+				buttonImageTutorial.clearTint();
+			}, this);
+
+		    // ========================
+
 			if (this.choice == -1) {
 				feedbackTextPosition = missPositionX;
 
@@ -1120,10 +1189,10 @@ window.onload = function() {
 			//let tutorialPayoff;
 			switch (tutorialTrial) {
                 case 1:
-                    payoffText = this.add.text(feedbackTextPosition, payoffTextY, `30 points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
+                    payoffText = this.add.text(feedbackTextPosition, payoffTextY, `100 points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
                     break;
                 case 2:
-                    payoffText = this.add.text(feedbackTextPosition, payoffTextY, `50 points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
+                    payoffText = this.add.text(feedbackTextPosition, payoffTextY, `150 points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
                     break;
                 case 3:
                     payoffText = this.add.text(feedbackTextPosition, payoffTextY, `Missed!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
@@ -1134,17 +1203,86 @@ window.onload = function() {
             }
 
 		    setTimeout(function(){
-		    	// hiding every objects
-		    	for (let i =1; i<numOptions+1; i++) {
-		        	objects_feedbackStage['box'+i].visible = false;
-		        }
-		    	payoffText.visible = false;
+		    	if (tutorialTrial < 3) {
+		    		waitOthersText = this.add.text(16, 170, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
+					buttonContainer_yes.visible = true;
+					buttonContainer_no.visible = true;
+				} else {
+					buttonContainerTutorial.visible = true;
+				}
+		    }.bind(this), 1000);
+		}
+
+		update(){}
+	};
+
+	// SceneTutorialShaingCostExplained
+	class SceneTutorialShaingCostExplained extends Phaser.Scene {
+
+		constructor (){
+		    	super({ key: 'SceneTutorialShaingCostExplained', active: false });
+		}
+
+		preload(){
+			}
+
+		init (data) {
+			this.tutorialPosition = data.tutorialPosition;
+		}
+
+		create(){
+			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);// #d9d9d9 #ffffff
+
+			// tutorial texts
+		    let tutorialPosition = this.tutorialPosition;
+		    let slotY_tutorial = 480//430
+		    //,	socialInfoY = slotY_tutorial - 90
+		    ,	payoffTextY = slotY_tutorial - 90
+		    //,	trialText_tutorialY = 16+165
+		    //,	scoreText_tutorialY = 65+165
+		    ;
+		    // indivOrGroup
+		    let tutorialText;
+		    if (this.indivOrGroup == 0) {
+		    	tutorialText = tutorialText_indiv;
+		    } else {
+		    	tutorialText = tutorialText_group;
+		    }
+		    const tutorialTextStyle = 'background-color: rgba(51,51,51,0.1); width: 700px; height: 150px; font: 25px Arial; position: relative;';
+		    let instructionDiv = document.getElementById('instructionDiv');
+		    instructionDiv.style = tutorialTextStyle;
+		    instructionDiv.innerHTML = tutorialText[tutorialPosition];
+
+		    // ==== Insert a picture showing 100 - 20 = 80 =====
+		    let net_contribution_picture = this.add.image(configWidth/2, configHeight/2, 'net_contribution' ).setDisplaySize((752/2)*1.3, (189/2)*1.3);
+
+			// ========================
+			// OK button
+			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
+			let buttonContainer_ok = this.add.container(configWidth/2, 500); //position
+			let buttonImage_ok = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_ok = this.add.text(0, 0, 'Okay!\n(Go to next page)', button_style);
+			buttonText_ok.setOrigin(0.5, 0.5);
+			buttonContainer_ok.add(buttonImage_ok);
+			buttonContainer_ok.add(buttonText_ok);
+			buttonContainer_ok.visible = true;
+
+			// pointer over & out effects
+		    buttonImage_ok.on('pointerover', function (pointer) {
+		    	buttonImage_ok.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_ok.on('pointerout', function (pointer) {
+		    	buttonImage_ok.clearTint();
+		    }, this);
+
+		    buttonImage_ok.on('pointerdown', function (pointer) {
 		    	// going back to the tutorial
 		    	let updatedTutorialPosition = tutorialPosition + 1;
-		    	tutorialTrial++;
-		    	game.scene.stop('SceneTutorialFeedback');
+		    	game.scene.stop('SceneTutorialShaingCostExplained');
 		    	game.scene.start('SceneTutorial', { indivOrGroup: indivOrGroup, exp_condition: exp_condition,tutorialPosition: updatedTutorialPosition });
-		    }, 4000);
+		    }, this);
+
+		    // ========================
 		}
 
 		update(){}
@@ -1164,6 +1302,10 @@ window.onload = function() {
 			understandingCheckStarted = 1;
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
+
+			const quiz_correct_answers_group = [3,0,0,0,1]
+			,	quiz_correct_answers_indiv = [3,0,0,-1,-1]
+			;
 
 			// indivOrGroup
 		    let understandingCheckText;
@@ -1197,7 +1339,12 @@ window.onload = function() {
 				questionDiv[i].style = questionTextStyle;
 		    	questionDiv[i].innerHTML = understandingCheckText[i];
 		    	questionDiv.id = 'questionDiv'+i;
-		    	questionElement[i] = this.add.dom(configWidth/2, 80*i, questionDiv[i]);
+		    	if (i < 5) {
+		    		questionElement[i] = this.add.dom(configWidth/2, 80*i, questionDiv[i]);
+		    	} else {
+		    		questionElement[i] = this.add.dom(configWidth/2, 80*4+105*(i-4), questionDiv[i]);
+		    	}
+
 			}
 
 			/**********************************************
@@ -1210,10 +1357,12 @@ window.onload = function() {
 			,	optionButtonsA0Image = []
 			,	optionButtonsA0Text = []
 			,	optionButtonsA0Image_active = []
+			,	question0_options = [3,5,10,20,30]
 			;
 			for (let i=0; i<5; i++) {
 				optionButtonsA0[i] = this.add.container(80 + 60*i, 180+80*0); //position
-				optionButtonsA0Text[i] = this.add.text(0, 0, 40+20*i, { fontSize: '23px', fill: '#000' });
+				// optionButtonsA0Text[i] = this.add.text(0, 0, 40+20*i, { fontSize: '23px', fill: '#000' });
+				optionButtonsA0Text[i] = this.add.text(0, 0, question0_options[i], { fontSize: '23px', fill: '#000' });
 				optionButtonsA0Image[i] = this.add.sprite(0, 0, 'button').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA0Image_active[i] = this.add.sprite(0, 0, 'button_active').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA0Text[i].setOrigin(0.5, 0.5);
@@ -1381,7 +1530,7 @@ window.onload = function() {
 				optionButtonsA3Text[0] = this.add.text(0, 0, 'YES', { fontSize: '23px', fill: '#000' });
 				optionButtonsA3Text[1] = this.add.text(0, 0, 'NO', { fontSize: '23px', fill: '#000' });
 				for (let i=0; i<2; i++) {
-					optionButtonsA3[i] = this.add.container(180 + 100*i, 180+80*3); //position
+					optionButtonsA3[i] = this.add.container(180 + 100*i, 100+80*3 + 110); //position
 					optionButtonsA3Image[i] = this.add.sprite(0, 0, 'button').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 					optionButtonsA3Image_active[i] = this.add.sprite(0, 0, 'button_active').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 					optionButtonsA3Text[i].setOrigin(0.5, 0.5);
@@ -1436,7 +1585,7 @@ window.onload = function() {
 				optionButtonsA4Text[0] = this.add.text(0, 0, 'YES', { fontSize: '23px', fill: '#000' });
 				optionButtonsA4Text[1] = this.add.text(0, 0, 'NO', { fontSize: '23px', fill: '#000' });
 				for (let i=0; i<2; i++) {
-					optionButtonsA4[i] = this.add.container(180 + 100*i, 180+80*4); //position
+					optionButtonsA4[i] = this.add.container(180 + 100*i, 100+80*3 + 190); //position
 					optionButtonsA4Image[i] = this.add.sprite(0, 0, 'button').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 					optionButtonsA4Image_active[i] = this.add.sprite(0, 0, 'button_active').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 					optionButtonsA4Text[i].setOrigin(0.5, 0.5);
@@ -1507,7 +1656,7 @@ window.onload = function() {
 				}
 		    	buttonContainerTest.destroy();
 		    	if (indivOrGroup == 0) {
-		    		if (JSON.stringify(answers) == JSON.stringify([3,0,0,-1,-1])) {
+		    		if (JSON.stringify(answers) == JSON.stringify(quiz_correct_answers_indiv)) {
 		    			//socket.emit('test passed');
 		    			//buttonImageTest.visible = false;
 		    			buttonImageTest.disableInteractive();
@@ -1531,7 +1680,7 @@ window.onload = function() {
 			    		}
 		    		}
 		    	} else { // group condition
-		    		if (JSON.stringify(answers) == JSON.stringify([3,0,0,0,1])) {
+		    		if (JSON.stringify(answers) == JSON.stringify(quiz_correct_answers_group)) {
 		    			//socket.emit('test passed');
 		    			buttonImageTest.disableInteractive();
 		    			this.scene.launch('ScenePerfect');
@@ -2292,6 +2441,7 @@ window.onload = function() {
 	    , SceneInstruction
     	, SceneTutorial
     	, SceneTutorialFeedback
+    	, SceneTutorialShaingCostExplained
     	, SceneUnderstandingTest
     	, ScenePerfect
     	, SceneStartCountdown

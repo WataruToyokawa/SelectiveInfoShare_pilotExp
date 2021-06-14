@@ -44,7 +44,7 @@ const horizon = 4//20 // 100?
 , sessionNo = 0 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
 , maxGroupSize = 4//8 // maximum 12
 , minGroupSize = 2//4
-, maxWaitingTime = 5 * 1000
+, maxWaitingTime = 15 * 1000
 , numOptions = 2 // 2 or 4
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000

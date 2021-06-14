@@ -56,7 +56,7 @@ window.onload = function() {
         default:
             note.innerHTML = "";
             firstParagraph.innerHTML = "<p class='lead'>The decision-making task has been completed!<br> Please answer the following questions on how you perceived this task. </p> <p class='lead'>Your answers will be recorded anonymously, being disconnected to your Prolific ID right after the entire experiment is done. </p>";
-            freeTextQ.innerHTML = "Q4: While working on the task, what strategy (if any) did you use to maximize your total rewards? Please describe what you did in the form below: "
+            freeTextQ.innerHTML = "Q4: While working on the task, how did you decide which slot to choose? Also, how did you decide whether to share information with other members (if applicable)? Please describe freely in the form below: "
     }
     /*if(completed == 0){
     	note.innerHTML = "<p><span class='note'>You were redirected to this questionnaire because you had a bad internet connection or opened another window/tab during the decision-making task.</span></p><br>";
