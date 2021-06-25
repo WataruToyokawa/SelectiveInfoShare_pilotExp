@@ -58,7 +58,7 @@ const instructionText_group =
 const tutorialText_group =
 	[ '<br>This is the tutorial task. <br><br>Start by choosing whichever slot machine you like!'
 
-	, '<br>You got 100 points! Well done. Now, you have to choose whether you share this information to other group members. Let\'s click "Yes" this time!'
+	, '<br>You got 100 points! Well done. Now, you have to choose whether you share this information to other group members. Let\'s click "Yes" this time! ("No" button is inactivated right now)'
 
 	, '<br>Note, although your choice provided 100 points, <span class="note">your total contribution at this trial was 80 points</span> since you chose "Yes" for information sharing that costed 20 points,.'
 
@@ -68,7 +68,9 @@ const tutorialText_group =
 
 	, 'You have <span class="note">up to 15 seconds</span> in making a choice. <br><br>Note: You cannot click any options here for the tutorial purpose. Let\'s see what happens if time is up.'
 
-	, 'Time was up and you missed the trial (which means 0 contribution)! Try not to miss any trial! <br><br>Alright, you completed the tutorial. Well done! Then go to a short quiz.'
+	// , 'Time was up and you missed the trial (which means 0 contribution)! Try not to miss any trial! <br><br>Alright, you completed the tutorial. Well done! Then go to a short quiz.'
+
+	, 'Time was up and you missed the trial (which means 0 contribution)! Try not to miss any trial! When you happen to miss a trial, we will ask you if you are still paying attention to the task. Please click the button saying "Yes, I am" below.'
 
 	, '<br>The tutorial is done. <br><br>Next, you will proceed to a short comprehension quiz!'
 	];

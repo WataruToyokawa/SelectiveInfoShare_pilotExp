@@ -33,6 +33,11 @@ window.onload = function() {
             firstParagraph.innerHTML = "<p class='lead'>Please answer the following questions on how you perceived this task. </p>";
             freeTextQ.innerHTML = "Q4: Your honest feedback would be a big help to develop our future experimental task.<br> For example, any idea if your internet connection worked well?"
             break;
+        case 'no_response':
+            note.innerHTML = "<p><span class='note'>You were redirected to this questionnaire because you did not confirmed you were still there after the missed trial. The payoffs you have earned thus far will be paid. Please answer the following questions and click the submit button. Cheers!</span></p><br>";
+            firstParagraph.innerHTML = "<p class='lead'>Please answer the following questions on how you perceived this task. </p>";
+            freeTextQ.innerHTML = "Q4: If you have any comments or feedback related to our task, please write it down here!"
+            break;
         case "maxChoiceStageTimeOver":
             note.innerHTML = "<p><span class='note'>You were redirected to this questionnaire because you did not make a choice for 60 seconds.</span></p><br>";
             firstParagraph.innerHTML = "<p class='lead'>Please answer the following questions on how you perceived this task. </p>";

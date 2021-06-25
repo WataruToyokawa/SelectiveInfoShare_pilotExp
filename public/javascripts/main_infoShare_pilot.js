@@ -87,6 +87,8 @@ const feedbackTime = 1.5;
 let isEnvironmentReady = false
 ,	isPreloadDone = false
 ,	isWaitingRoomStarted = false
+,	isWaiting = false
+,	wasAnyoneDisconnected = false
 ,   myChoices = []
 ,   myEarnings = []
 ,   payoff = 0
@@ -108,8 +110,11 @@ let isEnvironmentReady = false
 ,   connectionCounter
 ,	incorrectCount = 0
 ,	maxChoiceStageTime
+,	maxConfirmationWhenMissed = 7 * 1000
 ,   currentTrial = 1
 ,   currentStage
+,	n_in_waitingRoom2 = 0// the current number of subjects who finished Intro
+,	currentGroupSize = 0 // the current number of subject in the room
 ,   choiceOrder
 ,   currentChoiceFlag = 0
 ,   waitingBonus = 0
@@ -281,7 +286,7 @@ window.onload = function() {
 	//, currentInstructionPicture = []
 	, instructionPosition = 0
 	, trialText_tutorial
-	, scoreText_tutorial
+	, groupSizeText_tutorial
 	, timeText_tutorial
 	, tutorialPosition // tracking the tutorial text's number
 	, tutorialTrial = 1 // tracking the tutorial's trial (1, 2, or 3)
@@ -391,6 +396,7 @@ window.onload = function() {
 			this.load.image('instructionPictures_group_12', 'assets/instructionPictures_group.012.png');
 			this.load.image('instructionPictures_group_13', 'assets/instructionPictures_group.013.png');
 			this.load.image('net_contribution', 'assets/net_contribution.png');
+			this.load.image('pointing_finger', 'assets/pointing_finger.png');
 
 			// this.load.image('instructionPictures_4ab_1', 'assets/instructionPictures_4ab.001.png');
 			// this.load.image('instructionPictures_4ab_2', 'assets/instructionPictures_4ab.002.png');
@@ -546,6 +552,10 @@ window.onload = function() {
 		preload(){
 		}
 
+		init (data) {
+			n_in_waitingRoom2 = data.n_test_passed;
+		}
+
 		create(){
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
@@ -580,6 +590,10 @@ window.onload = function() {
 			//countdownText.setOrigin(0.5, 0.5);
 			bonusText = this.add.text(configWidth/2, 450, 'Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' US cents.' , textStyle);
 			bonusText.setOrigin(0.5, 0.5);
+
+			// showing the current group size
+			this.groupSizeText = this.add.text(configWidth/2, 350, 'Number of people ready: '+ n_in_waitingRoom2.toString()+' / 3' , textStyle);
+			this.groupSizeText.setOrigin(0.5, 0.5);
 		}
 
 		update(){
@@ -592,6 +606,7 @@ window.onload = function() {
 				bonusBar.fillRect(250, 390, 300, 30);
 			}
 			bonusText.setText('Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' US cents.');
+			this.groupSizeText.setText('Number of people ready: '+ n_in_waitingRoom2.toString()+' / 3');
 		}
 	};
 
@@ -783,7 +798,7 @@ window.onload = function() {
 		    ,	socialInfoY = slotY_tutorial - 90
 		    ,	payoffTextY = slotY_tutorial + 100
 		    ,	trialText_tutorialY = 16+165
-		    ,	scoreText_tutorialY = 56+165
+		    ,	groupSizeText_tutorialY = 56+165
 		    ,	energyBar_tutorialY = 96+165
 		    ;
 
@@ -804,7 +819,7 @@ window.onload = function() {
 
 			// text
 			trialText_tutorial = this.add.text(16, trialText_tutorialY, 'Tutorial trial: ' + tutorialTrial + ' / 4', { fontSize: '25px', fill: '#000' });
-		    //scoreText_tutorial = this.add.text(16, scoreText_tutorialY, 'Total score (tutorial): ' + score_tutorial, { fontSize: '25px', fill: '#000' });
+		    groupSizeText_tutorial = this.add.text(16, groupSizeText_tutorialY, 'Number of players: 3', { fontSize: '25px', fill: '#000' });
 		    timeText_tutorial = this.add.text(16, energyBar_tutorialY, 'Remaining time: ', { fontSize: '25px', fill: '#000' });
 		    payoffText = this.add.text(missPositionX, payoffTextY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5, 0.5);
 		    // if (tutorialTrial == 1) {
@@ -930,7 +945,7 @@ window.onload = function() {
 			} else { // the final trial (i.e. the transition to the understanding quiz)
 				for (let m = 1; m < numOptions+1; m++) this.options['box'+m].visible = false;
 		    	trialText_tutorial.visible = false;
-		    	scoreText_tutorial.visible = false;
+		    	groupSizeText_tutorial.visible = false;
 		    	timeText_tutorial.visible = false;
 		    	energyContainer.visible = false;
 		    	energyBar.visible = false;
@@ -1012,7 +1027,7 @@ window.onload = function() {
 
 			// the shadowed boxes to hide slots
 		    let shadow1 = this.add.image(400, slotY_tutorial - 30, 'blackbox' ).setDisplaySize(780, 310)
-		    ,	shadow2 = this.add.image(400, scoreText_tutorialY - 10, 'blackbox' ).setDisplaySize(780, 90)
+		    ,	shadow2 = this.add.image(400, groupSizeText_tutorialY - 10, 'blackbox' ).setDisplaySize(780, 90)
 		    ;
 		    if (tutorialTrial == 3) {
 		    	shadow1.visible = true;
@@ -1047,7 +1062,7 @@ window.onload = function() {
 		create(){
 			// destroy previous texts
 			// trialText_tutorial.destroy();
-			// scoreText_tutorial.destroy();
+			// groupSizeText_tutorial.destroy();
 			// timeText_tutorial.destroy();
 			// background colour
 			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);// #d9d9d9 #ffffff
@@ -1058,7 +1073,7 @@ window.onload = function() {
 		    //,	socialInfoY = slotY_tutorial - 90
 		    ,	payoffTextY = slotY_tutorial - 90
 		    //,	trialText_tutorialY = 16+165
-		    //,	scoreText_tutorialY = 65+165
+		    //,	groupSizeText_tutorialY = 65+165
 		    ;
 		    // indivOrGroup
 		    let tutorialText;
@@ -1103,14 +1118,30 @@ window.onload = function() {
 			buttonContainer_no.add(buttonText_no);
 			buttonContainer_no.visible = false;
 
-			// Next page button
+			// Conformation and Next page button
 			let buttonContainerTutorial = this.add.container(400, 500);
 			let buttonImageTutorial = this.add.sprite(0, 0, 'button').setDisplaySize(300,150).setInteractive({ cursor: 'pointer' });
-			let buttonTextTutorial = this.add.text(0, 0, 'Go to the quiz', { fontSize: '28px', fill: '#000' });
+			let buttonTextTutorial = this.add.text(0, 0, 'Yes, I am!', { fontSize: '28px', fill: '#000' });
 			buttonTextTutorial.setOrigin(0.5, 0.5);
 			buttonContainerTutorial.add(buttonImageTutorial);
 			buttonContainerTutorial.add(buttonTextTutorial);
 			buttonContainerTutorial.visible = false;
+
+			// Pointing finger
+			let pointing_finger = this.physics.add.image(200, 360, 'pointing_finger').setDisplaySize(60, 60);
+			pointing_finger.body.allowGravity = false;
+			pointing_finger.body.immovable = true;
+			pointing_finger.body.moves = false;
+			pointing_finger.visible = false;
+			this.tweens.add({
+				targets: pointing_finger,
+				// x: 200,
+				y: 340,
+				duration: 300,
+				ease: 'Sine.easeInOut',
+				repeat: -1,
+				yoyo: true
+			});
 
 			// pointer over & out effects
 		    buttonImage_yes.on('pointerover', function (pointer) {
@@ -1153,7 +1184,9 @@ window.onload = function() {
 			// click event
 			buttonImageTutorial.on('pointerdown', function (pointer) {
 				buttonImageTutorial.visible = false;
-				game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
+				//game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
+				game.scene.start('SceneBeforeUnderstandingTest', { indivOrGroup: indivOrGroup });
+				game.scene.stop('SceneTutorialFeedback');
 			});
 
 			// pointer over & out effects
@@ -1207,10 +1240,79 @@ window.onload = function() {
 		    		waitOthersText = this.add.text(16, 170, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
 					buttonContainer_yes.visible = true;
 					buttonContainer_no.visible = true;
+					if (tutorialTrial == 1) pointing_finger.visible = true;
 				} else {
+					waitOthersText = this.add.text(16, 170, 'You\'ve missed this round!\nAre you still there?', { fontSize: '30px', fill: '#000', align: "center"});
 					buttonContainerTutorial.visible = true;
 				}
 		    }.bind(this), 1000);
+		}
+
+		update(){}
+	};
+
+	// SceneBeforeUnderstandingTest
+	class SceneBeforeUnderstandingTest extends Phaser.Scene {
+
+		constructor (){
+		    	super({ key: 'SceneBeforeUnderstandingTest', active: false });
+		}
+
+		preload(){
+			}
+
+		init (data) {
+			this.indivOrGroup = data.indivOrGroup;
+		}
+
+		create(){
+			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);// #d9d9d9 #ffffff
+
+			// tutorial texts
+		    let slotY_tutorial = 480//430
+		    //,	socialInfoY = slotY_tutorial - 90
+		    ,	payoffTextY = slotY_tutorial - 90
+		    //,	trialText_tutorialY = 16+165
+		    //,	groupSizeText_tutorialY = 65+165
+		    ;
+		    // indivOrGroup
+		    let tutorialText;
+		    if (this.indivOrGroup == 0) {
+		    	tutorialText = tutorialText_indiv;
+		    } else {
+		    	tutorialText = tutorialText_group;
+		    }
+		    const tutorialTextStyle = 'background-color: rgba(51,51,51,0.1); width: 700px; height: 150px; font: 25px Arial; position: relative;';
+		    let instructionDiv = document.getElementById('instructionDiv');
+		    instructionDiv.style = tutorialTextStyle;
+		    instructionDiv.innerHTML = '<br>The tutorial is done. <br><br>Next, you will proceed to a short quiz about the task!';
+
+			// ========================
+			// OK button
+			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
+			let buttonContainer_ok = this.add.container(configWidth/2, 500); //position
+			let buttonImage_ok = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_ok = this.add.text(0, 0, 'Proceed to the quiz!', button_style);
+			buttonText_ok.setOrigin(0.5, 0.5);
+			buttonContainer_ok.add(buttonImage_ok);
+			buttonContainer_ok.add(buttonText_ok);
+			buttonContainer_ok.visible = true;
+
+			// pointer over & out effects
+		    buttonImage_ok.on('pointerover', function (pointer) {
+		    	buttonImage_ok.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_ok.on('pointerout', function (pointer) {
+		    	buttonImage_ok.clearTint();
+		    }, this);
+
+		    buttonImage_ok.on('pointerdown', function (pointer) {
+		    	// proceeding to the quiz
+		    	game.scene.stop('SceneBeforeUnderstandingTest');
+		    	game.scene.start('SceneUnderstandingTest', { indivOrGroup: indivOrGroup });
+		    }, this);
+
+		    // ========================
 		}
 
 		update(){}
@@ -1239,7 +1341,7 @@ window.onload = function() {
 		    //,	socialInfoY = slotY_tutorial - 90
 		    ,	payoffTextY = slotY_tutorial - 90
 		    //,	trialText_tutorialY = 16+165
-		    //,	scoreText_tutorialY = 65+165
+		    //,	groupSizeText_tutorialY = 65+165
 		    ;
 		    // indivOrGroup
 		    let tutorialText;
@@ -1827,6 +1929,8 @@ window.onload = function() {
 
 		constructor (){
 		    super({ key: 'SceneMain', active: false });
+
+		    this.count = 0;
 		}
 
 		preload(){
@@ -1937,6 +2041,7 @@ window.onload = function() {
 						// options.box2_active.visible = false;
 						madeChoice(currentChoiceFlag, 'miss', optionOrder);
 						game.scene.start('ScenePayoffFeedback', {didMiss: true, flag: currentChoiceFlag});
+						isWaiting = true;
 						gameTimer.destroy();
 	                }
 	            },
@@ -1967,6 +2072,7 @@ window.onload = function() {
 			    		madeChoice(currentChoiceFlag, exp_condition, optionOrder);
 			    		gameTimer.destroy();
 			    		game.scene.start('ScenePayoffFeedback', {didMiss: false, flag: currentChoiceFlag});
+			    		isWaiting = true;
 			    		isChoiceMade = true;
 			    		for (let j=1; j<numOptions+1; j++) {
 			    			options['box'+j].visible = false;
@@ -2005,9 +2111,9 @@ window.onload = function() {
 		    	// , '-' + info_share_cost_total
 		    	, { fontSize: '30px', fill: noteColor });
 
-		    scoreText = this.add.text(16, scoreText_Y
+		    this.groupSizeText = this.add.text(16, scoreText_Y
 		    	// , 'Total score: ' + score
-		    	, ''
+		    	, 'Number of players: ' + currentGroupSize.toString()
 		    	// , 'Your net score: ' + (totalPayoff_perIndiv - info_share_cost_total)
 		    	, { fontSize: '30px', fill: nomalTextColor });
 		    timeText = this.add.text(16, energyBar_Y
@@ -2033,7 +2139,7 @@ window.onload = function() {
 		    // } else {
 		    // 	payoffText.visible = false; //true;
 		    // }
-		    payoffText.visible = false;
+		    // payoffText.visible = false;
 		    // --------------------------------------------
 
 		    // social information
@@ -2091,10 +2197,14 @@ window.onload = function() {
 		    	console.log('No public info should be shown!')
 		    }
 
+			// createWindow('SceneMessagePopUp'); //this.createWindow(SceneMessagePopUp); // pop up window saying 'another member has been dropped out'
+
 		}
 
 		update(){
+			this.groupSizeText.setText('Number of players: ' + currentGroupSize.toString());
 		}
+
 	};
 
 	// ScenePayoffFeedback
@@ -2113,6 +2223,39 @@ window.onload = function() {
 		}
 
 		create(){
+
+			let energyBar_Y = 16 + 50 * 2 // 16 + 50 * 4
+			,	confirmationTimer
+		    ;
+		    // =============== A looking-good timer =================================
+			// the energy container. A simple sprite
+			let energyContainer = this.add.sprite(400, energyBar_Y+18, 'energycontainer');
+			// the energy bar. Another simple sprite
+			let energyBar = this.add.sprite(energyContainer.x + 46, energyContainer.y, 'energybar');
+			// a copy of the energy bar to be used as a mask. Another simple sprite but...
+			let energyMask = this.add.sprite(energyBar.x, energyBar.y, 'energybar');
+			// ...it's not visible...
+			energyMask.visible = false;
+			// resize them
+			let energyContainer_originalWidth = energyContainer.displayWidth
+			,	energyContainer_newWidth = 200
+			,	container_bar_ratio = energyBar.displayWidth / energyContainer.displayWidth
+			;
+			energyContainer.displayWidth = energyContainer_newWidth;
+			energyContainer.scaleY = energyContainer.scaleX;
+			energyBar.displayWidth = energyContainer_newWidth * container_bar_ratio;
+			energyBar.scaleY = energyBar.scaleX;
+			energyBar.x = energyContainer.x + (46 * energyContainer_newWidth/energyContainer_originalWidth);
+			energyMask.displayWidth = energyBar.displayWidth;
+			energyMask.scaleY = energyMask.scaleX;
+			energyMask.x = energyBar.x;
+			// and we assign it as energyBar's mask.
+			energyBar.mask = new Phaser.Display.Masks.BitmapMask(this, energyMask);
+			energyContainer.visible = false;
+    		energyBar.visible = false;
+    		energyMask.visible = false;
+			// =============== A looking-good timer =================================
+
 			// background colour
 			this.cameras.main.setBackgroundColor(backgroundcolour_feedback);//#d9d9d9 = grey #ffffff = white
 			//  Texts
@@ -2148,6 +2291,15 @@ window.onload = function() {
 			buttonContainer_no.add(buttonText_no);
 			buttonContainer_no.visible = false;
 
+			// Yes I am still there! button
+			let buttonContainer_confirm = this.add.container(400, 200); //position
+			let buttonImage_confirm = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonText_confirm = this.add.text(0, 0, 'Yes, I am!', button_style);
+			buttonText_confirm.setOrigin(0.5, 0.5);
+			buttonContainer_confirm.add(buttonImage_confirm);
+			buttonContainer_confirm.add(buttonText_confirm);
+			buttonContainer_confirm.visible = false;
+
 			// pointer over & out effects
 		    buttonImage_yes.on('pointerover', function (pointer) {
 		    	buttonImage_yes.setTint(0xa9a9a9);
@@ -2160,6 +2312,12 @@ window.onload = function() {
 		    }, this);
 		    buttonImage_no.on('pointerout', function (pointer) {
 		    	buttonImage_no.clearTint();
+		    }, this);
+		     buttonImage_confirm.on('pointerover', function (pointer) {
+		    	buttonImage_confirm.setTint(0xa9a9a9);
+		    }, this);
+		    buttonImage_confirm.on('pointerout', function (pointer) {
+		    	buttonImage_confirm.clearTint();
 		    }, this);
 
 		    buttonImage_yes.on('pointerdown', function (pointer) {
@@ -2200,6 +2358,25 @@ window.onload = function() {
 		    	buttonContainer_no.visible = false;
 		    }, this);
 
+		    buttonImage_confirm.on('pointerdown', function (pointer) {
+		    	currentChoiceFlag = 0;
+		    	didShare = 0;
+		    	waitOthersText.setText('Please wait for others...');
+		    	socket.emit('result stage ended'
+		    			, {share: didShare
+		    			, payoff: payoff
+		    			, num_choice: this.flag
+		    			, info_share_cost: info_share_cost
+		    			// , totalEarning: (payoff - didShare * info_share_cost)
+		    			// , what_produced: payoff
+		    			, sharing_cost: 0 * info_share_cost
+		    			, thisTrial: currentTrial
+		    		});
+		    	buttonContainer_confirm.visible = false;
+		    	confirmationTimer.destroy();
+
+		    }, this);
+
 
 			if(this.flag == -1) {
 				feedbackTextPosition = missPositionX;
@@ -2219,19 +2396,6 @@ window.onload = function() {
 				//this.flag = 0;
 				// console.log('feedbackTextPosition set is done: feedbackTextPosition == '+ feedbackTextPosition);
 			}
-
-			// if(this.flag == -1) {
-			// 	feedbackTextPosition = missPositionX;
-			// 	this.flag = 0;
-			// } else if(this.flag == 1) {
-			// 	objects_feedbackStage.box1.visible = true;
-			// 	feedbackTextPosition = leftSlotPositionX;
-			// 	this.flag = 0;
-			// }else{
-			// 	objects_feedbackStage.box2.visible = true;
-			// 	feedbackTextPosition = rightSlotPositionX;
-			// 	this.flag = 0;
-			// }
 
 			if (this.didMiss) {
 				payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `Missed!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
@@ -2265,26 +2429,59 @@ window.onload = function() {
 				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
 				} else {
 					// if missed
-					waitOthersText = this.add.text(16, 60, 'Please wait for others...', { fontSize: '30px', fill: '#000', align: "center"});
 					setTimeout(function(){
-				    	currentChoiceFlag = 0;
-				    	socket.emit('result stage ended'
-			    			, {share: 0
-			    			, payoff: payoff
-			    			, num_choice: this.flag
-			    			, info_share_cost: info_share_cost
-			    			// , totalEarning: (payoff - 0 * info_share_cost)
-			    			// , what_produced: payoff
-		    				, sharing_cost: 0 * info_share_cost
-			    			, thisTrial: currentTrial
-			    		});
-				    }.bind(this), feedbackTime * 1000); //2.5 * 1000 ms was the original
+
+						waitOthersText = this.add.text(16, 60, 'You\'ve missed this round!\nAre you still there?', { fontSize: '30px', fill: '#000', align: "center"});
+						buttonContainer_confirm.visible = true;
+
+						//
+						energyContainer.visible = true;
+			    		energyBar.visible = true;
+			    		energyMask.visible = true;
+
+						// =============== Count down =================================
+						this.timeLeft = maxConfirmationWhenMissed / 1000;
+						// a boring timer.
+						confirmationTimer = this.time.addEvent({
+						    delay: 1000,
+						    callback: function(){
+						        this.timeLeft --;
+
+						        // dividing energy bar width by the number of seconds gives us the amount
+						        // of pixels we need to move the energy bar each second
+						        let stepWidth = energyMask.displayWidth / (maxConfirmationWhenMissed/1000);
+
+						        // moving the mask
+						        energyMask.x -= stepWidth;
+
+						        if(this.timeLeft < 0){
+						            // You could give a change to the shortly disconnected client to go back to the session
+									// However, for now I just redirect them to the questionnaire
+									socket.io.opts.query = 'sessionName=already_finished';
+									socket.disconnect();
+									window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed=no_response'+'&latency='+submittedLatency;
+									confirmationTimer.destroy();
+									buttonContainer_confirm.visible = false;
+									waitOthersText.setText('Time was up! \nTransitioning to the questionnaire...');
+									energyContainer.visible = false;
+						    		energyBar.visible = false;
+						    		energyMask.visible = false;
+						        }
+						    },
+						    callbackScope: this,
+						    loop: true
+						});
+						// =============== Count down =================================
+
+					}.bind(this),  1 * 400);
+
 				}
 			} else {
 				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
 				setTimeout(function(){
 			    	//payoffText.destroy();
 			    	//game.scene.stop('ScenePayoffFeedback');
+			    	// isWaiting = false
 			    	//game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
 			    	//console.log('emitting result stage ended!');
 			    	currentChoiceFlag = 0;
@@ -2412,6 +2609,40 @@ window.onload = function() {
 		update(){}
 	};
 
+	// SceneMessagePopUp
+	class SceneMessagePopUp extends Phaser.Scene {
+
+		// constructor (handle, parent){
+		//     super({ key: handle, active: false });
+
+		//     this.parent = parent;
+		// }
+		constructor () {
+			super({ key: 'SceneMessagePopUp', active: false });
+		}
+
+		init (data) {
+			this.msg = data.msg;
+		}
+
+		create(){
+			// background
+			this.cameras.main.setViewport(0, 0, SceneMessagePopUp.WIDTH, SceneMessagePopUp.HEIGHT); //#FFFFFF == 'white'
+			this.cameras.main.setBackgroundColor('#000');
+			// text styles
+			this.textStyle =
+				{ fontSize: '20px', fill: '#FFFF33' };
+			//  Texts
+			this.groupSizeText = this.add.text(configWidth/2, 10
+				, this.msg
+				, this.textStyle).setOrigin(0.5, 0);
+		}
+
+	};
+
+	SceneMessagePopUp.WIDTH = configWidth;
+	SceneMessagePopUp.HEIGHT = 50;
+
 	let config = {
 	    type: Phaser.AUTO, // Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO
 	    width: configWidth,
@@ -2442,6 +2673,7 @@ window.onload = function() {
     	, SceneTutorial
     	, SceneTutorialFeedback
     	, SceneTutorialShaingCostExplained
+    	, SceneBeforeUnderstandingTest
     	, SceneUnderstandingTest
     	, ScenePerfect
     	, SceneStartCountdown
@@ -2449,6 +2681,7 @@ window.onload = function() {
     	, ScenePayoffFeedback
     	, SceneGoToNewGameRound
     	, SceneGoToQuestionnaire
+    	, SceneMessagePopUp
     	]
 	};
 
@@ -2459,6 +2692,7 @@ window.onload = function() {
 	game.scene.add('SceneInstruction');
 	game.scene.add('SceneTutorial');
 	game.scene.add('SceneTutorialFeedback');
+	game.scene.add('SceneBeforeUnderstandingTest');
 	game.scene.add('SceneUnderstandingTest');
 	game.scene.add('ScenePerfect');
 	game.scene.add('SceneStartCountdown');
@@ -2466,9 +2700,21 @@ window.onload = function() {
 	game.scene.add('ScenePayoffFeedback');
 	game.scene.add('SceneGoToQuestionnaire');
 	game.scene.add('SceneGoToNewGameRound');
+	game.scene.add('SceneMessagePopUp');
 
 
 	// functions
+
+	function createWindow (scene_name, data) {
+
+		game.scene.start(scene_name, data);
+		game.scene.bringToTop(scene_name);
+
+		setTimeout(function(){
+			game.scene.stop(scene_name);
+		},3000);
+
+	}
 
     function showStars_4ab (num_option1, num_option2, num_option3, num_option4, socialInfoY) {
 
@@ -2646,56 +2892,11 @@ window.onload = function() {
 			payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
 		}
 		score += payoff;
-		scoreText.setText('Total score: ' + score);
+		// scoreText.setText('Total score: ' + score);
 		payoffText.setText(payoff);
 		payoffText.visible = true;
 		trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
-    };
-
-  //   function madeChoice_4ab (flag, distribution, optionOrder) {
-  //   	// A new cost is set
-  //   	info_share_cost = rand(100, 0);
-
-  //       let thisChoice;
-  //       if (flag == -1) {
-  //       	thisChoice = 0;//'miss';
-		// 	payoffText.x = 400;
-  //       } else {
-  //       	// flag is just a position of the chosen option,
-  //       	// e.g., flag == 1 when she chose option1.
-  //       	// Therefore, I need to translate this position into the actual option
-  //       	// thisChoice is an indicator of the actual option chosen
-  //       	thisChoice = optionOrder[flag -1];
-		// 	payoffText.x = option1_positionX + space_between_boxes*(flag-1);
-  //       }
-		// // calculating the payoff from this choice
-		// if (distribution == 'miss') {
-		// 	payoff = 0;
-		// 	myLastChoiceFlag = flag;
-		// 	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-		// 		// socket.emit('choice made 4ab', {                     choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
-		// 		socket.emit('choice made 4ab', {chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
-		// 	} else {
-		// 		saveChoiceDataLocally({chosenOptionFlag:-1, choice: 'miss', payoff: 0, socialInfo:mySocialInfo, publicInfo:myPublicInfo, totalEarning: totalEarning, subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
-		// 	}
-  //       	//console.log('choice was made: choice = ' + thisChoice + ' and payoff = ' + 0 + '.');
-		// } else if (distribution == 'binary') {
-		// 	payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
-		// } else if (distribution == 'binary_4ab') {
-		// 	// console.log('optionOrder ==' + optionOrder + ' and flag == '+ flag);
-		// 	// console.log('thisChoice == '+ thisChoice);
-		// 	// console.log('randomChoiceFromFour with optionsKeyList == '+optionsKeyList[thisChoice-1]);
-		// 	payoff = randomChoiceFromFour(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
-		// 	// payoff = randomChoiceFromFour_decreasing(currentTrial, flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
-		// } else {
-		// 	payoff = randomChoiceFromGaussian(thisChoice, mySocialInfo, myPublicInfo);
-		// }
-		// score += payoff;
-		// scoreText.setText('Total score: ' + score);
-		// payoffText.setText(payoff);
-		// payoffText.visible = true;
-		// trialText.setText('Current trial: ' + currentTrial + ' / ' + horizon);
-  //   };
+    }
 
     function randomChoiceFromBinary(chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
 		let roulette = Math.random()
@@ -2722,28 +2923,6 @@ window.onload = function() {
     	return thisPayoff;
 	}
 
-    // random choice with probability -- binary distribution
- //    function randomChoiceFromTwo(choice, payoffList, p_rare, socialInfo, publicInfo) {
- //    	let roulette = Math.random()
- //    	let noise = BoxMuller(0, smallNoise)
- //    	let thisPayoff
- //    	if (p_rare < roulette) { // common event
- //    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
- //    		myEarnings.push(thisPayoff);
- //            myChoices.push(choice);
- //    	} else { // rare event
- //    		thisPayoff = Math.floor((payoffList[1] + noise)*100);
- //    		myEarnings.push(thisPayoff);
- //            myChoices.push(choice);
- //    	}
- //    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-	// 		socket.emit('choice made', {choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
- //    	} else {
- //    		saveChoiceDataLocally({choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
- //    	}
- //        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
- //    	return thisPayoff;
-	// }
 
 	function randomChoiceFromFour_decreasing(this_trial, chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
 		let roulette = Math.random()
@@ -2781,28 +2960,7 @@ window.onload = function() {
     	return thisPayoff;
 	}
 
-	// function randomChoiceFromFour(chosenOptionFlag, num_choice, choice, payoffList, p_rare, socialInfo, publicInfo) {
-	// 	let roulette = Math.random()
- //    	let noise = BoxMuller(0, smallNoise)
- //    	let thisPayoff
- //    	if (p_rare < roulette) { // common event
- //    		thisPayoff = Math.floor((payoffList[0] + noise)*100);
- //    		myEarnings.push(thisPayoff);
- //            myChoices.push(choice);
- //    	} else { // rare event
- //    		thisPayoff = Math.floor((payoffList[1] + noise)*100);
- //    		myEarnings.push(thisPayoff);
- //            myChoices.push(choice);
- //    	}
- //    	myLastChoiceFlag = chosenOptionFlag;
- //    	if (indivOrGroup > -1) { // if don't want to send indiv data, indivOrGroup == 1
-	// 		socket.emit('choice made 4ab', {chosenOptionFlag:chosenOptionFlag, num_choice: num_choice, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId, thisTrial:currentTrial});
- //    	} else {
- //    		saveChoiceDataLocally({chosenOptionFlag:chosenOptionFlag, choice: choice, payoff: thisPayoff, socialInfo:socialInfo, publicInfo:publicInfo, totalEarning: (totalEarning+thisPayoff), subjectNumber:subjectNumber, riskDistributionId:riskDistributionId});
- //    	}
- //        //console.log('choice was made: choice = ' + choice + ' and payoff = ' + thisPayoff + '.');
- //    	return thisPayoff;
-	// }
+
 
 	// random choice with probability -- Gaussian distribution
     function randomChoiceFromGaussian(choice, socialInfo, publicInfo) {
@@ -2869,45 +3027,6 @@ window.onload = function() {
     function choose(arr) {
 		var index = Math.floor(Math.random() * arr.length);
 		return arr[index];
-	}
-
-	function collectStar (player, star)
-	{
-	    star.disableBody(true, true);
-
-	    //  Add and update the score
-	    score += 10;
-	    scoreText.setText('Total score: ' + score);
-
-	    if (stars.countActive(true) === 0)
-	    {
-	        //  A new batch of stars to collect
-	        stars.children.iterate(function (child) {
-
-	            child.enableBody(true, child.x, 0, true, true);
-
-	        });
-
-	        var x = (player.x < 400) ? Phaser.Math.Between(400, 800) : Phaser.Math.Between(0, 400);
-
-	        var bomb = bombs.create(x, 16, 'bomb');
-	        bomb.setBounce(1);
-	        bomb.setCollideWorldBounds(true);
-	        bomb.setVelocity(Phaser.Math.Between(-200, 200), 20);
-	        bomb.allowGravity = false;
-
-	    }
-	}
-
-	function hitBomb (player, bomb)
-	{
-	    this.physics.pause();
-
-	    player.setTint(0xff0000);
-
-	    player.anims.play('turn');
-
-	    gameOver = true;
 	}
 
 	function waitingBarCompleted ()
@@ -3285,7 +3404,7 @@ window.onload = function() {
         //core.replaceScene(core.waitingRoomScene(data.restTime));
     });
 
-    socket.on('wait for others finishing test', function () {
+    socket.on('wait for others finishing test', function (data) {
     	game.scene.stop('SceneWaitingRoom0');
     	game.scene.stop('SceneWaitingRoom');
     	game.scene.stop('SceneInstruction');
@@ -3294,7 +3413,11 @@ window.onload = function() {
     	game.scene.stop('SceneUnderstandingTest');
     	game.scene.stop('ScenePerfect');
     	game.scene.stop('SceneGoToNewGameRound');
-        game.scene.start('SceneWaitingRoom2');
+        game.scene.start('SceneWaitingRoom2', data);
+    });
+
+    socket.on('n_test_passed updated', function (data) {
+    	n_in_waitingRoom2 = data.n_test_passed;
     });
 
     socket.on('wait for others get ready to move on', function () {
@@ -3340,6 +3463,7 @@ window.onload = function() {
     });
 
     socket.on('all passed the test', function(data) {
+    	currentGroupSize = data.n;
         //console.log('testPassed reached ' + data.testPassed + ' conditoin: ' + data.exp_condition);
         game.scene.stop('SceneWaitingRoom0');
         game.scene.stop('SceneWaitingRoom');
@@ -3371,6 +3495,12 @@ window.onload = function() {
 
     socket.on('client disconnected', function(data) {
         console.log('client disconnected ' + data.disconnectedClient + ' left the room');
+        currentGroupSize = data.n;
+        createWindow('SceneMessagePopUp', {msg: 'Notification: One member has been disconnected'});
+        if (isWaiting) {
+        	socket.emit('can I proceed');
+        	console.log('"can I proceed" sent');
+        }
     });
 
     socket.on('these are done subjects', function(data) {
@@ -3432,6 +3562,7 @@ window.onload = function() {
         	objects_feedbackStage['box'+i].destroy();
         }
     	game.scene.stop('ScenePayoffFeedback');
+    	isWaiting = false
     	game.scene.start('SceneMain', {gameRound:gameRound, round:currentTrial});
     	//console.log('restarting the main scene!: mySocialInfo = '+data.socialFreq[data.round-1]);
     });
@@ -3459,6 +3590,7 @@ window.onload = function() {
         	objects_feedbackStage['box'+i].destroy();
         }
     	game.scene.stop('ScenePayoffFeedback');
+    	isWaiting = false
     	game.scene.start('SceneGoToQuestionnaire');
     });
 
@@ -3488,6 +3620,7 @@ window.onload = function() {
         }
     	// starting the new game round
     	game.scene.stop('ScenePayoffFeedback');
+    	isWaiting = false
     	game.scene.start('SceneGoToNewGameRound');
     });
 

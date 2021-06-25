@@ -44,7 +44,7 @@ const horizon = 4//20 // 100?
 , sessionNo = 0 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
 , maxGroupSize = 4//8 // maximum 12
 , minGroupSize = 2//4
-, maxWaitingTime = 15 * 1000
+, maxWaitingTime = 10 * 1000
 , numOptions = 2 // 2 or 4
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
@@ -573,7 +573,8 @@ io.on('connection', function (client) {
 		  	firstTrialStartingTime = now675;
 		  	roomStatus[client.room]['stage'] = 'mainTask';
 		} else {
-		  	io.to(client.session).emit('wait for others finishing test');
+		  	io.to(client.session).emit('wait for others finishing test', {n_test_passed: roomStatus[client.room]['testPassed']});
+		  	io.to(client.room).emit('n_test_passed updated', {n_test_passed: roomStatus[client.room]['testPassed']});
 		}
 	});
 
@@ -787,6 +788,24 @@ io.on('connection', function (client) {
 		}
 	});
 
+	client.on('can I proceed', function () {
+
+		console.log('Done ID is ' + roomStatus[client.room]['doneId'][ roomStatus[client.room]['pointer']-1 ]);
+		console.log('Done number is ' + roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ]);
+
+		if (roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] >= roomStatus[client.room]['n']) {
+			let now_endResultStage = new Date()
+			,	logdate_endResultStage = '[' + now_endResultStage.getUTCFullYear() + '/' + (now_endResultStage.getUTCMonth() + 1) + '/'
+			;
+
+			logdate_endResultStage += now_endResultStage.getUTCDate() + '/' + now_endResultStage.getUTCHours() + ':' + now_endResultStage.getUTCMinutes() + ':' + now_endResultStage.getUTCSeconds() + ']';
+				console.log(logdate_endResultStage + ` - the payoff feedback stage ended due to the drop-out at ${client.room}`);
+
+			proceedRound(client.room);
+		}
+
+	});
+
 	client.on("disconnect", function () {
 		if(typeof client.room != 'undefined') {
 			let thisRoomName = client.room;
@@ -818,9 +837,9 @@ io.on('connection', function (client) {
 				roomStatus[thisRoomName]['doneId'][roomStatus[thisRoomName]['pointer']-1].splice(doneOrNot, 1);
 				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['pointer']-1].splice(doneOrNot, 1);
 				roomStatus[client.room]['socialInfo'][roomStatus[client.room]['pointer']-1].push(-1);
-				if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] != 'undefined') {
-					roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ]--;
-				}
+				// if(typeof roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ] != 'undefined') {
+				// 	roomStatus[client.room]['doneNo'][ roomStatus[client.room]['pointer']-1 ]--;
+				// }
 			}
 
 			if(roomStatus[thisRoomName]['indivOrGroup'] != 0) {
@@ -859,7 +878,7 @@ io.on('connection', function (client) {
 			}
 
 
-			io.to(thisRoomName).emit('client disconnected', {roomStatus:roomStatus[thisRoomName], disconnectedClient:client.id});
+			io.to(thisRoomName).emit('client disconnected', {n:roomStatus[thisRoomName]['n'], roomStatus:roomStatus[thisRoomName], disconnectedClient:client.id});
 
 
 			/* // Payoff should be calculated immediately if the disconnected client was the last one

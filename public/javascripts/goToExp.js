@@ -11,16 +11,16 @@ window.onload = function() {
     let isAgreed = false;
     let agreement = document.getElementById('agreement');
     //agreement.innerHTML = "<div class='btn3' id='agreed1'><div>I have read and understood the preceding information.</div></div> <br /> <div class='btn3' id='agreed2'><div>I understand that I can withdraw from the study without providing an explanation.</div></div> <br /> <div class='btn3' id='agreed3'><div>I understand how my processed data will be treated and anonymised.</div></div> <br /> <div class='btn3' id='agreed4'><div>I have been made fully aware of the potential risks associated with this research and am satisfied with the information provided.</div></div> <br /> <div class='btn3' id='agreed5'><div>I know that I can contact members of the research project in case of questions and concerns, even after my participation.</div></div> <br /> <div class='btn3' id='agreed6'><div>I agree to take part in the study.</div></div> <br />"
-    agreement.innerHTML = "<div class='btn3' id='agreed1'><div>I have read and understood the preceding information.</div></div>  <br /> <div class='btn3' id='agreed3'><div>I understand how my processed data will be treated and anonymised.</div></div> <br /> <div class='btn3' id='agreed6'><div>I agree to take part in the study.</div></div> <br />"
+    agreement.innerHTML = "<div class='btn3' id='agreed1'><div>I have read and understood the preceding information.</div></div>  <br /> <div class='btn3' id='agreed2'><div>I am 18 yeas old or older.</div></div>  <br /> <div class='btn3' id='agreed3'><div>I understand how my processed data will be treated and anonymised.</div></div> <br /> <div class='btn3' id='agreed6'><div>I agree to take part in the study.</div></div> <br />"
 
     let isAgree1 = document.getElementById('agreed1')
-    //,	isAgree2 = document.getElementById('agreed2')
+    ,	isAgree2 = document.getElementById('agreed2')
     ,	isAgree3 = document.getElementById('agreed3')
     //,	isAgree4 = document.getElementById('agreed4')
     //,	isAgree5 = document.getElementById('agreed5')
     ,	isAgree6 = document.getElementById('agreed6')
     , 	flag1 = 0
-    , 	flag2 = 1
+    , 	flag2 = 0
     , 	flag3 = 0
     , 	flag4 = 1
     , 	flag5 = 1
@@ -29,7 +29,7 @@ window.onload = function() {
     ;
 
     isAgree1.addEventListener('click', agreeing1, false);
-    //isAgree2.addEventListener('click', agreeing2, false);
+    isAgree2.addEventListener('click', agreeing2, false);
     isAgree3.addEventListener('click', agreeing3, false);
     //isAgree4.addEventListener('click', agreeing4, false);
     //isAgree5.addEventListener('click', agreeing5, false);
@@ -72,7 +72,7 @@ window.onload = function() {
 			gameStart.innerHTML = "<div class='btn4'>GO TO THE TASK</div>";
 		}
 	}
-	/*function agreeing2 () {
+	function agreeing2 () {
 		if (flag2==0) {
 			flag2++;
 			isAgree2.style.opacity = 1.0;
@@ -90,7 +90,7 @@ window.onload = function() {
 		} else {
 			gameStart.innerHTML = "<div class='btn4'>GO TO THE TASK</div>";
 		}
-	}*/
+	}
 	function agreeing3 () {
 		if (flag3==0) {
 			flag3++;
