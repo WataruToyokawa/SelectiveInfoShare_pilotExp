@@ -1,7 +1,7 @@
 'use strict';
 
 // Experimental variables
-const flatFeeValue = 1 //1 USD = 0.77 GBP
+const flatFeeValue = 0.8 //1 USD = 0.77 GBP
 , completionFeeValue = 0
 ;
 

@@ -1,0 +1,40 @@
+2021-06-29T07:51:13: (node:400469) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-06-29T09:57:12: (node:401184) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-06-29T09:59:18: (node:401266) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-06-29T13:14:23: (node:402018) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-06-29T13:19:44: (node:402116) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-06-29T13:20:26: TypeError: path must be absolute or specify root to res.sendFile
+2021-06-29T13:20:26:     at ServerResponse.sendFile (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/response.js:421:11)
+2021-06-29T13:20:26:     at /home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/routes/game.js:23:6
+2021-06-29T13:20:26:     at Layer.handle [as handle_request] (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/layer.js:95:5)
+2021-06-29T13:20:26:     at next (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/route.js:137:13)
+2021-06-29T13:20:26:     at Route.dispatch (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/route.js:112:3)
+2021-06-29T13:20:26:     at Layer.handle [as handle_request] (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/layer.js:95:5)
+2021-06-29T13:20:26:     at /home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:281:22
+2021-06-29T13:20:26:     at Function.process_params (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:335:12)
+2021-06-29T13:20:26:     at next (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:275:10)
+2021-06-29T13:20:26:     at Function.handle (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:174:3)
+2021-06-29T13:20:26:     at router (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:47:12)
+2021-06-29T13:20:26:     at Layer.handle [as handle_request] (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/layer.js:95:5)
+2021-06-29T13:20:26:     at trim_prefix (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:317:13)
+2021-06-29T13:20:26:     at /home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:284:7
+2021-06-29T13:20:26:     at Function.process_params (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:335:12)
+2021-06-29T13:20:26:     at next (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:275:10)
+2021-06-29T13:24:51: (node:402181) DeprecationWarning: collection.ensureIndex is deprecated. Use createIndexes instead.
+2021-06-29T13:25:45: ForbiddenError: Forbidden
+2021-06-29T13:25:45:     at SendStream.error (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/send/index.js:270:31)
+2021-06-29T13:25:45:     at SendStream.pipe (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/send/index.js:540:12)
+2021-06-29T13:25:45:     at sendfile (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/response.js:1099:8)
+2021-06-29T13:25:45:     at ServerResponse.sendFile (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/response.js:429:3)
+2021-06-29T13:25:45:     at /home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/routes/game.js:23:6
+2021-06-29T13:25:45:     at Layer.handle [as handle_request] (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/layer.js:95:5)
+2021-06-29T13:25:45:     at next (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/route.js:137:13)
+2021-06-29T13:25:45:     at Route.dispatch (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/route.js:112:3)
+2021-06-29T13:25:45:     at Layer.handle [as handle_request] (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/layer.js:95:5)
+2021-06-29T13:25:45:     at /home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:281:22
+2021-06-29T13:25:45:     at Function.process_params (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:335:12)
+2021-06-29T13:25:45:     at next (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:275:10)
+2021-06-29T13:25:45:     at Function.handle (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:174:3)
+2021-06-29T13:25:45:     at router (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:47:12)
+2021-06-29T13:25:45:     at Layer.handle [as handle_request] (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/layer.js:95:5)
+2021-06-29T13:25:45:     at trim_prefix (/home/wataru/Helge_exp/SelectiveInfoShare_pilotExp/node_modules/express/lib/router/index.js:317:13)

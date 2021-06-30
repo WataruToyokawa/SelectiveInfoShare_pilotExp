@@ -6,27 +6,30 @@ const amazonIdList = [];
 const exceptions = ['INHOUSETEST3','wataru'];
 
 /* GET home page. */
-// router.get('/', function(req, res, next) {
-// 	res.render('reloadedPage', { 
-// 		title: 'Questionnaire',
-// 		amazonID: 'reloaded',
-// 		bonus_for_waiting: 0,
-// 		totalEarning: 0,
-// 		exp_condition: -1,
-// 		indivOrGroup: -1,
-// 		confirmationID: 'XYZ-GGETQUES',
-// 		completed: 0
-// 		}); //'index' = './views/index.ejs'
+router.get('/', function(req, res, next) {
+	res.render('reloadedPage', {
+		title: 'Questionnaire',
+		amazonID: 'reloaded',
+		bonus_for_waiting: 0,
+		totalEarning: 0,
+		exp_condition: -1,
+		indivOrGroup: -1,
+		confirmationID: 'ZZZ-RELOADED',
+		completed: 0
+		}); //'index' = './views/index.ejs'
+});
+
+// router.get('/javascripts/CircleSpin', function(req, res, next) {
+// 	res.sendFile('../public/javascripts/CircleSpin.js', { root: __dirname });
 // });
 
-
 /* DEBUG -- INACTIVATE WHEN YOU FINISH DEBUG*/
-router.get('/', function(req, res, next) {
-	res.render('game', { 
-		title: 'Online experiment',
-		amazonID: 'INHOUSETEST3'
-	});
-});
+// router.get('/', function(req, res, next) {
+// 	res.render('game', {
+// 		title: 'Online experiment',
+// 		amazonID: 'INHOUSETEST3'
+// 	});
+// });
 
 
 /* POST home page. */

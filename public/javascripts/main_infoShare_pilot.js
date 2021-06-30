@@ -95,7 +95,7 @@ let isEnvironmentReady = false
 ,	didShare = 0
 ,	payoffTransformed
 ,   totalEarning = 0
-,	cent_per_point = 1/100 // 1 cent per 100 points
+,	cent_per_point = 10/500 // 1 cent per 100 points (1 penny per 100 points)
 ,	browserHiddenPermittedTime = 10 * 1000
 ,   sessionName
 ,   roomName
@@ -118,6 +118,7 @@ let isEnvironmentReady = false
 ,   choiceOrder
 ,   currentChoiceFlag = 0
 ,   waitingBonus = 0
+,	waitingBonus_per_6sec = 1.0
 ,   confirmationID = 'browser-reloaded'
 ,   maxGroupSize
 ,	maxWaitingTime
@@ -420,7 +421,7 @@ window.onload = function() {
 			    //console.log(file.src);
 			});
 			this.load.on('complete', function () {
-			    console.log('preloading is completed!: core is ready');
+			    // console.log('preloading is completed!: core is ready');
 			    isPreloadDone = true;
 			    progressBar.destroy();
 				progressBox.destroy();
@@ -486,6 +487,7 @@ window.onload = function() {
 		}
 
 		create(){
+
 			isWaitingRoomStarted = true;
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
@@ -518,7 +520,7 @@ window.onload = function() {
 			// countdown texts
 			countdownText = this.add.text(configWidth/2, 340, 'The study starts in ?? sec.' , textStyle);
 			countdownText.setOrigin(0.5, 0.5);
-			bonusText = this.add.text(configWidth/2, 450, 'Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' US cents.' , textStyle);
+			bonusText = this.add.text(configWidth/2, 450, 'Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' pence.' , textStyle);
 			bonusText.setOrigin(0.5, 0.5);
 
 		}
@@ -530,7 +532,7 @@ window.onload = function() {
 			countdownText.setText('The study starts in ' + ( Math.floor(0.9+(this.restTime/1000)*(1-waitingCountdown.getProgress())) ).toString().substr(0, 3) + ' sec.');
 			////console.log( 0.9+(restTime/1000)*(1-waitingCountdown.getProgress()) );
 			////console.log(waitingCountdown.getProgress());
-			waitingBonus += 1.4/(6*game.loop.actualFps)
+			waitingBonus += waitingBonus_per_6sec/(6*game.loop.actualFps)
 			bonusBar.clear();
 			bonusBar.fillStyle(0xff5a00, 1);
 			if(waitingBonus*2<300) {
@@ -538,8 +540,9 @@ window.onload = function() {
 			}else{
 				bonusBar.fillRect(250, 390, 300, 30);
 			}
-			bonusText.setText('Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' US cents.');
+			bonusText.setText('Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' pence.');
 		}
+
 	};
 
 	// SceneWaitingRoom2
@@ -557,6 +560,12 @@ window.onload = function() {
 		}
 
 		create(){
+
+			// loading circle animation
+			let CircleSpinContainer = this.add.container(configWidth/2, configHeight/2 - 20);
+			createCircle(this, CircleSpinContainer, 0, 0, 48, 0x333333); // 0x000000 = black; 0xffffff = white
+			CircleSpinContainer.visible = true;
+
 			// background colour
 			this.cameras.main.setBackgroundColor('#FFFFFF'); //#FFFFFF == 'white'
 			// text styles
@@ -588,7 +597,7 @@ window.onload = function() {
 			// countdown texts
 			//countdownText = this.add.text(configWidth/2, 340, 'The study starts in ?? sec.' , textStyle);
 			//countdownText.setOrigin(0.5, 0.5);
-			bonusText = this.add.text(configWidth/2, 450, 'Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' US cents.' , textStyle);
+			bonusText = this.add.text(configWidth/2, 450, 'Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' pence.' , textStyle);
 			bonusText.setOrigin(0.5, 0.5);
 
 			// showing the current group size
@@ -597,7 +606,7 @@ window.onload = function() {
 		}
 
 		update(){
-			waitingBonus += 1.4/(6*game.loop.actualFps)
+			waitingBonus += waitingBonus_per_6sec/(6*game.loop.actualFps)
 			bonusBar.clear();
 			bonusBar.fillStyle(0xff5a00, 1);
 			if(waitingBonus*2<300) {
@@ -605,7 +614,7 @@ window.onload = function() {
 			}else{
 				bonusBar.fillRect(250, 390, 300, 30);
 			}
-			bonusText.setText('Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' US cents.');
+			bonusText.setText('Your waiting bonus: '+waitingBonus.toString().substr(0, 2)+' pence.');
 			this.groupSizeText.setText('Number of people ready: '+ n_in_waitingRoom2.toString()+' / 3');
 		}
 	};
@@ -665,7 +674,13 @@ window.onload = function() {
 			    }
 		    } else {
 		    	for (let i=0; i<14; i++) {
-			    	currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2 - 20, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.3, (768/3)*1.3);
+		    		if (i != 12 & i != 8) {
+			    		currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2 - 20, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.4, (768/3)*1.4);
+			    	} else if (i == 8) {
+			    		currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.31, (768/3)*1.31);
+		    		} else if (i == 12) {
+			    		currentInstructionPicture[i] = this.add.image(configWidth/2, configHeight/2 + 10, 'instructionPictures_group_'+i ).setDisplaySize((1024/3)*1.31, (768/3)*1.31);
+			    	}
 			    	currentInstructionPicture[i].visible = false;
 			    }
 		    }
@@ -819,7 +834,11 @@ window.onload = function() {
 
 			// text
 			trialText_tutorial = this.add.text(16, trialText_tutorialY, 'Tutorial trial: ' + tutorialTrial + ' / 4', { fontSize: '25px', fill: '#000' });
-		    groupSizeText_tutorial = this.add.text(16, groupSizeText_tutorialY, 'Number of players: 3', { fontSize: '25px', fill: '#000' });
+			if (this.indivOrGroup == 1) {
+		    	groupSizeText_tutorial = this.add.text(16, groupSizeText_tutorialY, 'Number of players: 3', { fontSize: '25px', fill: '#000' });
+			} else {
+				groupSizeText_tutorial = this.add.text(16, groupSizeText_tutorialY, 'Number of players: 1', { fontSize: '25px', fill: '#000' });
+			}
 		    timeText_tutorial = this.add.text(16, energyBar_tutorialY, 'Remaining time: ', { fontSize: '25px', fill: '#000' });
 		    payoffText = this.add.text(missPositionX, payoffTextY, ``, { fontSize: '25px', fill: noteColor }).setOrigin(0.5, 0.5);
 		    // if (tutorialTrial == 1) {
@@ -1083,8 +1102,13 @@ window.onload = function() {
 		    	tutorialText = tutorialText_group;
 		    }
 		    const tutorialTextStyle = 'background-color: rgba(51,51,51,0.1); width: 700px; height: 150px; font: 25px Arial; position: relative;';
+		    const tutorialTextStyle_large = 'background-color: rgba(51,51,51,0.1); width: 700px; height: 250px; font: 25px Arial; position: relative;';
 		    let instructionDiv = document.getElementById('instructionDiv');
-		    instructionDiv.style = tutorialTextStyle;
+		    if (tutorialTrial < 3) {
+			    instructionDiv.style = tutorialTextStyle;
+			} else {
+				instructionDiv.style = tutorialTextStyle_large;
+			}
 		    instructionDiv.innerHTML = tutorialText[tutorialPosition];
 
 			//  Texts
@@ -1111,8 +1135,13 @@ window.onload = function() {
 
 			// NO button
 			let buttonContainer_no = this.add.container(600, 310); //position
-			let buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			let buttonImage_no;
 			let buttonText_no = this.add.text(0, 0, 'NO\n(No cost)', button_style);
+			if (tutorialTrial > 1) {
+				buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
+			} else {
+				buttonImage_no = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100);
+			}
 			buttonText_no.setOrigin(0.5, 0.5);
 			buttonContainer_no.add(buttonImage_no);
 			buttonContainer_no.add(buttonText_no);
@@ -1235,17 +1264,39 @@ window.onload = function() {
                     break;
             }
 
-		    setTimeout(function(){
-		    	if (tutorialTrial < 3) {
-		    		waitOthersText = this.add.text(16, 170, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
-					buttonContainer_yes.visible = true;
-					buttonContainer_no.visible = true;
-					if (tutorialTrial == 1) pointing_finger.visible = true;
+            if (this.indivOrGroup == 1 ) {
+            	// ==== group condition ===
+			    setTimeout(function(){
+			    	if (tutorialTrial < 3) {
+			    		waitOthersText = this.add.text(16, 170, 'Do you want to share this information\nwith other members?', { fontSize: '30px', fill: '#000', align: "center"});
+						buttonContainer_yes.visible = true;
+						buttonContainer_no.visible = true;
+						if (tutorialTrial == 1) pointing_finger.visible = true;
+					} else {
+						waitOthersText = this.add.text(16, 270, 'You\'ve missed this round!\nAre you still there?', { fontSize: '30px', fill: '#000', align: "center"});
+						buttonContainerTutorial.visible = true;
+					}
+			    }.bind(this), 1000);
+			    // ========================
+			} else {
+				// === individual condition ===
+				waitOthersText = this.add.text(16, 170, '', { fontSize: '30px', fill: '#000', align: "center"});
+				if (tutorialTrial < 3) {
+					setTimeout(function(){
+						let updatedTutorialPosition = tutorialPosition + 1;
+			    		tutorialTrial++;
+			    		game.scene.stop('SceneTutorialFeedback');
+			    		game.scene.start('SceneTutorial', { indivOrGroup: indivOrGroup, exp_condition: exp_condition,tutorialPosition: updatedTutorialPosition });
+					}.bind(this), feedbackTime * 1000);
 				} else {
-					waitOthersText = this.add.text(16, 170, 'You\'ve missed this round!\nAre you still there?', { fontSize: '30px', fill: '#000', align: "center"});
-					buttonContainerTutorial.visible = true;
+					setTimeout(function(){
+						waitOthersText = this.add.text(16, 270, 'You\'ve missed this round!\nAre you still there?', { fontSize: '30px', fill: '#000', align: "center"});
+						buttonContainerTutorial.visible = true;
+					}.bind(this), 1000);
 				}
-		    }.bind(this), 1000);
+				// ===========================
+			}
+
 		}
 
 		update(){}
@@ -2194,7 +2245,7 @@ window.onload = function() {
 		    if(this.round > 1) {
 		    	showPublicInfo.call(this, shared_payoff, shared_option_position, slotY_main-90);
 		    } else {
-		    	console.log('No public info should be shown!')
+		    	// console.log('No public info should be shown!')
 		    }
 
 			// createWindow('SceneMessagePopUp'); //this.createWindow(SceneMessagePopUp); // pop up window saying 'another member has been dropped out'
@@ -2223,6 +2274,11 @@ window.onload = function() {
 		}
 
 		create(){
+
+			// loading circle animation
+			let CircleSpinContainer = this.add.container(configWidth/2, configHeight/2 - 50);
+			createCircle(this, CircleSpinContainer, 0, 0, 48, 0xffc3b0); // background = 0xffd6c9, brighter 0xffe9e3
+			CircleSpinContainer.visible = false;
 
 			let energyBar_Y = 16 + 50 * 2 // 16 + 50 * 4
 			,	confirmationTimer
@@ -2253,7 +2309,6 @@ window.onload = function() {
 			energyBar.mask = new Phaser.Display.Masks.BitmapMask(this, energyMask);
 			energyContainer.visible = false;
     		energyBar.visible = false;
-    		energyMask.visible = false;
 			// =============== A looking-good timer =================================
 
 			// background colour
@@ -2338,6 +2393,7 @@ window.onload = function() {
 		    		});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
+		    	CircleSpinContainer.visible = true;
 		    }, this);
 
 		    buttonImage_no.on('pointerdown', function (pointer) {
@@ -2356,6 +2412,7 @@ window.onload = function() {
 		    		});
 		    	buttonContainer_yes.visible = false;
 		    	buttonContainer_no.visible = false;
+		    	CircleSpinContainer.visible = true;
 		    }, this);
 
 		    buttonImage_confirm.on('pointerdown', function (pointer) {
@@ -2373,6 +2430,7 @@ window.onload = function() {
 		    			, thisTrial: currentTrial
 		    		});
 		    	buttonContainer_confirm.visible = false;
+		    	CircleSpinContainer.visible = true;
 		    	confirmationTimer.destroy();
 
 		    }, this);
@@ -2401,7 +2459,7 @@ window.onload = function() {
 				payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `Missed!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
 			} else {
 		    	payoffText = this.add.text(feedbackTextPosition, slotY_main-80, `${payoff} points!`, { fontSize: '30px', fill: noteColor, fontstyle: 'bold' }).setOrigin(0.5, 0.5);
-		    	payoffText.setFontSize(10 + 1.5*Math.sqrt(1/2 * payoff)); //originally: 1*Math.sqrt(2/3 * payoff)
+		    	// payoffText.setFontSize(10 + 1.5*Math.sqrt(1/2 * payoff)); //originally: 1*Math.sqrt(2/3 * payoff)
 			}
 
 			if (indivOrGroup == 1) {
@@ -2437,7 +2495,6 @@ window.onload = function() {
 						//
 						energyContainer.visible = true;
 			    		energyBar.visible = true;
-			    		energyMask.visible = true;
 
 						// =============== Count down =================================
 						this.timeLeft = maxConfirmationWhenMissed / 1000;
@@ -2476,6 +2533,53 @@ window.onload = function() {
 					}.bind(this),  1 * 400);
 
 				}
+			} else if (indivOrGroup == 0 & this.didMiss == true) {
+				// if missed
+				setTimeout(function(){
+
+					waitOthersText = this.add.text(16, 60, 'You\'ve missed this round!\nAre you still there?', { fontSize: '30px', fill: '#000', align: "center"});
+					buttonContainer_confirm.visible = true;
+
+					//
+					energyContainer.visible = true;
+		    		energyBar.visible = true;
+
+					// =============== Count down =================================
+					this.timeLeft = maxConfirmationWhenMissed / 1000;
+					// a boring timer.
+					confirmationTimer = this.time.addEvent({
+					    delay: 1000,
+					    callback: function(){
+					        this.timeLeft --;
+
+					        // dividing energy bar width by the number of seconds gives us the amount
+					        // of pixels we need to move the energy bar each second
+					        let stepWidth = energyMask.displayWidth / (maxConfirmationWhenMissed/1000);
+
+					        // moving the mask
+					        energyMask.x -= stepWidth;
+
+					        if(this.timeLeft < 0){
+					            // You could give a change to the shortly disconnected client to go back to the session
+								// However, for now I just redirect them to the questionnaire
+								socket.io.opts.query = 'sessionName=already_finished';
+								socket.disconnect();
+								window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed=no_response'+'&latency='+submittedLatency;
+								confirmationTimer.destroy();
+								buttonContainer_confirm.visible = false;
+								waitOthersText.setText('Time was up! \nTransitioning to the questionnaire...');
+								energyContainer.visible = false;
+					    		energyBar.visible = false;
+					    		energyMask.visible = false;
+					        }
+					    },
+					    callbackScope: this,
+					    loop: true
+					});
+					// =============== Count down =================================
+
+				}.bind(this),  1 * 400);
+
 			} else {
 				waitOthersText = this.add.text(16, 60, '', { fontSize: '30px', fill: '#000', align: "center"});
 				setTimeout(function(){
@@ -2582,7 +2686,7 @@ window.onload = function() {
 			let button_style = { fontSize: '24px', fill: '#000' , align: "center" };
 			let buttonContainer_nextGameRound = this.add.container(configWidth/2, 400); //position
 			let buttonImage_nextGameRound = this.add.sprite(0, 0, 'button').setDisplaySize(300, 100).setInteractive({ cursor: 'pointer' });
-			let buttonText_nextGameRound = this.add.text(0, 0, 'Go to Round ' + (gameRound+1), button_style);
+			let buttonText_nextGameRound = this.add.text(0, 0, 'Go to Game ' + (gameRound+1), button_style);
 			buttonText_nextGameRound.setOrigin(0.5, 0.5);
 			buttonContainer_nextGameRound.add(buttonImage_nextGameRound);
 			buttonContainer_nextGameRound.add(buttonText_nextGameRound);
@@ -2643,6 +2747,121 @@ window.onload = function() {
 	SceneMessagePopUp.WIDTH = configWidth;
 	SceneMessagePopUp.HEIGHT = 50;
 
+	class CircleSpin { //extends Phaser.GameObjects.Container {
+	    constructor(scene, x, y, radius = 64, color = 0xffffff) {
+	    	// super(scene, x, y, radius = 64, color = 0xffffff);
+	        this.position = { x: 0, y: 0 }; //new Object();//{ x: 0, y: 0 };
+	        this.radius = 64;
+	        this.color = 0xffffff;
+	        this.scene = scene;
+	        this.x = x;
+	        this.y = y;
+	        this.radius = radius;
+	        this.color = color;
+	    }
+	    static create(scene, x, y, radius = 64, color = 0xffffff) {
+	    	return new CircleSpin(scene, x, y, radius, color);
+	    }
+	    set x(value) {
+	        this.position.x = value;
+	        if (this.circle) {
+	            this.circle.x = value;
+	        }
+	    }
+	    get x() {
+	        return this.position.x;
+	    }
+	    set y(value) {
+	        this.position.y = value;
+	        if (this.circle) {
+	            this.circle.y = value;
+	        }
+	    }
+	    get y() {
+	        return this.position.y;
+	    }
+	    useColor(color) {
+	        this.color = color;
+	        return this;
+	    }
+	    addToContainer(container, x, y) {
+	        if (!container) {
+	            return this;
+	        }
+	        if (!this.circle || !this.timeline) {
+	            this.make();
+	        }
+	        container.add(this.circle);
+	        if (x !== undefined) {
+	            this.x = x;
+	        }
+	        if (y !== undefined) {
+	            this.y = y;
+	        }
+	        return this;
+	    }
+	    make(config = {}) {
+	        if (this.circle) {
+	            this.circle.destroy();
+	        }
+	        this.circle = this.scene.add.circle(this.x, this.y, this.radius, this.color, 1);
+	        if (this.timeline) {
+	            this.timeline.destroy();
+	        }
+	        const { loopDelay = 0, spins = 10 } = config;
+	        // this.timeline = this.scene.tweens.createTimeline();
+	        this.timeline = this.scene.tweens.timeline({
+	        // this.timeLine.add({
+	            loop: -1,
+	            loopDelay
+	        });
+	        const fastSpins = Math.floor(spins * 0.8);
+	        const slowSpins = spins - fastSpins;
+	        let duration = 300;
+	        for (let i = 0; i < fastSpins; ++i) {
+	            this.timeline.add({
+	                targets: this.circle,
+	                scaleX: 0,
+	                ease: Phaser.Math.Easing.Sine.InOut,
+	                duration
+	            })
+	                .add({
+	                targets: this.circle,
+	                scaleX: 1,
+	                ease: Phaser.Math.Easing.Sine.InOut,
+	                duration
+	            });
+	            if (duration > 100) {
+	                duration *= 0.5;
+	            }
+	        }
+	        for (let i = 0; i < slowSpins; ++i) {
+	            duration *= 2;
+	            this.timeline.add({
+	                targets: this.circle,
+	                scaleX: 0,
+	                ease: Phaser.Math.Easing.Sine.InOut,
+	                duration
+	            })
+	                .add({
+	                targets: this.circle,
+	                scaleX: 1,
+	                ease: Phaser.Math.Easing.Sine.InOut,
+	                duration
+	            });
+	        }
+	        return this;
+	    }
+	    play() {
+	        var _a;
+	        if (!this.circle || !this.timeline) {
+	            this.make();
+	        }
+	        (_a = this.timeline) === null || _a === void 0 ? void 0 : _a.play();
+	        return this;
+	    }
+	}
+
 	let config = {
 	    type: Phaser.AUTO, // Phaser.CANVAS, Phaser.WEBGL, or Phaser.AUTO
 	    width: configWidth,
@@ -2657,6 +2876,7 @@ window.onload = function() {
 	    parent: 'phaser-game-main',
 	    scale: {
 	        _mode: Phaser.Scale.FIT,
+	        // mode: Phaser.Scale.ScaleModes.FIT,
 	        parent: 'phaser-game-main',
 	        autoCenter: Phaser.Scale.CENTER_BOTH,
 	        width: configWidth,
@@ -2704,6 +2924,12 @@ window.onload = function() {
 
 
 	// functions
+
+	function createCircle (scene, page, x, y, radius, color) {
+			CircleSpin.create(scene, x, y, radius, color)
+						.addToContainer(page)
+						.play();
+	}
 
 	function createWindow (scene_name, data) {
 
@@ -2885,7 +3111,7 @@ window.onload = function() {
 			}
         	//console.log('choice was made: choice = ' + thisChoice + ' and payoff = ' + 0 + '.');
 		} else if (distribution == 'binary') {
-			console.log('thisChoice = ' + thisChoice +' and optionsKeyList[thisChoice-1] = ' + optionsKeyList[thisChoice-1]);
+			// console.log('thisChoice = ' + thisChoice +' and optionsKeyList[thisChoice-1] = ' + optionsKeyList[thisChoice-1]);
 			payoff = randomChoiceFromBinary(flag, thisChoice-1, optionsKeyList[thisChoice-1], payoffList[optionsKeyList[thisChoice-1]], probabilityList[optionsKeyList[thisChoice-1]], mySocialInfo, myPublicInfo);
 			// payoff = randomChoiceFromTwo(thisChoice, payoffList[thisChoice], probabilityList[thisChoice], mySocialInfo, myPublicInfo);
 		} else {
@@ -3019,7 +3245,7 @@ window.onload = function() {
 	function sending_core_is_ready (isPreloadDone) {
 		if (isPreloadDone) {
 			socket.emit('core is ready', {latency: 0, maxLatencyForGroupCondition: maxLatencyForGroupCondition});
-			console.log('emitting "core is ready" to the server');
+			// console.log('emitting "core is ready" to the server');
 		}
 	}
 
@@ -3357,7 +3583,7 @@ window.onload = function() {
         taskOrder = data.taskOrder;
         instructionText_indiv[1] = instructionText_indiv[1] + numOptions + ' slot machines.';
         instructionText_group[1] = instructionText_group[1] + numOptions + ' slot machines.';
-        console.log('this is your optionOrder: ' + optionOrder);
+        // console.log('this is your optionOrder: ' + optionOrder);
         //setSlotPosition(data.isLeftRisky);
         if (data.numOptions == 2) {
         	// settingRiskDistribution(data.riskDistributionId);
@@ -3480,7 +3706,7 @@ window.onload = function() {
     socket.on('all are ready to move on', function(data) {
         currentTrial = 1; // resetting the trial number
         gameRound = data.gameRound; // updating the game round
-        console.log('All are ready to move on to gameRound '+(gameRound+1))
+        // console.log('All are ready to move on to gameRound '+(gameRound+1))
         game.scene.stop('SceneWaitingRoom0');
         game.scene.stop('SceneWaitingRoom');
     	game.scene.stop('SceneInstruction');
@@ -3494,12 +3720,12 @@ window.onload = function() {
     });
 
     socket.on('client disconnected', function(data) {
-        console.log('client disconnected ' + data.disconnectedClient + ' left the room');
+        // console.log('client disconnected ' + data.disconnectedClient + ' left the room');
         currentGroupSize = data.n;
         createWindow('SceneMessagePopUp', {msg: 'Notification: One member has been disconnected'});
         if (isWaiting) {
         	socket.emit('can I proceed');
-        	console.log('"can I proceed" sent');
+        	// console.log('"can I proceed" sent');
         }
     });
 
@@ -3521,10 +3747,10 @@ window.onload = function() {
         // console.log('mySocialInfo: ' + mySocialInfo);
         // console.log('myPublicInfo: ' + myPublicInfo);
         // console.log('choiceOrder: ' + choiceOrder);
-        console.log('totalPayoff_perIndiv_perGame: ' + totalPayoff_perIndiv_perGame[gameRound] + ' with group total = ' + groupTotalScore);
+        // console.log('totalPayoff_perIndiv_perGame: ' + totalPayoff_perIndiv_perGame[gameRound] + ' with group total = ' + groupTotalScore);
         for (let i = 0; i < maxGroupSize; i++) {
         	if(share_or_not[i] != null) {
-        		console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
+        		// console.log('subjectNumber' + i + ': share:' + share_or_not[i].share + ', payoff:' +share_or_not[i].payoff+', position:'+share_or_not[i].position);
         	}
         }
         // console.log('share_or_not: ' + share_or_not);
@@ -3532,7 +3758,7 @@ window.onload = function() {
         	for (let i = 1; i < numOptions+1; i++) {
         		mySocialInfoList['option'+i] = data.socialFreq[data.round-1][optionOrder[i-1] - 1];
         	}
-        	console.log('data.socialFreq[data.round-1] = ' + data.socialFreq[data.round-1]);
+        	// console.log('data.socialFreq[data.round-1] = ' + data.socialFreq[data.round-1]);
         } else {
         	for (let i = 1; i < numOptions+1; i++) {
         		if (myLastChoiceFlag == i) { // myLastChoice
@@ -3595,7 +3821,7 @@ window.onload = function() {
     });
 
     socket.on('New gameRound starts', function(data) {
-    	console.log('New gameRound ' + (data.gameRound+1) + ' with gameType = ' + taskOrder[data.gameRound] + ' starts!');
+    	// console.log('New gameRound ' + (data.gameRound+1) + ' with gameType = ' + taskOrder[data.gameRound] + ' starts!');
     	// Destroying the objects in the feedback scene
     	// payoffText.destroy();
      //    waitOthersText.destroy();
@@ -3616,7 +3842,7 @@ window.onload = function() {
     	if (numOptions == 2) {
         	settingRiskDistribution(taskOrder[data.gameRound]);
         } else {
-        	console.log('data.numOptions != 2 why????');
+        	// console.log('data.numOptions != 2 why????');
         }
     	// starting the new game round
     	game.scene.stop('ScenePayoffFeedback');
@@ -3632,14 +3858,14 @@ window.onload = function() {
 	        socket.io.opts.query = 'sessionName=already_finished';
 	        socket.disconnect();
 	        window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed='+0+'&latency='+submittedLatency;
-	        console.log('Received: "S_to_C_welcomeback": client = '+data.sessionName +'; room = '+data.roomName);
+	        // console.log('Received: "S_to_C_welcomeback": client = '+data.sessionName +'; room = '+data.roomName);
 	    } else if (waitingRoomFinishedFlag != 1) {
-	    	console.log('Received: "S_to_C_welcomeback" but the waiting room is not finished yet: client = '+data.sessionName +'; room = '+data.roomName);
+	    	// console.log('Received: "S_to_C_welcomeback" but the waiting room is not finished yet: client = '+data.sessionName +'; room = '+data.roomName);
 	    	if (typeof restTime != 'undefined') {
 	    		socket.emit('this is the previous restTime', {restTime: restTime});
 	    	}
 	    } else {
-	    	console.log('Received: "S_to_C_welcomeback" but the understanding test is not started yet: client = '+data.sessionName +'; room = '+data.roomName);
+	    	// console.log('Received: "S_to_C_welcomeback" but the understanding test is not started yet: client = '+data.sessionName +'; room = '+data.roomName);
 	    }
     });
 

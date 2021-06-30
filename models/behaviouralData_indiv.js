@@ -56,16 +56,7 @@ const Behaviour = new Schema({
     publicInfo_10: { type: String, require: false },
     publicInfo_11: { type: String, require: false }
 },
-    //{collection:"pilot_debug"}
-    //{collection:"pilot_experiment"}
-    //{collection:"postPilot_debug"}
-    {collection:"postPilot_debug_indiv"}
-    //{collection:"experimental_sessions"}
-    //{collection:"experimental_sessions_indiv"}
-    //{collection:"debug_collection"}
-    //{collection:"pilot_2_experiment"}
-    //{collection:"experimental_sessions_indiv_2"}
-    //{collection:"pilot_4ab_indiv"}
+    {collection:"helge_pilot_debug"}
     //{collection:"experiment_4ab_indiv"}
 );
 

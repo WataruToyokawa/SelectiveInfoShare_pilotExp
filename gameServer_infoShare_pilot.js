@@ -40,11 +40,11 @@ const expFunctions = require('./models/expFunctions');
 const consoleLogInterceptor = require('./models/console-log-interceptor');
 
 // Experimental variables
-const horizon = 4//20 // 100?
+const horizon = 4 // 100?
 , sessionNo = 0 // 0 = debug; 100~ = 30&31 July; 200~ = August; 300~ afternoon August;
-, maxGroupSize = 4//8 // maximum 12
-, minGroupSize = 2//4
-, maxWaitingTime = 10 * 1000
+, maxGroupSize = 3 //
+, minGroupSize = 2 //3
+, maxWaitingTime = 10 * 1000 //2 * 60 * 1000
 , numOptions = 2 // 2 or 4
 , maxChoiceStageTime = 15*1000 //20*1000 // ms
 , maxTimeTestScene = 4* 60*1000 // 4*60*1000
@@ -105,6 +105,7 @@ app.use(bodyParser.json());
 const gameRouter = require('./routes/game'); // loading game.ejs from which amazonID is transferred
 // Assigning routers to Routing
 app.use('/', gameRouter);
+
 
 // error handling
 app.use((err, req, res, next) => {
@@ -195,7 +196,7 @@ server.listen(port, function() {
 	let now = new Date(),
 	  logtxt = '[' + now.getUTCFullYear() + '/' + (now.getUTCMonth() + 1) + '/';
 	logtxt += now.getUTCDate() + '/' + now.getUTCHours() + ':' + now.getUTCMinutes() + ':' + now.getUTCSeconds() + ']';
-	logtxt += ' - Four-armed bandit task server listening on port ' + port + '; max_n_per_rooom = '+maxGroupSize;
+	logtxt += ' - Helge_exp pilot task server listening on port ' + port + '; max_n_per_rooom = '+maxGroupSize;
 	console.log(logtxt);
 });
 
@@ -700,7 +701,7 @@ io.on('connection', function (client) {
 				roomStatus[client.room]['groupTotalPayoff'][roomStatus[client.room]['pointer']-1] = data.payoff - data.sharing_cost;
 			}
 
-			console.log('groupTotalPayoff = ' + roomStatus[client.room]['groupTotalPayoff']);
+			// console.log('groupTotalPayoff = ' + roomStatus[client.room]['groupTotalPayoff']);
 
 			// recording the decision-making on sharing payoff information
 			// =========  save data to mongodb

@@ -1,0 +1,174 @@
+2021-06-29T07:59:44: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m8.324 ms - 12871[0m
+2021-06-29T07:59:44: [0mGET /stylesheets/import.css [32m200 [0m2.037 ms - 129[0m
+2021-06-29T07:59:44: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m0.633 ms - 35046[0m
+2021-06-29T07:59:44: [0mGET /stylesheets/reset.css [32m200 [0m0.640 ms - 1093[0m
+2021-06-29T07:59:44: [0mGET /stylesheets/confirmation.css [32m200 [0m2.039 ms - 2661[0m
+2021-06-29T07:59:44: [0mGET /javascripts/goToExp.js [32m200 [0m2.032 ms - 7551[0m
+2021-06-29T07:59:44: [0mGET /stylesheets/style.css [32m200 [0m0.575 ms - 4060[0m
+2021-06-29T07:59:46: [0mGET /assets/favicon.ico [32m200 [0m0.741 ms - 1150[0m
+2021-06-29T08:00:00: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:00:00: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m2.197 ms - 12871[0m
+2021-06-29T08:00:00: [0mGET /stylesheets/import.css [32m200 [0m0.654 ms - 129[0m
+2021-06-29T08:00:00: [0mGET /stylesheets/confirmation.css [32m200 [0m0.659 ms - 2661[0m
+2021-06-29T08:00:00: [0mGET /stylesheets/reset.css [32m200 [0m0.754 ms - 1093[0m
+2021-06-29T08:00:00: [0mGET /stylesheets/style.css [32m200 [0m0.750 ms - 4060[0m
+2021-06-29T08:00:00: [0mGET /javascripts/goToExp.js [32m200 [0m0.782 ms - 7551[0m
+2021-06-29T08:00:00: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m1.632 ms - 35046[0m
+2021-06-29T08:00:01: [0mGET /assets/favicon.ico [32m200 [0m0.649 ms - 1150[0m
+2021-06-29T08:00:33: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:00:33: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m2.022 ms - 12871[0m
+2021-06-29T08:00:33: [0mGET /stylesheets/confirmation.css [32m200 [0m0.708 ms - 2661[0m
+2021-06-29T08:00:33: [0mGET /stylesheets/import.css [32m200 [0m0.643 ms - 129[0m
+2021-06-29T08:00:33: [0mGET /javascripts/goToExp.js [32m200 [0m2.055 ms - 7551[0m
+2021-06-29T08:00:33: [0mGET /stylesheets/reset.css [32m200 [0m1.492 ms - 1093[0m
+2021-06-29T08:00:33: [0mGET /stylesheets/style.css [32m200 [0m1.146 ms - 4060[0m
+2021-06-29T08:00:33: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m0.880 ms - 35046[0m
+2021-06-29T08:00:33: [0mGET /assets/favicon.ico [32m200 [0m0.914 ms - 1150[0m
+2021-06-29T08:05:44: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:05:44: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m1.382 ms - 12871[0m
+2021-06-29T08:05:45: [0mGET /stylesheets/import.css [32m200 [0m0.905 ms - 129[0m
+2021-06-29T08:05:45: [0mGET /javascripts/goToExp.js [32m200 [0m1.847 ms - 7551[0m
+2021-06-29T08:05:45: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m1.306 ms - 35046[0m
+2021-06-29T08:05:45: [0mGET /stylesheets/confirmation.css [32m200 [0m0.421 ms - 2661[0m
+2021-06-29T08:05:45: [0mGET /stylesheets/style.css [32m200 [0m1.050 ms - 4060[0m
+2021-06-29T08:05:45: [0mGET /stylesheets/reset.css [32m200 [0m1.040 ms - 1093[0m
+2021-06-29T08:05:45: [0mGET /assets/favicon.ico [32m200 [0m0.878 ms - 1150[0m
+2021-06-29T08:08:39: questionnaire.js : INHOUSETEST315221idTJdz0zLhvh32S8AAABbinary0
+2021-06-29T08:08:39: [0mPOST /questionnaire [32m200 [0m11.327 ms - 6386[0m
+2021-06-29T08:08:39: [0mGET /stylesheets/import.css [32m200 [0m0.637 ms - 129[0m
+2021-06-29T08:08:39: [0mGET /stylesheets/reset.css [32m200 [0m2.554 ms - 1093[0m
+2021-06-29T08:08:39: [0mGET /stylesheets/questionnaire.css [32m200 [0m1.581 ms - 995[0m
+2021-06-29T08:08:39: [0mGET /javascripts/questionnaireForm.js [32m200 [0m1.269 ms - 8171[0m
+2021-06-29T08:08:39: [0mGET /stylesheets/style.css [32m200 [0m0.627 ms - 4060[0m
+2021-06-29T08:08:39: [0mGET /assets/favicon.ico [32m200 [0m0.592 ms - 1150[0m
+2021-06-29T08:08:41: questionnaire.js : INHOUSETEST320221SQFwiJfQkiWqRap1AAAAbinary0
+2021-06-29T08:08:41: [0mPOST /questionnaire [32m200 [0m2.324 ms - 6386[0m
+2021-06-29T08:08:42: [0mGET /stylesheets/import.css [36m304 [0m1.036 ms - -[0m
+2021-06-29T08:08:42: [0mGET /stylesheets/questionnaire.css [32m200 [0m2.097 ms - 995[0m
+2021-06-29T08:08:42: [0mGET /javascripts/questionnaireForm.js [32m200 [0m1.691 ms - 8171[0m
+2021-06-29T08:08:42: [0mGET /stylesheets/reset.css [36m304 [0m0.554 ms - -[0m
+2021-06-29T08:08:42: [0mGET /stylesheets/style.css [36m304 [0m0.799 ms - -[0m
+2021-06-29T08:09:01: totalEarning = 2
+2021-06-29T08:09:01: bonus_for_waiting = 0.15
+2021-06-29T08:09:01: totalPayment = 3.2
+2021-06-29T08:09:01: [0mPOST /endPage [32m200 [0m3.839 ms - 6206[0m
+2021-06-29T08:09:01: [0mGET /stylesheets/import.css [36m304 [0m0.913 ms - -[0m
+2021-06-29T08:09:01: [0mGET /stylesheets/confirmation.css [32m200 [0m1.030 ms - 2661[0m
+2021-06-29T08:09:01: [0mGET /stylesheets/reset.css [36m304 [0m0.813 ms - -[0m
+2021-06-29T08:09:01: [0mGET /stylesheets/style.css [36m304 [0m0.759 ms - -[0m
+2021-06-29T08:09:06: totalEarning = 2
+2021-06-29T08:09:06: bonus_for_waiting = 0.2
+2021-06-29T08:09:06: totalPayment = 3.2
+2021-06-29T08:09:06: [0mPOST /endPage [32m200 [0m2.120 ms - 6206[0m
+2021-06-29T08:09:06: [0mGET /stylesheets/import.css [36m304 [0m0.428 ms - -[0m
+2021-06-29T08:09:06: [0mGET /stylesheets/confirmation.css [36m304 [0m0.470 ms - -[0m
+2021-06-29T08:09:06: [0mGET /stylesheets/reset.css [36m304 [0m0.354 ms - -[0m
+2021-06-29T08:09:06: [0mGET /stylesheets/style.css [36m304 [0m0.471 ms - -[0m
+2021-06-29T08:12:31: questionnaire.js : INHOUSETEST320234yfMU8bKNcxO6tn7bAAACbinary0
+2021-06-29T08:12:31: [0mPOST /questionnaire [32m200 [0m1.483 ms - 6386[0m
+2021-06-29T08:12:31: [0mGET /stylesheets/import.css [36m304 [0m0.475 ms - -[0m
+2021-06-29T08:12:31: [0mGET /stylesheets/reset.css [36m304 [0m0.494 ms - -[0m
+2021-06-29T08:12:31: [0mGET /stylesheets/style.css [36m304 [0m0.713 ms - -[0m
+2021-06-29T08:12:31: [0mGET /javascripts/questionnaireForm.js [32m200 [0m1.997 ms - 8171[0m
+2021-06-29T08:12:31: [0mGET /stylesheets/questionnaire.css [32m200 [0m1.959 ms - 995[0m
+2021-06-29T08:13:02: totalEarning = 2
+2021-06-29T08:13:02: bonus_for_waiting = 0.2
+2021-06-29T08:13:02: totalPayment = 3.3
+2021-06-29T08:13:02: [0mPOST /endPage [32m200 [0m1.680 ms - 6206[0m
+2021-06-29T08:13:02: [0mGET /stylesheets/import.css [36m304 [0m0.388 ms - -[0m
+2021-06-29T08:13:02: [0mGET /stylesheets/confirmation.css [36m304 [0m0.447 ms - -[0m
+2021-06-29T08:13:02: [0mGET /stylesheets/reset.css [36m304 [0m0.847 ms - -[0m
+2021-06-29T08:13:02: [0mGET /stylesheets/style.css [36m304 [0m0.767 ms - -[0m
+2021-06-29T08:20:10: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:20:10: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m1.366 ms - 12871[0m
+2021-06-29T08:20:10: [0mGET /stylesheets/confirmation.css [32m200 [0m1.178 ms - 2661[0m
+2021-06-29T08:20:10: [0mGET /stylesheets/import.css [32m200 [0m1.146 ms - 129[0m
+2021-06-29T08:20:10: [0mGET /stylesheets/style.css [32m200 [0m1.338 ms - 4060[0m
+2021-06-29T08:20:10: [0mGET /stylesheets/reset.css [32m200 [0m1.234 ms - 1093[0m
+2021-06-29T08:20:10: [0mGET /javascripts/goToExp.js [32m200 [0m1.248 ms - 7551[0m
+2021-06-29T08:20:10: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m0.546 ms - 35046[0m
+2021-06-29T08:20:10: [0mGET /assets/favicon.ico [32m200 [0m0.641 ms - 1150[0m
+2021-06-29T08:20:16: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:20:16: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m1.208 ms - 12871[0m
+2021-06-29T08:20:16: [0mGET /stylesheets/confirmation.css [36m304 [0m0.494 ms - -[0m
+2021-06-29T08:20:16: [0mGET /stylesheets/import.css [36m304 [0m0.315 ms - -[0m
+2021-06-29T08:20:16: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [36m304 [0m1.877 ms - -[0m
+2021-06-29T08:20:16: [0mGET /javascripts/goToExp.js [36m304 [0m0.979 ms - -[0m
+2021-06-29T08:20:16: [0mGET /stylesheets/reset.css [32m200 [0m0.565 ms - 1093[0m
+2021-06-29T08:20:16: [0mGET /stylesheets/style.css [32m200 [0m0.679 ms - 4060[0m
+2021-06-29T08:20:16: [0mGET /assets/favicon.ico [32m200 [0m0.579 ms - 1150[0m
+2021-06-29T08:20:18: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:20:18: [0mGET /?amazonID=INHOUSETEST3 [36m304 [0m1.274 ms - -[0m
+2021-06-29T08:20:18: [0mGET /stylesheets/import.css [36m304 [0m0.468 ms - -[0m
+2021-06-29T08:20:18: [0mGET /stylesheets/confirmation.css [36m304 [0m0.418 ms - -[0m
+2021-06-29T08:20:18: [0mGET /stylesheets/style.css [36m304 [0m0.456 ms - -[0m
+2021-06-29T08:20:18: [0mGET /stylesheets/reset.css [36m304 [0m0.451 ms - -[0m
+2021-06-29T08:20:18: [0mGET /javascripts/goToExp.js [36m304 [0m0.546 ms - -[0m
+2021-06-29T08:20:18: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [36m304 [0m0.467 ms - -[0m
+2021-06-29T08:36:15: questionnaire.js : INHOUSETEST330237p_CVWzn-vGQONDzdAAAGbinary1
+2021-06-29T08:36:15: [0mPOST /questionnaire [32m200 [0m2.017 ms - 6386[0m
+2021-06-29T08:36:15: [0mGET /stylesheets/import.css [32m200 [0m0.978 ms - 129[0m
+2021-06-29T08:36:15: [0mGET /stylesheets/reset.css [36m304 [0m0.701 ms - -[0m
+2021-06-29T08:36:15: [0mGET /stylesheets/questionnaire.css [32m200 [0m2.184 ms - 995[0m
+2021-06-29T08:36:15: [0mGET /javascripts/questionnaireForm.js [32m200 [0m0.569 ms - 8171[0m
+2021-06-29T08:36:15: [0mGET /stylesheets/style.css [36m304 [0m0.576 ms - -[0m
+2021-06-29T08:36:15: [0mGET /assets/favicon.ico [32m200 [0m0.777 ms - 1150[0m
+2021-06-29T08:36:18: questionnaire.js : INHOUSETEST320237n3WH3uxNhYXkXGc5AAAEbinary1
+2021-06-29T08:36:18: [0mPOST /questionnaire [32m200 [0m2.906 ms - 6386[0m
+2021-06-29T08:36:18: [0mGET /stylesheets/questionnaire.css [32m200 [0m0.710 ms - 995[0m
+2021-06-29T08:36:18: [0mGET /stylesheets/import.css [36m304 [0m0.448 ms - -[0m
+2021-06-29T08:36:18: [0mGET /javascripts/questionnaireForm.js [32m200 [0m1.488 ms - 8171[0m
+2021-06-29T08:36:18: [0mGET /stylesheets/style.css [36m304 [0m1.019 ms - -[0m
+2021-06-29T08:36:18: [0mGET /stylesheets/reset.css [36m304 [0m0.777 ms - -[0m
+2021-06-29T08:36:30: questionnaire.js : INHOUSETEST332237V8TGD00sBMNJvkOuAAAFbinary1
+2021-06-29T08:36:30: [0mPOST /questionnaire [32m200 [0m2.549 ms - 6386[0m
+2021-06-29T08:36:30: questionnaire.js : INHOUSETEST332237V8TGD00sBMNJvkOuAAAFbinary1
+2021-06-29T08:36:30: [0mPOST /questionnaire [32m200 [0m1.419 ms - 6386[0m
+2021-06-29T08:36:31: [0mGET /stylesheets/import.css [36m304 [0m0.407 ms - -[0m
+2021-06-29T08:36:31: [0mGET /stylesheets/questionnaire.css [36m304 [0m0.467 ms - -[0m
+2021-06-29T08:36:31: [0mGET /stylesheets/style.css [36m304 [0m0.668 ms - -[0m
+2021-06-29T08:36:31: [0mGET /stylesheets/reset.css [36m304 [0m0.372 ms - -[0m
+2021-06-29T08:36:31: [0mGET /javascripts/questionnaireForm.js [36m304 [0m0.523 ms - -[0m
+2021-06-29T08:36:36: totalEarning = 2
+2021-06-29T08:36:36: bonus_for_waiting = 0.2
+2021-06-29T08:36:36: totalPayment = 3.4
+2021-06-29T08:36:36: [0mPOST /endPage [32m200 [0m1.923 ms - 6206[0m
+2021-06-29T08:36:36: [0mGET /stylesheets/import.css [36m304 [0m0.608 ms - -[0m
+2021-06-29T08:36:36: [0mGET /stylesheets/reset.css [36m304 [0m0.575 ms - -[0m
+2021-06-29T08:36:36: [0mGET /stylesheets/confirmation.css [36m304 [0m0.407 ms - -[0m
+2021-06-29T08:36:36: [0mGET /stylesheets/style.css [36m304 [0m0.423 ms - -[0m
+2021-06-29T08:37:13: totalEarning = 2
+2021-06-29T08:37:13: bonus_for_waiting = 0.32
+2021-06-29T08:37:13: totalPayment = 3.5
+2021-06-29T08:37:13: [0mPOST /endPage [32m200 [0m2.273 ms - 6206[0m
+2021-06-29T08:37:13: [0mGET /stylesheets/import.css [36m304 [0m0.505 ms - -[0m
+2021-06-29T08:37:13: [0mGET /stylesheets/confirmation.css [36m304 [0m0.462 ms - -[0m
+2021-06-29T08:37:13: [0mGET /stylesheets/style.css [36m304 [0m0.568 ms - -[0m
+2021-06-29T08:37:13: [0mGET /stylesheets/reset.css [36m304 [0m0.530 ms - -[0m
+2021-06-29T08:37:21: totalEarning = 2
+2021-06-29T08:37:21: bonus_for_waiting = 0.3
+2021-06-29T08:37:21: totalPayment = 3.5
+2021-06-29T08:37:21: [0mPOST /endPage [32m200 [0m1.632 ms - 6206[0m
+2021-06-29T08:37:21: [0mGET /stylesheets/import.css [36m304 [0m0.536 ms - -[0m
+2021-06-29T08:37:21: [0mGET /stylesheets/confirmation.css [32m200 [0m2.603 ms - 2661[0m
+2021-06-29T08:37:21: [0mGET /stylesheets/reset.css [36m304 [0m0.422 ms - -[0m
+2021-06-29T08:37:21: [0mGET /stylesheets/style.css [36m304 [0m0.533 ms - -[0m
+2021-06-29T08:45:04: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:45:04: [0mGET /?amazonID=INHOUSETEST3 [32m200 [0m1.426 ms - 12871[0m
+2021-06-29T08:45:04: [0mGET /stylesheets/import.css [32m200 [0m0.993 ms - 129[0m
+2021-06-29T08:45:04: [0mGET /stylesheets/reset.css [32m200 [0m0.897 ms - 1093[0m
+2021-06-29T08:45:04: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [32m200 [0m1.108 ms - 35046[0m
+2021-06-29T08:45:04: [0mGET /stylesheets/style.css [32m200 [0m0.642 ms - 4060[0m
+2021-06-29T08:45:04: [0mGET /stylesheets/confirmation.css [32m200 [0m1.411 ms - 2661[0m
+2021-06-29T08:45:04: [0mGET /javascripts/goToExp.js [32m200 [0m1.493 ms - 7551[0m
+2021-06-29T08:45:05: [0mGET /assets/favicon.ico [32m200 [0m0.663 ms - 1150[0m
+2021-06-29T08:47:44: Accessed by debug ID: INHOUSETEST3
+2021-06-29T08:47:44: [0mGET /?amazonID=INHOUSETEST3 [36m304 [0m1.684 ms - -[0m
+2021-06-29T08:47:44: [0mGET /stylesheets/import.css [36m304 [0m3.909 ms - -[0m
+2021-06-29T08:47:44: [0mGET /javascripts/goToExp.js [36m304 [0m2.896 ms - -[0m
+2021-06-29T08:47:44: [0mGET /stylesheets/confirmation.css [36m304 [0m2.608 ms - -[0m
+2021-06-29T08:47:44: [0mGET /assets/UniKonstanz_Logo_Optimum_sRGB.png [36m304 [0m2.409 ms - -[0m
+2021-06-29T08:47:44: [0mGET /stylesheets/style.css [36m304 [0m2.286 ms - -[0m
+2021-06-29T08:47:44: [0mGET /stylesheets/reset.css [36m304 [0m0.406 ms - -[0m
+2021-06-29T08:47:44: [0mGET /assets/favicon.ico [36m304 [0m0.529 ms - -[0m
+2021-06-29T09:24:17: [0mGET / [36m302 [0m3.805 ms - 46[0m

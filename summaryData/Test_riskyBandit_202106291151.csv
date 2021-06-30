@@ -1,0 +1,7 @@
+"date","exp_condition","indivOrGroup","confirmationID","amazonID","latency","totalEarning","bonus_for_waiting","completionFee","totalPayment","age","sex","country","q1","q2","q3","q4"
+"202106291151","binary","0","idTJdz0zLhvh32S8AAAB","INHOUSETEST3","","2.21","0.15","0.8","3.2","29","1","NA","4","-1","-1",""
+"202106291151","binary","0","SQFwiJfQkiWqRap1AAAA","INHOUSETEST3","","2.21","0.2","0.8","3.2","35","2","NA","5","-1","-1",""
+"202106291151","binary","0","yfMU8bKNcxO6tn7bAAAC","INHOUSETEST3","","2.34","0.2","0.8","3.3","14","1","NA","4","-1","-1",""
+"202106291151","binary","1","n3WH3uxNhYXkXGc5AAAE","INHOUSETEST3","","2.37","0.2","0.8","3.4","142","1","NA","4","4","4",""
+"202106291151","binary","1","V8TGD00sBMNJvkOuAAAF","INHOUSETEST3","","2.37","0.32","0.8","3.5","35","2","NA","5","4","4",""
+"202106291151","binary","1","p_CVWzn-vGQONDzdAAAG","INHOUSETEST3","","2.37","0.3","0.8","3.5","29","1","NA","5","4","4",""

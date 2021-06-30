@@ -1,0 +1,36 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/usr/local/bin/npm', 'run', 'to-es6' ]
+2 info using npm@2.11.3
+3 info using node@v0.12.7
+4 verbose run-script [ 'preto-es6', 'to-es6', 'postto-es6' ]
+5 info preto-es6 phaser3-loading-animations-premium@1.0.0
+6 info to-es6 phaser3-loading-animations-premium@1.0.0
+7 verbose unsafe-perm in lifecycle true
+8 info phaser3-loading-animations-premium@1.0.0 Failed to exec to-es6 script
+9 verbose stack Error: phaser3-loading-animations-premium@1.0.0 to-es6: `tsc src/spinners/**/*.ts --outDir es6 --target ES6 --types phaser,bezier-easing --esModuleInterop --moduleResolution node`
+9 verbose stack spawn ENOENT
+9 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:17:16)
+9 verbose stack     at ChildProcess.emit (events.js:110:17)
+9 verbose stack     at maybeClose (child_process.js:1015:16)
+9 verbose stack     at Process.ChildProcess._handle.onexit (child_process.js:1087:5)
+10 verbose pkgid phaser3-loading-animations-premium@1.0.0
+11 verbose cwd /Users/wataru/Dropbox/wataru/phaser3/phaser3-loading-animations-premium/src/spinners
+12 error Darwin 19.6.0
+13 error argv "node" "/usr/local/bin/npm" "run" "to-es6"
+14 error node v0.12.7
+15 error npm  v2.11.3
+16 error file sh
+17 error code ELIFECYCLE
+18 error errno ENOENT
+19 error syscall spawn
+20 error phaser3-loading-animations-premium@1.0.0 to-es6: `tsc src/spinners/**/*.ts --outDir es6 --target ES6 --types phaser,bezier-easing --esModuleInterop --moduleResolution node`
+20 error spawn ENOENT
+21 error Failed at the phaser3-loading-animations-premium@1.0.0 to-es6 script 'tsc src/spinners/**/*.ts --outDir es6 --target ES6 --types phaser,bezier-easing --esModuleInterop --moduleResolution node'.
+21 error This is most likely a problem with the phaser3-loading-animations-premium package,
+21 error not with npm itself.
+21 error Tell the author that this fails on your system:
+21 error     tsc src/spinners/**/*.ts --outDir es6 --target ES6 --types phaser,bezier-easing --esModuleInterop --moduleResolution node
+21 error You can get their info via:
+21 error     npm owner ls phaser3-loading-animations-premium
+21 error There is likely additional logging output above.
+22 verbose exit [ 1, true ]

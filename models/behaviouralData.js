@@ -59,8 +59,8 @@ const Behaviour = new Schema({
     publicInfo_10: { type: String, require: false },
     publicInfo_11: { type: String, require: false }
 },
-    {collection:"helge_pilot_debug"}
-    //{collection:"pilot_experiment"}
+    //{collection:"helge_pilot_debug"}
+    {collection:"helge_pilot_2021_summer"}
 );
 
 module.exports = mongoose.model('behaviour', Behaviour);
