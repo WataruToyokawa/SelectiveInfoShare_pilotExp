@@ -1,0 +1,4 @@
+"date","exp_condition","indivOrGroup","confirmationID","amazonID","latency","totalEarning","bonus_for_waiting","completionFee","totalPayment","age","sex","country","q1","q2","q3","q4"
+"202106292251","binary","1","m00WOsR59vVxob3aAAA8","INHOUSETEST3","-1","0.00","0.1","0.8","0.9","","","NA","-1","-1","-1",""
+"202106292251","binary","1","zSSCmgxhe541kDwfAAA7","INHOUSETEST3","","0.26","0.02","0.8","1.1","","2","NA","-1","-1","-1",""
+"202106292251","binary","0","Ma3q6M7cM7TbKrP2AAA9","INHOUSETEST3","-1","0.13","0.01","0.8","0.9","","2","NA","-1","-1","-1",""

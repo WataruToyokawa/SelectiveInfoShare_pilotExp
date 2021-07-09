@@ -1473,7 +1473,7 @@ window.onload = function() {
 		    instructionDiv.innerHTML = understandingCheckText[0];
 
 			//
-			let buttonContainerTest = this.add.container(450, 560); //position
+			let buttonContainerTest = this.add.container(450, 570); //position
 			let buttonImageTest = this.add.sprite(0, 0, 'button').setDisplaySize(300, 50).setInteractive({ cursor: 'pointer' });
 			let buttonTextTest = this.add.text(0, 0, 'Check your answers', { fontSize: '24px', fill: '#000' });
 			buttonTextTest.setOrigin(0.5, 0.5);
@@ -1530,18 +1530,24 @@ window.onload = function() {
 						optionButtonsA0[answers[0]].remove(optionButtonsA0Text[answers[0]]);
 						optionButtonsA0[answers[0]].add(optionButtonsA0Image[answers[0]]);
 						optionButtonsA0[answers[0]].add(optionButtonsA0Text[answers[0]]);
+						optionButtonsA0Image_active[answers[0]].visible = false;
+						optionButtonsA0Image[answers[0]].visible = true;
 						// remove and add a new active image
 						answers[0] = i;
 						optionButtonsA0[i].remove(optionButtonsA0Image[i]);
 						optionButtonsA0[i].remove(optionButtonsA0Text[i]);
 						optionButtonsA0[i].add(optionButtonsA0Image_active[i]);
 						optionButtonsA0[i].add(optionButtonsA0Text[i]);
+						optionButtonsA0Image[i].visible = false;
+						optionButtonsA0Image_active[i].visible = true;
 					} else {
 						answers[0] = i;
 						optionButtonsA0[i].remove(optionButtonsA0Image[i]);
 						optionButtonsA0[i].remove(optionButtonsA0Text[i]);
 						optionButtonsA0[i].add(optionButtonsA0Image_active[i]);
 						optionButtonsA0[i].add(optionButtonsA0Text[i]);
+						optionButtonsA0Image[i].visible = false;
+						optionButtonsA0Image_active[i].visible = true;
 					}
 					if ( (indivOrGroup == 0 & answers.filter(isNotNegative).length == 3) | (indivOrGroup == 1 & answers.filter(isNotNegative).length == 5)) {
 						buttonContainerTest.visible = true;
@@ -1571,7 +1577,7 @@ window.onload = function() {
 			optionButtonsA1Text[0] = this.add.text(0, 0, 'YES', { fontSize: '23px', fill: '#000' });
 			optionButtonsA1Text[1] = this.add.text(0, 0, 'NO', { fontSize: '23px', fill: '#000' });
 			for (let i=0; i<2; i++) {
-				optionButtonsA1[i] = this.add.container(180 + 100*i, 180+80*1); //position
+				optionButtonsA1[i] = this.add.container(180 + 100*i, 185+80*1); //position
 				optionButtonsA1Image[i] = this.add.sprite(0, 0, 'button').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA1Image_active[i] = this.add.sprite(0, 0, 'button_active').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA1Text[i].setOrigin(0.5, 0.5);
@@ -1586,18 +1592,24 @@ window.onload = function() {
 						optionButtonsA1[answers[1]].remove(optionButtonsA1Text[answers[1]]);
 						optionButtonsA1[answers[1]].add(optionButtonsA1Image[answers[1]]);
 						optionButtonsA1[answers[1]].add(optionButtonsA1Text[answers[1]]);
+						optionButtonsA1Image_active[answers[1]].visible = false;
+						optionButtonsA1Image[answers[1]].visible = true;
 						// remove and add a new active image
 						answers[1] = i;
 						optionButtonsA1[i].remove(optionButtonsA1Image[i]);
 						optionButtonsA1[i].remove(optionButtonsA1Text[i]);
 						optionButtonsA1[i].add(optionButtonsA1Image_active[i]);
 						optionButtonsA1[i].add(optionButtonsA1Text[i]);
+						optionButtonsA1Image[i].visible = false;
+						optionButtonsA1Image_active[i].visible = true;
 					} else {
 						answers[1] = i;
 						optionButtonsA1[i].remove(optionButtonsA1Image[i]);
 						optionButtonsA1[i].remove(optionButtonsA1Text[i]);
 						optionButtonsA1[i].add(optionButtonsA1Image_active[i]);
 						optionButtonsA1[i].add(optionButtonsA1Text[i]);
+						optionButtonsA1Image[i].visible = false;
+						optionButtonsA1Image_active[i].visible = true;
 					}
 					if ( (indivOrGroup == 0 & answers.filter(isNotNegative).length == 3) | (indivOrGroup == 1 & answers.filter(isNotNegative).length == 5)) {
 						buttonContainerTest.visible = true;
@@ -1627,7 +1639,7 @@ window.onload = function() {
 			optionButtonsA2Text[0] = this.add.text(0, 0, 'YES', { fontSize: '23px', fill: '#000' });
 			optionButtonsA2Text[1] = this.add.text(0, 0, 'NO', { fontSize: '23px', fill: '#000' });
 			for (let i=0; i<2; i++) {
-				optionButtonsA2[i] = this.add.container(180 + 100*i, 180+80*2); //position
+				optionButtonsA2[i] = this.add.container(180 + 100*i, 185+80*2); //position
 				optionButtonsA2Image[i] = this.add.sprite(0, 0, 'button').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA2Image_active[i] = this.add.sprite(0, 0, 'button_active').setDisplaySize(50, 30).setInteractive({ cursor: 'pointer' });
 				optionButtonsA2Text[i].setOrigin(0.5, 0.5);
@@ -1642,18 +1654,24 @@ window.onload = function() {
 						optionButtonsA2[answers[2]].remove(optionButtonsA2Text[answers[2]]);
 						optionButtonsA2[answers[2]].add(optionButtonsA2Image[answers[2]]);
 						optionButtonsA2[answers[2]].add(optionButtonsA2Text[answers[2]]);
+						optionButtonsA2Image_active[answers[2]].visible = false;
+						optionButtonsA2Image[answers[2]].visible = true;
 						// remove and add a new active image
 						answers[2] = i;
 						optionButtonsA2[i].remove(optionButtonsA2Image[i]);
 						optionButtonsA2[i].remove(optionButtonsA2Text[i]);
 						optionButtonsA2[i].add(optionButtonsA2Image_active[i]);
 						optionButtonsA2[i].add(optionButtonsA2Text[i]);
+						optionButtonsA2Image_active[i].visible = true;
+						optionButtonsA2Image[i].visible = false;
 					} else {
 						answers[2] = i;
 						optionButtonsA2[i].remove(optionButtonsA2Image[i]);
 						optionButtonsA2[i].remove(optionButtonsA2Text[i]);
 						optionButtonsA2[i].add(optionButtonsA2Image_active[i]);
 						optionButtonsA2[i].add(optionButtonsA2Text[i]);
+						optionButtonsA2Image_active[i].visible = true;
+						optionButtonsA2Image[i].visible = false;
 					}
 					if ( (indivOrGroup == 0 & answers.filter(isNotNegative).length == 3) | (indivOrGroup == 1 & answers.filter(isNotNegative).length == 5)) {
 						buttonContainerTest.visible = true;
@@ -1698,18 +1716,24 @@ window.onload = function() {
 							optionButtonsA3[answers[3]].remove(optionButtonsA3Text[answers[3]]);
 							optionButtonsA3[answers[3]].add(optionButtonsA3Image[answers[3]]);
 							optionButtonsA3[answers[3]].add(optionButtonsA3Text[answers[3]]);
+							optionButtonsA3Image_active[answers[3]].visible = false;
+							optionButtonsA3Image[answers[3]].visible = true;
 							// remove and add a new active image
 							answers[3] = i;
 							optionButtonsA3[i].remove(optionButtonsA3Image[i]);
 							optionButtonsA3[i].remove(optionButtonsA3Text[i]);
 							optionButtonsA3[i].add(optionButtonsA3Image_active[i]);
 							optionButtonsA3[i].add(optionButtonsA3Text[i]);
+							optionButtonsA3Image_active[i].visible = true;
+							optionButtonsA3Image[i].visible = false;
 						} else {
 							answers[3] = i;
 							optionButtonsA3[i].remove(optionButtonsA3Image[i]);
 							optionButtonsA3[i].remove(optionButtonsA3Text[i]);
 							optionButtonsA3[i].add(optionButtonsA3Image_active[i]);
 							optionButtonsA3[i].add(optionButtonsA3Text[i]);
+							optionButtonsA3Image_active[i].visible = true;
+							optionButtonsA3Image[i].visible = false;
 						}
 						if ( (indivOrGroup == 0 & answers.filter(isNotNegative).length == 3) | (indivOrGroup == 1 & answers.filter(isNotNegative).length == 5)) {
 							buttonContainerTest.visible = true;
@@ -1753,18 +1777,24 @@ window.onload = function() {
 							optionButtonsA4[answers[4]].remove(optionButtonsA4Text[answers[4]]);
 							optionButtonsA4[answers[4]].add(optionButtonsA4Image[answers[4]]);
 							optionButtonsA4[answers[4]].add(optionButtonsA4Text[answers[4]]);
+							optionButtonsA4Image_active[answers[4]].visible = false;
+							optionButtonsA4Image[answers[4]].visible = true;
 							// remove and add a new active image
 							answers[4] = i;
 							optionButtonsA4[i].remove(optionButtonsA4Image[i]);
 							optionButtonsA4[i].remove(optionButtonsA4Text[i]);
 							optionButtonsA4[i].add(optionButtonsA4Image_active[i]);
 							optionButtonsA4[i].add(optionButtonsA4Text[i]);
+							optionButtonsA4Image_active[i].visible = true;
+							optionButtonsA4Image[i].visible = false;
 						} else {
 							answers[4] = i;
 							optionButtonsA4[i].remove(optionButtonsA4Image[i]);
 							optionButtonsA4[i].remove(optionButtonsA4Text[i]);
 							optionButtonsA4[i].add(optionButtonsA4Image_active[i]);
 							optionButtonsA4[i].add(optionButtonsA4Text[i]);
+							optionButtonsA4Image_active[i].visible = true;
+							optionButtonsA4Image[i].visible = false;
 						}
 						if ( (indivOrGroup == 0 & answers.filter(isNotNegative).length == 3) | (indivOrGroup == 1 & answers.filter(isNotNegative).length == 5)) {
 							buttonContainerTest.visible = true;
@@ -2519,7 +2549,7 @@ window.onload = function() {
 									window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed=no_response'+'&latency='+submittedLatency;
 									confirmationTimer.destroy();
 									buttonContainer_confirm.visible = false;
-									waitOthersText.setText('Time was up! \nTransitioning to the questionnaire...');
+									waitOthersText.setText('Time was up! \nYou are redirected to the questionnaire...');
 									energyContainer.visible = false;
 						    		energyBar.visible = false;
 						    		energyMask.visible = false;
@@ -2567,7 +2597,7 @@ window.onload = function() {
 								window.location.href = htmlServer + portnumQuestionnaire +'/questionnaireForDisconnectedSubjects?amazonID='+amazonID+'&bonus_for_waiting='+waitingBonus+'&totalEarningInCent='+Math.round((totalPayoff_perIndiv*cent_per_point))+'&confirmationID='+confirmationID+'&exp_condition='+exp_condition+'&indivOrGroup='+indivOrGroup+'&completed=no_response'+'&latency='+submittedLatency;
 								confirmationTimer.destroy();
 								buttonContainer_confirm.visible = false;
-								waitOthersText.setText('Time was up! \nTransitioning to the questionnaire...');
+								waitOthersText.setText('Time was up! \nYou are redirected to the questionnaire...');
 								energyContainer.visible = false;
 					    		energyBar.visible = false;
 					    		energyMask.visible = false;

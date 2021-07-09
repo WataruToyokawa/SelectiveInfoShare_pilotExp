@@ -84,7 +84,7 @@ app.use('/questionnaireForDisconnectedSubjects', questionnaireForDisconnectedSub
 app.use('/multipleAccess', multipleAccessRouter);
 
 app.post('/endPage', function(req, res) {
-  let completionFee = flatFeeValue;
+  let completionFee = 0; // no completion fee is paid when not completed
   if (req.body.completed == 1) {
     completionFee = flatFeeValue + completionFeeValue;
   }
@@ -100,7 +100,11 @@ app.post('/endPage', function(req, res) {
   save_data.totalEarning = parseFloat(req.body.totalEarning).toFixed(2);//Math.round(parseInt(req.body.totalEarning))/100;
   save_data.bonus_for_waiting = Math.round(parseInt(req.body.bonus_for_waiting))/100;
   save_data.completionFee = completionFee;
-  save_data.totalPayment = Math.round(10*(parseInt(req.body.bonus_for_waiting)/100 + parseFloat(req.body.totalEarning) + completionFee))/10;
+  if (req.body.completed == 1) {
+    save_data.totalPayment = Math.round(10*(parseInt(req.body.bonus_for_waiting)/100 + parseFloat(req.body.totalEarning) + completionFee))/10;
+  } else {
+    save_data.totalPayment = Math.round(10*(parseInt(req.body.bonus_for_waiting)/100 + parseFloat(req.body.totalEarning) + completionFee))/10;
+  }
   save_data.age = req.body.age;
   save_data.sex = req.body.sex;
   save_data.country = req.body.country;
