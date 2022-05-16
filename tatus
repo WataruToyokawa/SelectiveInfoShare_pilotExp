@@ -1,0 +1,48 @@
+* [33mbb878c9[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m npm update
+[31m|[m *   [33mfb1cee2[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #1 from WataruToyokawa/dependabot/npm_and_yarn/minimist-1.2.6
+[31m|[m [31m|[m[33m\[m  
+[31m|[m[31m/[m [33m/[m  
+[31m|[m * [33mb7c7438[m[33m ([m[1;31morigin/dependabot/npm_and_yarn/minimist-1.2.6[m[33m)[m Bump minimist from 1.2.5 to 1.2.6
+* [33m|[m [33mea82e70[m data added
+[33m|[m[33m/[m  
+[33m|[m * [33m6a03e57[m[33m ([m[1;32mvps[m[33m)[m pilot finished
+[33m|[m * [33m3423741[m[33m ([m[1;31morigin/vps[m[33m)[m index and end page edited
+[33m|[m * [33m2ccc50e[m phaser3 loading added
+[33m|[m * [33m067d478[m missed trial and dropout edited
+[33m|[m * [33md51d316[m minor changes
+[33m|[m[33m/[m  
+* [33md6c994e[m instruction edited
+* [33m13aa765[m instruction activated
+* [33m14ad2ec[m minor edit
+* [33m70a24f1[m made "pointer" in the server
+* [33m57cc537[m both client and server edited
+* [33m19ccb42[m main.js edited
+* [33ma2cc1b8[m README updated
+* [33m55bafad[m a minor updates
+* [33ma010a78[m readme updated
+* [33mb39c9bb[m made it 2-armed
+* [33m6ddf1ba[m todo.txt added
+* [33mdc014ad[m info feedback modified
+* [33mbccef4a[m minor change
+* [33mcb71133[m mongodb updated
+*   [33m1685cc9[m Merge branch 'master' of https://github.com/WataruToyokawa/SelectiveInfoShare_pilotExp
+[35m|[m[36m\[m  
+[35m|[m * [33m7aebd68[m team's payoff implemented
+[35m|[m * [33m9a88158[m data saving updated (totalEarning is saved wrongly tho)
+[35m|[m * [33m7ff4554[m info share cost implemented
+[35m|[m * [33m681ed70[m instruction_text modefied
+[35m|[m * [33m7110d03[m shareing info implemented
+[35m|[m * [33m3cde937[m gameServer updated
+[35m|[m * [33m72ad4e7[m README added
+[35m|[m * [33m45b319a[m First commit
+* [36m|[m [33m5e72806[m main_info_share_pilot.js added
+[36m|[m[36m/[m  
+* [33meeb29b5[m First commit
+* [33m535030e[m[33m ([m[1;31morigin/air[m[33m)[m team's payoff implemented
+* [33m1509069[m data saving updated (totalEarning is saved wrongly tho)
+* [33m765ecf1[m info share cost implemented
+* [33m15663dc[m instruction_text modefied
+* [33mc449f4c[m shareing info implemented
+* [33m29c5a1b[m gameServer updated
+* [33md39095f[m README added
+* [33mb1590c3[m First commit
